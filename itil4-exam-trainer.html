@@ -285,7 +285,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65%';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65% · v1.1';
   const sel = document.getElementById('src');
   sel.innerHTML = '<option value="__random__">Random 40 from all ' + qs.length + ' questions</option>' +
     Object.keys(exams).sort().map(e => '<option value="' + esc(e) + '">' + esc(e) + ' (' + exams[e] + ')</option>').join('');
