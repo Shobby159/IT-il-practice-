@@ -46,6 +46,7 @@ button.danger:hover{border-color:var(--bad);color:var(--bad)}
 button:disabled{opacity:.5;cursor:default}
 button:disabled:hover{border-color:var(--line);color:var(--txt)}
 #poolbtn{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+#uncbtn.on{border-color:var(--warn);color:var(--warn);background:#fdf6e4}
 #poolbtn:hover{background:var(--ok);color:#fff}
 #poolbtn:disabled:hover{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 button:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -117,6 +118,14 @@ a.link:hover{text-decoration:underline}
 
   <!-- HOME -->
   <div class="screen on" id="s-home">
+    <div class="card" id="resumecard" style="display:none;border-left:4px solid var(--accent)">
+      <h2>Unfinished session</h2>
+      <div class="sub" id="resumeinfo"></div>
+      <div class="row mt">
+        <button class="primary" onclick="resumeSession()">Resume</button>
+        <button class="danger" onclick="discardActive()">Discard</button>
+      </div>
+    </div>
     <div class="card">
       <h2>Question source</h2>
       <select id="src"></select>
@@ -147,6 +156,7 @@ a.link:hover{text-decoration:underline}
       <div class="sub" style="margin-bottom:12px" id="progline"></div>
       <div class="row">
         <button class="primary" onclick="exportProgress()">Export backup file</button>
+        <button onclick="copyDiagnostic()">Copy diagnostic for AI</button>
         <button onclick="document.getElementById('restorefile').click()">Import backup file</button>
         <button onclick="toggleTextBackup()">Backup as text</button>
         <input type="file" id="restorefile" accept=".json,application/json" style="display:none" onchange="importProgressFile(this)">
@@ -182,6 +192,7 @@ a.link:hover{text-decoration:underline}
         <div class="row">
           <button class="danger" onclick="quitSession()">End session</button>
           <button id="flagbtn" onclick="flagQ()" title="Add this question to the weakness pool">&#128078; To weakness pool</button>
+          <button id="uncbtn" onclick="toggleUnc()" title="Mark that you are unsure, even if you answer correctly">? Uncertain</button>
         </div>
         <div class="row">
           <button id="poolbtn" style="display:none" onclick="releaseQ()">&#10003; Remove from pool</button>
@@ -202,11 +213,13 @@ a.link:hover{text-decoration:underline}
           <div class="stat">Correct <b id="rescorrect"></b></div>
           <div class="stat">Wrong <b id="reswrong"></b></div>
           <div class="stat">Needed to pass (65%) <b id="respass"></b></div>
+          <div class="stat">First attempts <b id="resfresh"></b></div>
         </div>
         <div class="verdicttag" id="resverdict"></div>
       </div>
       <div class="row mt">
         <button class="primary" onclick="reviewSession()">Review wrong answers</button>
+        <button onclick="copyDiagnostic()">Copy diagnostic for AI</button>
         <button onclick="showWrongs()">All wrong answers (every exam)</button>
         <button onclick="showStats()">Domain statistics</button>
         <button onclick="goHome()">Home</button>
@@ -225,8 +238,12 @@ a.link:hover{text-decoration:underline}
   <!-- STATS -->
   <div class="screen" id="s-stats">
     <div class="card">
+      <h2>Overview</h2>
+      <div id="statover" style="font-size:14px"></div>
+    </div>
+    <div class="card">
       <h2>Weakness by domain</h2>
-      <div class="sub" style="margin-bottom:16px">Error rate across everything you have answered, worst first.</div>
+      <div class="sub" style="margin-bottom:16px">First-attempt error rate only (weakness-mode repeats excluded), worst first.</div>
       <div id="statbars"></div>
     </div>
     <div class="card">
@@ -269,7 +286,17 @@ const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
   set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 };
-const K = { custom:'itil_custom', records:'itil_records', wrong:'itil_wrong', sessions:'itil_sessions' };
+const K = { custom:'itil_custom', records:'itil_records', wrong:'itil_wrong', sessions:'itil_sessions', unc:'itil_uncertain', active:'itil_active', schema:'itil_schema' };
+
+function migrate(){
+  if(LS.get(K.schema, 1) >= 2) return;
+  const recs = LS.get(K.records, []);
+  recs.sort((a,b) => a.ts - b.ts);
+  const seen = new Set();
+  recs.forEach(r => { r.first = !seen.has(r.id); seen.add(r.id); });
+  LS.set(K.records, recs);
+  LS.set(K.schema, 2);
+}
 
 function allQuestions(){
   const custom = LS.get(K.custom, []);
@@ -285,9 +312,12 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65% · v1.1';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65% · v1.2';
+  const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
+  const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
   sel.innerHTML = '<option value="__random__">Random 40 from all ' + qs.length + ' questions</option>' +
+    '<option value="__fresh__">Fresh 40 — unseen questions only (' + unseenN + ' left)</option>' +
     Object.keys(exams).sort().map(e => '<option value="' + esc(e) + '">' + esc(e) + ' (' + exams[e] + ')</option>').join('');
   document.getElementById('banklist').innerHTML =
     Object.keys(exams).sort().map(e => '<li>' + esc(e) + ' — ' + exams[e] + '</li>').join('') +
@@ -298,6 +328,16 @@ function buildHome(){
   document.getElementById('progline').textContent = recs.length
     ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
     : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
+  const a = LS.get(K.active, null);
+  const rc = document.getElementById('resumecard');
+  if(a && a.queue && Object.keys(a.answers).length < a.queue.length){
+    rc.style.display = 'block';
+    const done = Object.keys(a.answers).length;
+    document.getElementById('resumeinfo').textContent =
+      a.mode.charAt(0).toUpperCase()+a.mode.slice(1) + ' · ' + a.label + ' · ' + done + '/' + a.queue.length + ' answered' +
+      (a.mode === 'exam' ? ' · ' + fmt(a.remainMs||0) + ' left on the clock' : '') +
+      ' · saved ' + new Date(a.savedAt).toLocaleString();
+  } else rc.style.display = 'none';
   const pool = LS.get(K.wrong, {});
   const n = Object.keys(pool).filter(id => qById(id)).length;
   document.getElementById('weakdesc').textContent = n
@@ -307,12 +347,13 @@ function buildHome(){
 
 // ---------- progress backup ----------
 function progressDump(){
-  return { v:1, exported:Date.now(),
+  return { v:2, schema:LS.get(K.schema,2), exported:Date.now(),
     records:LS.get(K.records,[]), wrong:LS.get(K.wrong,{}),
-    sessions:LS.get(K.sessions,[]), custom:LS.get(K.custom,[]) };
+    sessions:LS.get(K.sessions,[]), custom:LS.get(K.custom,[]),
+    uncertain:LS.get(K.unc,{}) };
 }
 function mergeProgress(d){
-  if(!d || d.v !== 1) throw new Error('Not a valid backup.');
+  if(!d || (d.v !== 1 && d.v !== 2)) throw new Error('Not a valid backup.');
   // records: union by id+ts
   const rec = LS.get(K.records, []);
   const seenR = new Set(rec.map(r => r.id + '|' + r.ts));
@@ -334,6 +375,10 @@ function mergeProgress(d){
   const seenC = new Set(cus.map(q => q.id).concat(BANK.map(q => q.id)));
   (d.custom||[]).forEach(q => { if(q.id && !seenC.has(q.id)){ cus.push(q); seenC.add(q.id); } });
   LS.set(K.custom, cus);
+  const un = LS.get(K.unc, {});
+  Object.entries(d.uncertain || {}).forEach(([id, ts]) => { un[id] = Math.max(un[id] || 0, ts); });
+  LS.set(K.unc, un);
+  migrate();
   return { records:rec.length, sessions:ses.length, pool:Object.keys(pool).length };
 }
 function stamp(){
@@ -393,7 +438,7 @@ function show(id){
   document.getElementById('homelink').style.display = id === 's-home' ? 'none' : 'inline';
   window.scrollTo(0,0);
 }
-function goHome(){ stopClock(); buildHome(); show('s-home'); }
+function goHome(){ stopClock(); S = null; buildHome(); show('s-home'); }
 
 // ---------- session ----------
 let S = null;
@@ -411,13 +456,47 @@ function startSession(mode){
   } else {
     const src = document.getElementById('src').value;
     if(src === '__random__'){ queue = shuffle(qs.map(q=>q.id)).slice(0,40); label = 'Random 40'; }
+    else if(src === '__fresh__'){
+      const seen = new Set(LS.get(K.records, []).map(r => r.id));
+      const unseen = qs.filter(q => !seen.has(q.id)).map(q => q.id);
+      if(!unseen.length){ alert('No unseen questions left in the bank. Import more or use Random 40.'); return; }
+      if(unseen.length < 40) alert('Only ' + unseen.length + ' unseen questions remain — this session will be shorter than 40.');
+      queue = shuffle(unseen).slice(0,40); label = 'Fresh ' + Math.min(40, unseen.length);
+    }
     else { queue = qs.filter(q => q.exam === src).map(q=>q.id); label = src; }
   }
-  S = { mode, queue, label, i:0, answers:{}, wrongIds:[], correct:0, perm:null,
-        start:Date.now(), deadline: mode==='exam' ? Date.now()+60*60*1000 : null };
+  S = { mode, queue, label, i:0, answers:{}, wrongIds:[], correct:0, perm:null, unc:{},
+        seenBefore: new Set(LS.get(K.records, []).map(r => r.id)),
+        start:Date.now(), deadline: mode==='exam' ? Date.now()+60*60*1000 : null, lastSave:0 };
+  saveActive();
   show('s-quiz');
   startClock();
   renderQ();
+}
+
+function saveActive(){
+  if(!S) return;
+  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, i:S.i, answers:S.answers,
+    wrongIds:S.wrongIds, correct:S.correct, unc:S.unc, seen:[...S.seenBefore],
+    remainMs: S.mode === 'exam' ? Math.max(0, S.deadline - Date.now()) : null,
+    elapsedMs: Date.now() - S.start, savedAt: Date.now() });
+  S.lastSave = Date.now();
+}
+function clearActive(){ localStorage.removeItem(K.active); }
+function discardActive(){
+  if(confirm('Discard the unfinished session? Answers already given stay in your history.')) { clearActive(); buildHome(); }
+}
+function resumeSession(){
+  const a = LS.get(K.active, null);
+  if(!a){ buildHome(); return; }
+  S = { mode:a.mode, queue:a.queue, label:a.label, i:a.i, answers:a.answers || {},
+        wrongIds:a.wrongIds || [], correct:a.correct || 0, perm:null, unc:a.unc || {},
+        seenBefore:new Set(a.seen || []),
+        start: Date.now() - (a.elapsedMs || 0),
+        deadline: a.mode === 'exam' ? Date.now() + (a.remainMs || 0) : null, lastSave:0 };
+  while(S.i < S.queue.length && S.answers[S.queue[S.i]] !== undefined) S.i++;
+  if(S.i >= S.queue.length){ show('s-quiz'); finish(false); return; }
+  show('s-quiz'); startClock(); renderQ();
 }
 
 function startClock(){
@@ -433,6 +512,7 @@ function tick(){
     const left = Math.max(0, S.deadline - Date.now());
     el.textContent = fmt(left);
     el.classList.toggle('low', left < 5*60*1000);
+    if(S.lastSave && Date.now() - S.lastSave > 5000) saveActive();
     if(left <= 0){ finish(true); }
   } else {
     el.textContent = fmt(Date.now() - S.start);
@@ -456,6 +536,7 @@ function renderQ(){
   document.getElementById('poolbtn').style.display = 'none';
   const pool0 = LS.get(K.wrong, {});
   setFlagBtn(!!pool0[q.id]);
+  setUncBtn(!!S.unc[q.id]);
   document.getElementById('opts').innerHTML = S.perm.map((orig, pos) =>
     '<button class="opt" data-orig="' + orig + '" onclick="answer(' + pos + ')">' +
     '<span class="n">' + (pos+1) + '</span>' + esc(q.options[orig]) + '</button>').join('');
@@ -470,8 +551,11 @@ function answer(pos){
 
   // persistent records + wrong pool
   const recs = LS.get(K.records, []);
-  recs.push({ id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now() });
+  recs.push({ id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now(),
+              first: !S.seenBefore.has(q.id), unc: !!S.unc[q.id] });
   LS.set(K.records, recs);
+  if(S.unc[q.id]){ const u = LS.get(K.unc, {}); u[q.id] = Date.now(); LS.set(K.unc, u); }
+  saveActive();
   const pool = LS.get(K.wrong, {});
   if(!ok){ pool[q.id] = (pool[q.id]||0)+1; LS.set(K.wrong, pool); setFlagBtn(true); }
   else if(S.mode !== 'exam' && pool[q.id]){ document.getElementById('poolbtn').style.display = 'inline-block'; }
@@ -512,6 +596,25 @@ function setFlagBtn(inPool){
   b.disabled = inPool;
   b.innerHTML = inPool ? '&#128078; In weakness pool' : '&#128078; To weakness pool';
 }
+function toggleUnc(){
+  const q = qById(S.queue[S.i]);
+  S.unc[q.id] = !S.unc[q.id];
+  setUncBtn(S.unc[q.id]);
+  const u = LS.get(K.unc, {});
+  if(S.unc[q.id]) u[q.id] = Date.now(); else delete u[q.id];
+  LS.set(K.unc, u);
+  if(S.answers[q.id] !== undefined){
+    const recs = LS.get(K.records, []);
+    for(let j = recs.length - 1; j >= 0; j--){ if(recs[j].id === q.id){ recs[j].unc = S.unc[q.id]; break; } }
+    LS.set(K.records, recs);
+  }
+  saveActive();
+}
+function setUncBtn(on){
+  const b = document.getElementById('uncbtn');
+  b.classList.toggle('on', on);
+  b.textContent = on ? '? Marked uncertain' : '? Uncertain';
+}
 function releaseQ(){
   const q = qById(S.queue[S.i]);
   const pool = LS.get(K.wrong, {});
@@ -540,9 +643,13 @@ function finish(timedOut){
   const pct = Math.round(100 * S.correct / denom);
   const passNeed = Math.ceil(denom * 0.65);
   const passed = S.correct >= passNeed;
+  const answeredIds = Object.keys(S.answers);
+  const freshN = answeredIds.filter(id => !S.seenBefore.has(id)).length;
+  const freshPct = answeredIds.length ? Math.round(100 * freshN / answeredIds.length) : 0;
   const sessions = LS.get(K.sessions, []);
-  sessions.push({ ts:Date.now(), mode:S.mode, label:S.label, total:denom, correct:S.correct, wrong, wrongIds:S.wrongIds });
+  sessions.push({ ts:Date.now(), mode:S.mode, label:S.label, total:denom, correct:S.correct, wrong, wrongIds:S.wrongIds, fresh:freshPct });
   LS.set(K.sessions, sessions);
+  clearActive();
 
   document.getElementById('restitle').textContent =
     (S.mode==='exam'?'Exam':'Session') + ' finished — ' + S.label + (timedOut ? ' (time expired)' : '');
@@ -552,6 +659,7 @@ function finish(timedOut){
   document.getElementById('rescorrect').textContent = S.correct + ' / ' + denom;
   document.getElementById('reswrong').textContent = wrong;
   document.getElementById('respass').textContent = passNeed;
+  document.getElementById('resfresh').textContent = freshPct + '%';
   const v = document.getElementById('resverdict');
   v.textContent = passed ? 'PASS' : 'FAIL';
   v.className = 'verdicttag ' + (passed ? 'pass' : 'fail');
@@ -608,8 +716,23 @@ function removeFromPool(id){
 function showStats(){
   stopClock();
   const recs = LS.get(K.records, []);
+  const firstR = recs.filter(r => r.first);
+  const repR = recs.filter(r => r.first === false);
+  const acc = a => a.length ? Math.round(100 * a.filter(r => r.ok).length / a.length) : null;
+  const seenN = new Set(recs.map(r => r.id)).size;
+  const bankN = allQuestions().length;
+  const uncN = Object.keys(LS.get(K.unc, {})).length;
+  const allSess = LS.get(K.sessions, []);
+  const last5 = allSess.slice(-5).map(s =>
+    Math.round(100*s.correct/s.total) + '%' + (s.fresh !== undefined ? ' (fresh ' + s.fresh + '%)' : '')).join(' · ');
+  document.getElementById('statover').innerHTML =
+    '<div>First-attempt accuracy: <b>' + (acc(firstR) === null ? '–' : acc(firstR) + '%') + '</b> (' + firstR.length + ' answers) — your honest readiness signal</div>' +
+    '<div>Repeated-question accuracy: <b>' + (acc(repR) === null ? '–' : acc(repR) + '%') + '</b> (' + repR.length + ' answers)</div>' +
+    '<div>Bank coverage: <b>' + seenN + ' / ' + bankN + '</b> questions seen (' + Math.round(100*seenN/Math.max(bankN,1)) + '%)</div>' +
+    '<div>Marked uncertain: <b>' + uncN + '</b></div>' +
+    '<div>Last 5 sessions: <b>' + (last5 || '–') + '</b></div>';
   const d = {};
-  recs.forEach(r => {
+  firstR.forEach(r => {
     d[r.domain] = d[r.domain] || { n:0, w:0 };
     d[r.domain].n++;
     if(!r.ok) d[r.domain].w++;
@@ -627,11 +750,89 @@ function showStats(){
   document.getElementById('sesslist').innerHTML = sess.length ? sess.map(s =>
     '<div style="padding:4px 0;border-bottom:1px solid var(--line)">' +
     new Date(s.ts).toLocaleString() + ' · ' + esc(s.mode) + ' · ' + esc(s.label) +
-    ' · <b style="color:var(--txt)">' + s.correct + '/' + s.total + '</b> (' + Math.round(100*s.correct/s.total) + '%)</div>'
+    ' · <b style="color:var(--txt)">' + s.correct + '/' + s.total + '</b> (' + Math.round(100*s.correct/s.total) + '%)' + (s.fresh !== undefined ? ' · fresh ' + s.fresh + '%' : '') + '</div>'
   ).join('') : 'No sessions yet.';
   show('s-stats');
 }
 
+// ---------- AI diagnostic ----------
+function buildDiagnostic(){
+  const recs = LS.get(K.records, []);
+  const sess = LS.get(K.sessions, []);
+  const pool = LS.get(K.wrong, {});
+  const uncSet = LS.get(K.unc, {});
+  const firstR = recs.filter(r => r.first);
+  const repR = recs.filter(r => r.first === false);
+  const acc = a => a.length ? Math.round(100 * a.filter(r => r.ok).length / a.length) + '% (' + a.length + ')' : 'no data';
+  const seen = new Set(recs.map(r => r.id));
+  const bankN = allQuestions().length;
+  const L = [];
+  L.push('# ITIL 4 trainer diagnostic (v1.2)');
+  L.push('Exported: ' + new Date().toLocaleString());
+  L.push('');
+  L.push('## Recent sessions (newest last)');
+  sess.slice(-5).forEach(s => L.push('- ' + new Date(s.ts).toLocaleDateString() + ' · ' + s.mode + ' · ' + s.label + ' · ' + s.correct + '/' + s.total + ' (' + Math.round(100*s.correct/s.total) + '%)' + (s.fresh !== undefined ? ' · fresh ' + s.fresh + '%' : '')));
+  if(!sess.length) L.push('- none yet');
+  L.push('');
+  L.push('## Accuracy');
+  L.push('- First attempts (honest readiness): ' + acc(firstR));
+  L.push('- Repeated questions: ' + acc(repR));
+  L.push('- Bank coverage: ' + seen.size + '/' + bankN + ' seen (' + Math.round(100*seen.size/Math.max(bankN,1)) + '%)');
+  L.push('- Weakness pool: ' + Object.keys(pool).filter(id => qById(id)).length + ' questions');
+  L.push('- Marked uncertain: ' + Object.keys(uncSet).length + ' questions');
+  L.push('');
+  const dom = {};
+  firstR.forEach(r => { dom[r.domain] = dom[r.domain] || {n:0,w:0}; dom[r.domain].n++; if(!r.ok) dom[r.domain].w++; });
+  const weakest = Object.entries(dom).filter(([k,v]) => v.n >= 4)
+    .map(([k,v]) => ({d:k, n:v.n, w:v.w, rate:v.w/v.n})).sort((a,b) => b.rate - a.rate).slice(0,3);
+  L.push('## Weakest domains (first-attempt error rate)');
+  weakest.forEach((x,i) => L.push((i+1) + '. ' + x.d + ' — ' + Math.round(x.rate*100) + '% wrong (' + x.w + '/' + x.n + ')'));
+  if(!weakest.length) L.push('- not enough data yet');
+  L.push('');
+  const lastS = sess[sess.length-1];
+  if(lastS && lastS.wrongIds && lastS.wrongIds.length){
+    L.push('## Last session mistakes (max 15)');
+    lastS.wrongIds.slice(0,15).forEach(id => {
+      const q = qById(id); if(!q) return;
+      const prior = recs.filter(r => r.id === id);
+      const misses = prior.filter(r => !r.ok).length;
+      L.push('- [' + id + '] ' + q.domain + ' — "' + q.question.slice(0,90).replace(/\n/g,' ') + '..." | correct: ' + q.options[q.correct].slice(0,70) + ' | attempts: ' + prior.length + ', total misses: ' + misses + (misses > 1 ? ' (REPEATED ERROR)' : ''));
+    });
+    L.push('');
+  }
+  const uncCorrect = Object.keys(uncSet).filter(id => {
+    const rr = recs.filter(r => r.id === id);
+    const last = rr[rr.length - 1];
+    return last && last.ok && qById(id);
+  }).slice(0,10);
+  if(uncCorrect.length){
+    L.push('## Correct but marked uncertain (lucky guesses to shore up)');
+    uncCorrect.forEach(id => { const q = qById(id); L.push('- [' + id + '] ' + q.domain + ' — "' + q.question.slice(0,90).replace(/\n/g,' ') + '..."'); });
+    L.push('');
+  }
+  L.push('## Suggested focus');
+  let step = 1;
+  if(weakest.length){ L.push(step + '. Drill "' + weakest[0].d + '" — highest first-attempt error rate.'); step++; }
+  const poolN = Object.keys(pool).filter(id => qById(id)).length;
+  if(poolN){ L.push(step + '. Run Weakness mode: ' + poolN + ' questions waiting; release each only once you answer it confidently.'); step++; }
+  const unseenN = bankN - seen.size;
+  L.push(step + '. ' + (unseenN >= 40 ? 'Take a Fresh 40 exam (' + unseenN + ' unseen left) for an honest readiness score.' : 'Under 40 unseen questions left (' + unseenN + ') — import fresh material before trusting your next mock score.'));
+  return L.join('\n');
+}
+function copyDiagnostic(){
+  const text = buildDiagnostic();
+  const done = () => alert('Diagnostic copied. Paste it to your AI tutor.');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(() => diagFallback(text));
+  } else diagFallback(text);
+}
+function diagFallback(text){
+  goHome();
+  toggleTextBackup(true);
+  const box = document.getElementById('backupbox');
+  box.value = text; box.focus(); box.select();
+  document.getElementById('backupmsg').textContent = 'Clipboard blocked by the browser — the diagnostic is selected above, copy it manually.';
+}
 // ---------- import / reset ----------
 function doImport(){
   const msg = document.getElementById('importmsg');
@@ -639,17 +840,28 @@ function doImport(){
     let data = JSON.parse(document.getElementById('importbox').value);
     if(!Array.isArray(data)) throw new Error('Expected a JSON array.');
     const existing = new Set(allQuestions().map(q => q.id));
+    const norm = s => String(s).toLowerCase().replace(/\s+/g,' ').trim();
+    const existingText = new Set(allQuestions().map(q => norm(q.question)));
     const custom = LS.get(K.custom, []);
-    let added = 0;
-    data.forEach(q => {
-      if(!q.id || !q.question || !Array.isArray(q.options) || typeof q.correct !== 'number') return;
-      if(existing.has(q.id)) return;
+    let added = 0, dup = 0;
+    const errs = [];
+    data.forEach((q, idx) => {
+      const where = q && q.id ? q.id : '#' + (idx+1);
+      if(!q || typeof q !== 'object'){ errs.push(where + ': not an object'); return; }
+      if(!q.id || typeof q.id !== 'string'){ errs.push(where + ': missing id'); return; }
+      if(!q.question || !String(q.question).trim()){ errs.push(where + ': missing question text'); return; }
+      if(!Array.isArray(q.options) || q.options.length !== 4 || q.options.some(o => !String(o).trim())){ errs.push(where + ': needs exactly 4 non-empty options'); return; }
+      if(new Set(q.options.map(norm)).size !== 4){ errs.push(where + ': duplicate answer options'); return; }
+      if(typeof q.correct !== 'number' || q.correct < 0 || q.correct > 3 || !Number.isInteger(q.correct)){ errs.push(where + ': correct must be an integer 0-3'); return; }
+      if(existing.has(q.id)){ dup++; return; }
+      if(existingText.has(norm(q.question))){ dup++; errs.push(where + ': same question text already in bank (skipped)'); return; }
       q.exam = q.exam || 'Imported';
       q.domain = q.domain || 'General';
-      custom.push(q); existing.add(q.id); added++;
+      custom.push(q); existing.add(q.id); existingText.add(norm(q.question)); added++;
     });
     LS.set(K.custom, custom);
-    msg.textContent = added + ' questions imported.';
+    msg.textContent = added + ' imported · ' + dup + ' duplicates skipped · ' + errs.length + ' issues' +
+      (errs.length ? ' — ' + errs.slice(0,3).join(' | ') + (errs.length > 3 ? ' (+' + (errs.length-3) + ' more)' : '') : '.');
     document.getElementById('importbox').value = '';
     buildHome();
   } catch(e){ msg.textContent = 'Import failed: ' + e.message; }
@@ -676,6 +888,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
+migrate();
 buildHome();
 </script>
 </body>
