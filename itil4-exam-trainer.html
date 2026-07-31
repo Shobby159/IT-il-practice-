@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ITIL 4 Exam Trainer</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -20,7 +20,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scrollbar-gutter:stable}
 body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.55;min-height:100vh}
-.wrap{max-width:840px;margin:0 auto;padding:34px 22px 90px}
+.wrap{max-width:840px;margin:0 auto;padding:26px 20px calc(70px + env(safe-area-inset-bottom))}
 h1{font-size:21px;font-weight:650;letter-spacing:-.2px}
 h1 .tag{color:var(--accent);font-family:var(--mono);font-size:11px;margin-left:10px;letter-spacing:2.5px;font-weight:600;vertical-align:2px}
 h2{font-size:16px;font-weight:650;margin-bottom:14px;letter-spacing:-.1px}
@@ -38,7 +38,10 @@ h2{font-size:16px;font-weight:650;margin-bottom:14px;letter-spacing:-.1px}
 select,textarea{width:100%;background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;transition:border-color .12s}
 select:hover,select:focus,textarea:focus{border-color:var(--accent);outline:none}
 textarea{font-family:var(--mono);font-size:12px;min-height:140px;background:var(--panel2)}
-button{background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;transition:border-color .12s,background .12s,color .12s}
+button{background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;min-height:44px;font-size:14.5px;font-family:inherit;font-weight:500;cursor:pointer;transition:border-color .12s,background .12s,color .12s}
+button.wide{width:100%;display:block}
+button.ghost{border-color:transparent;background:transparent;color:var(--dim);min-height:36px;padding:6px 10px;font-size:13.5px}
+button.ghost:hover{color:var(--accent);border-color:transparent}
 button:hover{border-color:var(--accent);color:var(--accent)}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;box-shadow:0 2px 10px rgba(86,70,200,.25)}
 button.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
@@ -46,7 +49,8 @@ button.danger:hover{border-color:var(--bad);color:var(--bad)}
 button:disabled{opacity:.5;cursor:default}
 button:disabled:hover{border-color:var(--line);color:var(--txt)}
 #poolbtn{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
-#uncbtn.on{border-color:var(--warn);color:var(--warn);background:#fdf6e4}
+#uncbtn.on{color:var(--warn);background:#fdf6e4;border-color:transparent}
+#flagbtn:disabled{color:var(--bad);opacity:.8}
 #poolbtn:hover{background:var(--ok);color:#fff}
 #poolbtn:disabled:hover{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 button:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -54,15 +58,16 @@ button:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-
 .spread{justify-content:space-between}
 .mt{margin-top:18px}
 /* quiz */
-.quizhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.quizbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 2px;margin:-10px 0 0}
+.quizhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px}
 .prog{font-size:13px;color:var(--dim);font-weight:500}
 .clock{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:.5px;color:var(--accent);font-variant-numeric:tabular-nums}
 .clock.low{color:var(--bad)}
 .qbar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:22px}
 .qbar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .25s ease}
 .chip{display:inline-block;font-size:11px;font-family:var(--mono);letter-spacing:.5px;color:var(--accent);background:var(--accent-soft);border-radius:20px;padding:4px 12px;margin-bottom:14px;font-weight:600}
-.qtext{font-size:17.5px;font-weight:550;margin-bottom:20px;white-space:pre-wrap;line-height:1.55;letter-spacing:-.1px}
-.opt{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;margin-bottom:10px;padding:13px 16px;font-size:15px;line-height:1.5;border-radius:11px;background:var(--panel2);border:1.5px solid var(--line)}
+.qtext{font-size:18.5px;font-weight:550;margin-bottom:20px;white-space:pre-wrap;line-height:1.6;letter-spacing:-.1px}
+.opt{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;margin-bottom:10px;padding:14px 16px;min-height:52px;font-size:16px;line-height:1.5;border-radius:11px;background:var(--panel2);border:1.5px solid var(--line)}
 .opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--txt)}
 .opt .n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 7px;flex-shrink:0}
 .opt.right{border-color:var(--ok);background:var(--ok-soft)}
@@ -107,6 +112,16 @@ a.link{color:var(--accent);cursor:pointer;text-decoration:none;font-size:14px;fo
 a.link:hover{text-decoration:underline}
 .empty{color:var(--dim);font-size:14px;padding:34px 0;text-align:center}
 .kbd{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:16px;opacity:.75}
+@media (hover:none){.kbd{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+details.bank summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none;min-height:32px}
+details.bank summary::-webkit-details-marker{display:none}
+details.bank summary::after{content:' ▸';color:var(--dim)}
+details.bank[open] summary::after{content:' ▾'}
+.toolsrow button{min-height:38px;padding:8px 14px;font-size:13.5px;color:var(--dim)}
+.toolsrow button:hover{color:var(--accent)}
+#homesnap{font-size:13.5px;color:var(--dim);margin-top:10px;line-height:1.7}
+#homesnap b{color:var(--txt);font-family:var(--mono)}
 </style>
 </head>
 <body>
@@ -130,6 +145,7 @@ a.link:hover{text-decoration:underline}
       <h2>Question source</h2>
       <select id="src"></select>
       <div class="sub mt" style="margin-top:8px">Applies to Practice and Exam mode. Weakness mode always uses your accumulated wrong answers.</div>
+      <div id="homesnap"></div>
     </div>
     <div class="grid">
       <div class="card mode" onclick="startSession('practice')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('practice')">
@@ -145,10 +161,10 @@ a.link:hover{text-decoration:underline}
         <p id="weakdesc">Retrain every question you have ever missed or flagged. Questions stay in the pool until you remove them yourself.</p>
       </div>
     </div>
-    <div class="row mt">
-      <button onclick="showStats()">Domain statistics</button>
+    <div class="row mt toolsrow">
+      <button onclick="showStats()">Statistics</button>
       <button onclick="showWrongs()">All wrong answers</button>
-      <button onclick="show('s-import')">Import questions</button>
+      <button onclick="show('s-import')">Import</button>
       <button class="danger" onclick="resetAll()">Reset all data</button>
     </div>
     <div class="card mt">
@@ -171,33 +187,37 @@ a.link:hover{text-decoration:underline}
       </div>
     </div>
     <div class="card">
-      <h2>Question bank</h2>
-      <ul class="banklist" id="banklist"></ul>
+      <details class="bank">
+        <summary>Question bank</summary>
+        <ul class="banklist" id="banklist" style="margin-top:12px"></ul>
+      </details>
     </div>
   </div>
 
   <!-- QUIZ -->
   <div class="screen" id="s-quiz">
-    <div class="quizhead">
-      <div class="prog" id="prog"></div>
-      <div class="clock" id="clock"></div>
+    <div class="quizbar">
+      <div class="quizhead">
+        <div class="prog" id="prog"></div>
+        <div class="row" style="gap:12px">
+          <div class="clock" id="clock"></div>
+          <button class="ghost" onclick="quitSession()">End</button>
+        </div>
+      </div>
+      <div class="qbar"><i id="qbarfill" style="width:0%"></i></div>
     </div>
-    <div class="qbar"><i id="qbarfill" style="width:0%"></i></div>
     <div class="card">
       <span class="chip" id="qdomain"></span>
       <div class="qtext" id="qtext"></div>
       <div id="opts"></div>
       <div id="explain"></div>
-      <div class="row spread mt">
-        <div class="row">
-          <button class="danger" onclick="quitSession()">End session</button>
-          <button id="flagbtn" onclick="flagQ()" title="Add this question to the weakness pool">&#128078; To weakness pool</button>
-          <button id="uncbtn" onclick="toggleUnc()" title="Mark that you are unsure, even if you answer correctly">? Uncertain</button>
-        </div>
-        <div class="row">
-          <button id="poolbtn" style="display:none" onclick="releaseQ()">&#10003; Remove from pool</button>
-          <button class="primary" id="nextbtn" style="display:none" onclick="nextQ()">Next →</button>
-        </div>
+      <div class="row mt">
+        <button class="ghost" id="flagbtn" onclick="flagQ()" title="Add this question to the weakness pool">&#128078; To weakness pool</button>
+        <button class="ghost" id="uncbtn" onclick="toggleUnc()" title="Mark that you are unsure, even if you answer correctly">? Uncertain</button>
+      </div>
+      <div class="mt">
+        <button class="primary wide" id="nextbtn" style="display:none" onclick="nextQ()">Next →</button>
+        <button class="wide" id="poolbtn" style="display:none;margin-top:10px" onclick="releaseQ()">&#10003; Remove from weakness pool</button>
       </div>
       <div class="kbd">Keys: 1–4 answer · Enter next</div>
     </div>
@@ -312,7 +332,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65% · v1.2';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · pass line 65% · v1.3';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -328,6 +348,16 @@ function buildHome(){
   document.getElementById('progline').textContent = recs.length
     ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
     : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
+  const recsH = LS.get(K.records, []);
+  const sessH = LS.get(K.sessions, []);
+  const firstH = recsH.filter(r => r.first);
+  const lastSess = sessH[sessH.length - 1];
+  const seenH = new Set(recsH.map(r => r.id)).size;
+  document.getElementById('homesnap').innerHTML = recsH.length
+    ? 'Last session: <b>' + (lastSess ? Math.round(100*lastSess.correct/lastSess.total) + '%' : '–') + '</b>' +
+      ' · First-attempt accuracy: <b>' + (firstH.length ? Math.round(100*firstH.filter(r=>r.ok).length/firstH.length) + '%' : '–') + '</b>' +
+      ' · Seen: <b>' + seenH + '/' + qs.length + '</b>'
+    : '';
   const a = LS.get(K.active, null);
   const rc = document.getElementById('resumecard');
   if(a && a.queue && Object.keys(a.answers).length < a.queue.length){
@@ -529,7 +559,9 @@ function renderQ(){
   S.perm = shuffle([0,1,2,3]);
   document.getElementById('prog').textContent = 'Question ' + (S.i+1) + ' / ' + S.queue.length + ' · ' + S.label;
   document.getElementById('qbarfill').style.width = Math.round(100*S.i/S.queue.length) + '%';
-  document.getElementById('qdomain').textContent = q.domain + (q.code ? ' · ' + q.code : '');
+  const chip = document.getElementById('qdomain');
+  chip.style.display = S.mode === 'exam' ? 'none' : 'inline-block';
+  chip.textContent = q.domain + (q.code ? ' · ' + q.code : '');
   document.getElementById('qtext').textContent = q.question;
   document.getElementById('explain').innerHTML = '';
   document.getElementById('nextbtn').style.display = 'none';
@@ -566,8 +598,9 @@ function answer(pos){
   document.querySelectorAll('.opt').forEach((b, i) => {
     b.disabled = true;
     const o = S.perm[i];
-    if(o === q.correct) b.classList.add('right');
-    else if(i === pos) b.classList.add('wrong');
+    const badge = b.querySelector('.n');
+    if(o === q.correct){ b.classList.add('right'); badge.textContent = '\u2713'; }
+    else if(i === pos){ b.classList.add('wrong'); badge.textContent = '\u2717'; }
   });
   const ex = document.getElementById('explain');
   let html = '<div class="explain">';
