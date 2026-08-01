@@ -220,6 +220,8 @@ body{transition:background .25s ease}
       <div class="row" style="margin-top:10px">
         <button class="ghost" onclick="startSmart()">Smart Review</button>
         <button class="ghost" onclick="startDrill()">Distinction Drill</button>
+        <button class="ghost" onclick="showStats()">Statistics</button>
+        <button class="ghost" onclick="showWrongs()">Wrong answers</button>
       </div>
     </div>
     <div class="card">
@@ -242,12 +244,7 @@ body{transition:background .25s ease}
         <p id="weakdesc">Retrain every question you have ever missed or flagged. Questions stay in the pool until you remove them yourself.</p>
       </div>
     </div>
-    <div class="row mt toolsrow">
-      <button onclick="showStats()">Statistics</button>
-      <button onclick="showWrongs()">All wrong answers</button>
-      <button onclick="show('s-import')">Import</button>
-      <button class="danger" onclick="resetAll()">Reset all data</button>
-    </div>
+
     <div class="card mt">
       <h2>Focus timer</h2>
       <div class="row spread">
@@ -262,7 +259,10 @@ body{transition:background .25s ease}
       </div>
     </div>
     <div class="card">
-      <h2>Appearance</h2>
+      <h2>Settings &amp; data</h2>
+      <details class="bank">
+        <summary>Appearance</summary>
+        <div style="margin-top:12px">
       <div class="themerow">
         <button class="theme" data-t="exampaper" onclick="setTheme('exampaper')"><span class="dot" style="background:#2b50c8"></span>Exam Paper</button>
         <button class="theme" data-t="slate" onclick="setTheme('slate')"><span class="dot" style="background:#1d5fd8"></span>Slate &amp; Blue</button>
@@ -274,9 +274,11 @@ body{transition:background .25s ease}
         <button id="dimbtn" onclick="toggleDim()"></button>
         <span class="sub">Darkens the area around the question during Practice, Exam and Weakness sessions.</span>
       </div>
-    </div>
-    <div class="card">
-      <h2>Progress backup</h2>
+        </div>
+      </details>
+      <details class="bank" style="margin-top:14px">
+        <summary>Progress backup</summary>
+        <div style="margin-top:12px">
       <div class="sub" style="margin-bottom:12px" id="progline"></div>
       <div class="row">
         <button class="primary" onclick="exportProgress()">Export backup file</button>
@@ -293,12 +295,16 @@ body{transition:background .25s ease}
           <span class="sub" id="backupmsg"></span>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <details class="bank">
+        </div>
+      </details>
+      <details class="bank" style="margin-top:14px">
         <summary>Question bank</summary>
         <ul class="banklist" id="banklist" style="margin-top:12px"></ul>
       </details>
+      <div class="row" style="margin-top:16px">
+        <button class="ghost" onclick="show('s-import')">Import questions</button>
+        <button class="ghost danger" onclick="resetAll()">Reset all data</button>
+      </div>
     </div>
   </div>
 
@@ -671,7 +677,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.7';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.8';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
