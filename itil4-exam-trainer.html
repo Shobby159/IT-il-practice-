@@ -197,11 +197,16 @@ body{transition:background .25s ease}
       </div>
     </div>
     <div class="card">
-      <h2>Targeted study</h2>
-      <div class="sub" id="smartinfo" style="margin-bottom:12px"></div>
+      <h2>Next up</h2>
+      <div style="font-size:15px;margin-bottom:12px" id="nextupline"></div>
       <div class="row">
-        <button class="primary" onclick="startSmart()">Smart Review — 10 questions</button>
-        <button onclick="startDrill()">Distinction Drill</button>
+        <button class="primary" id="nextupbtn" onclick="runNextUp()"></button>
+        <button onclick="startFreshExam()">Fresh Exam — 60 min</button>
+      </div>
+      <div class="sub" id="smartinfo" style="margin-top:12px"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="ghost" onclick="startSmart()">Smart Review</button>
+        <button class="ghost" onclick="startDrill()">Distinction Drill</button>
       </div>
     </div>
     <div class="card">
@@ -213,11 +218,11 @@ body{transition:background .25s ease}
     <div class="grid">
       <div class="card mode" onclick="startSession('practice')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('practice')">
         <span class="k">MODE 1</span><h3>Practice</h3>
-        <p>Instant right/wrong feedback with an explanation after every answer. Untimed.</p>
+        <p>Instant feedback with explanations. Untimed. Uses: <b class="srcecho"></b></p>
       </div>
       <div class="card mode" onclick="startSession('exam')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('exam')">
         <span class="k">MODE 2</span><h3>Exam</h3>
-        <p>60-minute countdown. Pick an option, move on. Score only at the end. Auto-submits at 0:00.</p>
+        <p>60-minute countdown, score at the end, auto-submit at 0:00. Uses: <b class="srcecho"></b></p>
       </div>
       <div class="card mode" onclick="startSession('weakness')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('weakness')">
         <span class="k">MODE 3</span><h3>Weakness</h3>
@@ -555,7 +560,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.4';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.5';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -571,6 +576,16 @@ function buildHome(){
   document.getElementById('progline').textContent = recs.length
     ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
     : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
+  const nba = nextBestAction();
+  document.getElementById('nextupline').textContent = nba.line;
+  document.getElementById('nextupbtn').textContent = 'Start: ' + nba.label;
+  const echo = () => {
+    const sel0 = document.getElementById('src');
+    const txt = sel0.options[sel0.selectedIndex] ? sel0.options[sel0.selectedIndex].text.split(' — ')[0].split(' (')[0] : '';
+    document.querySelectorAll('.srcecho').forEach(e => e.textContent = txt);
+  };
+  document.getElementById('src').onchange = echo;
+  setTimeout(echo, 0);
   const dueN = dueIds().length;
   const drillReady = Object.values(allQuestions().reduce((m,q)=>{ if(q.g){m[q.g]=(m[q.g]||0)+1;} return m; },{})).filter(n=>n>=6).length;
   document.getElementById('smartinfo').textContent =
@@ -722,6 +737,33 @@ function smartScore(id){
   else if(M && M.st === 'mastered') f = 0.8;
   return wShare * f;
 }
+function startFreshExam(){
+  document.getElementById('src').value = '__fresh__';
+  startSession('exam');
+}
+function nextBestAction(){
+  const due = dueIds();
+  if(due.length){
+    const doms = {};
+    due.forEach(id => { const d = (qById(id)||{}).domain; doms[d] = (doms[d]||0)+1; });
+    const top = Object.entries(doms).sort((a,b) => b[1]-a[1])[0];
+    return { label:'Smart Review — ' + due.length + ' due' + (top && DSHORT[top[0]] ? ', mostly ' + DSHORT[top[0]] : ''),
+             line:'You have ' + due.length + ' questions due for review. Clearing these is worth more than new material.',
+             fn:startSmart };
+  }
+  const pool = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id));
+  if(pool.length >= 5)
+    return { label:'Smart Review — ' + pool.length + ' weaknesses', line:'Nothing scheduled, but ' + pool.length + ' weaknesses wait in the pool.', fn:startSmart };
+  const risk = domainRisk().filter(r => r.risk !== null && r.risk >= 1);
+  if(risk.length && qById && allQuestions().some(q => q.g))
+    return { label:'Distinction Drill', line:'Biggest exam return right now: ' + DSHORT[risk[0].dom] + ' (~' + (Math.round(risk[0].risk*10)/10) + ' marks at risk).', fn:startDrill };
+  const seen = new Set(LS.get(K.records, []).map(r => r.id));
+  const unseenN = allQuestions().filter(q => !seen.has(q.id)).length;
+  if(unseenN >= 40)
+    return { label:'Fresh Exam — 60 min', line:'Nothing due and no urgent weaknesses. Take an honest exam-weighted mock (' + unseenN + ' unseen left).', fn:startFreshExam };
+  return { label:'Weighted 40 practice', line:'Fewer than 40 unseen questions left — practice with the official exam mix.', fn:function(){ document.getElementById('src').value='__random__'; startSession('practice'); } };
+}
+function runNextUp(){ nextBestAction().fn(); }
 function startSmart(){
   const due = dueIds();
   const pool = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id) && !due.includes(id));
