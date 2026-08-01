@@ -500,7 +500,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.1';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.2';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -727,7 +727,7 @@ function startSession(mode){
 
 function saveActive(){
   if(!S) return;
-  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, i:S.i, answers:S.answers,
+  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, i:S.i, answers:S.answers,
     wrongIds:S.wrongIds, correct:S.correct, unc:S.unc, seen:[...S.seenBefore],
     remainMs: S.mode === 'exam' ? Math.max(0, S.deadline - Date.now()) : null,
     elapsedMs: Date.now() - S.start, savedAt: Date.now() });
@@ -740,12 +740,12 @@ function discardActive(){
 function resumeSession(){
   const a = LS.get(K.active, null);
   if(!a){ buildHome(); return; }
-  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, i:a.i, answers:a.answers || {},
+  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, i:a.i, answers:a.answers || {},
         wrongIds:a.wrongIds || [], correct:a.correct || 0, perm:null, unc:a.unc || {},
         seenBefore:new Set(a.seen || []),
         start: Date.now() - (a.elapsedMs || 0),
         deadline: a.mode === 'exam' ? Date.now() + (a.remainMs || 0) : null, lastSave:0 };
-  while(S.i < S.queue.length && S.answers[S.queue[S.i]] !== undefined) S.i++;
+  while(S.i < S.queue.length && (S.doneIdx[S.i] || (Object.keys(S.doneIdx).length === 0 && S.answers[S.queue[S.i]] !== undefined))) S.i++;
   if(S.i >= S.queue.length){ show('s-quiz'); finish(false); return; }
   show('s-quiz'); startClock(); renderQ();
 }
@@ -813,6 +813,8 @@ function chooseConf(cf){
   resolveAnswer(pos, cf);
 }
 function resolveAnswer(pos, cf){
+  if(!S.doneIdx) S.doneIdx = {};
+  S.doneIdx[S.i] = true;
   const q = qById(S.queue[S.i]);
   const orig = S.perm[pos];
   const ok = orig === q.correct;
@@ -836,6 +838,13 @@ function resolveAnswer(pos, cf){
   else if(S.mode !== 'exam' && pool[q.id]){ document.getElementById('poolbtn').style.display = 'inline-block'; }
 
   if(S.mode === 'exam'){ nextQ(); return; }
+  if(!ok && !S.requeued) S.requeued = {};
+  if(!ok && S.requeued && !S.requeued[q.id]){
+    S.requeued[q.id] = true;
+    const at = Math.min(S.i + 6, S.queue.length);
+    S.queue.splice(at, 0, q.id);
+    saveActive();
+  }
 
   // practice / weakness: reveal
   document.querySelectorAll('.opt').forEach((b, i) => {
@@ -1061,11 +1070,21 @@ function buildDiagnostic(){
   sess.slice(-5).forEach(s => L.push('- ' + new Date(s.ts).toLocaleDateString() + ' · ' + s.mode + ' · ' + s.label + ' · ' + s.correct + '/' + s.total + ' (' + Math.round(100*s.correct/s.total) + '%)' + (s.fresh !== undefined ? ' · fresh ' + s.fresh + '%' : '')));
   if(!sess.length) L.push('- none yet');
   L.push('');
+  L.push('## Readiness basis');
+  L.push('- Question bank: ' + bankN + ' syllabus-verified questions (contribution-mapping and other out-of-scope items removed in v2.1)');
+  L.push('- Attempts on record: ' + recs.length + ' (all official-core)');
+  L.push('');
   L.push('## Accuracy');
   L.push('- First attempts (honest readiness): ' + acc(firstR));
   L.push('- Repeated questions: ' + acc(repR));
   L.push('- Bank coverage: ' + seen.size + '/' + bankN + ' seen (' + Math.round(100*seen.size/Math.max(bankN,1)) + '%)');
-  L.push('- Weakness pool: ' + Object.keys(pool).filter(id => qById(id)).length + ' questions');
+  const poolIds = Object.keys(pool).filter(id => qById(id));
+  const M0 = LS.get(K.mast, {});
+  const nowT = Date.now();
+  const dueNowIds = dueIds();
+  const schedLater = Object.entries(M0).filter(([id,m]) => qById(id) && m.next > nowT && ['weak','relapsed','improving'].includes(m.st)).length;
+  const flaggedUnscheduled = poolIds.filter(id => !M0[id]).length;
+  L.push('- Weakness pool: ' + poolIds.length + ' (due now: ' + dueNowIds.length + ' · scheduled later: ' + schedLater + ' · flagged but not yet answered: ' + flaggedUnscheduled + ')');
   L.push('- Marked uncertain: ' + Object.keys(uncSet).length + ' questions');
   L.push('');
   const dom = {};
@@ -1116,13 +1135,17 @@ function buildDiagnostic(){
   const M2 = LS.get(K.mast, {});
   L.push('Mastered: ' + Object.values(M2).filter(m => m.st === 'mastered').length + ' · Relapsed: ' + Object.values(M2).filter(m => m.st === 'relapsed').length);
   L.push('');
-  L.push('## Suggested focus');
+  L.push('## Suggested focus (priority order)');
   let step = 1;
-  if(weakest.length){ L.push(step + '. Drill "' + weakest[0].d + '" — highest first-attempt error rate.'); step++; }
-  const poolN = Object.keys(pool).filter(id => qById(id)).length;
-  if(poolN){ L.push(step + '. Run Weakness mode: ' + poolN + ' questions waiting; release each only once you answer it confidently.'); step++; }
+  const ceIds = [...new Set(confErrs.map(r => r.id))].filter(id => qById(id));
+  if(ceIds.length){
+    const ceTop = byGroup(confErrs)[0];
+    L.push(step + '. Fix your ' + ceIds.length + ' confident errors first — wrong while sure is the most dangerous state.' + (ceTop ? ' Biggest cluster: ' + ceTop[0] + '.' : '')); step++;
+  }
+  if(weakest.length){ L.push(step + '. Drill "' + weakest[0].d + '" — ' + (weakest[0].n - weakest[0].w) + '/' + weakest[0].n + ' correct on first attempts. Use Distinction Drill if it matches a contrast group.'); step++; }
+  if(dueNowIds.length){ L.push(step + '. Smart Review: ' + dueNowIds.length + ' due now. Keep each weakness in review until it is answered correctly after a delay, in a separate session — one confident answer is not mastery.'); step++; }
   const unseenN = bankN - seen.size;
-  L.push(step + '. ' + (unseenN >= 40 ? 'Take a Fresh 40 exam (' + unseenN + ' unseen left) for an honest readiness score.' : 'Under 40 unseen questions left (' + unseenN + ') — import fresh material before trusting your next mock score.'));
+  L.push(step + '. Only then: ' + (unseenN >= 40 ? 'a Fresh 40 exam (' + unseenN + ' unseen left) for an honest readiness score. Skip it if steps above are unfinished — a mock taken over known weaknesses wastes fresh questions.' : 'under 40 unseen questions left (' + unseenN + ') — import fresh material before trusting another mock.'));
   return L.join('\n');
 }
 function copyDiagnostic(){
