@@ -197,6 +197,10 @@ body{transition:background .25s ease}
       </div>
     </div>
     <div class="card">
+      <h2>Exam verdict</h2>
+      <div style="font-size:15px;line-height:1.6" id="verdictbox"></div>
+    </div>
+    <div class="card">
       <h2>Next up</h2>
       <div style="font-size:15px;margin-bottom:12px" id="nextupline"></div>
       <div class="row">
@@ -329,6 +333,7 @@ body{transition:background .25s ease}
         </div>
         <div class="verdicttag" id="resverdict"></div>
       </div>
+      <div class="sub mt" id="resverdictline" style="font-size:14px;line-height:1.6"></div>
       <div class="row mt">
         <button class="primary" onclick="reviewSession()">Review wrong answers</button>
         <button onclick="copyDiagnostic()">Copy diagnostic for AI</button>
@@ -485,6 +490,42 @@ function domainRisk(){
     return { dom, marks:DW[dom], n:s?s.n:0, w:s?s.w:0, rate, risk: rate === null ? null : DW[dom]*rate };
   }).sort((a,b) => (b.risk||0) - (a.risk||0));
 }
+function examVerdict(){
+  const recs = LS.get(K.records, []);
+  const firstR = recs.filter(r => r.first && DW[r.domain]);
+  const N = firstR.length;
+  if(N < 40) return { locked:true, need:40 - N };
+  const overall = firstR.filter(r => r.ok).length / N;
+  let E = 0, V = 0;
+  const m = 4; // prior weight, shrinks sparse domains toward overall accuracy
+  Object.entries(DW).forEach(([dom, wgt]) => {
+    const dr = firstR.filter(r => r.domain === dom);
+    const n = dr.length, k = dr.filter(r => r.ok).length;
+    const p = (k + m*overall) / (n + m);
+    E += wgt * p;
+    V += wgt * p * (1-p);                 // question-level variance
+    V += wgt * wgt * p * (1-p) / Math.max(n + m, 1); // parameter uncertainty
+  });
+  const sd = Math.sqrt(V);
+  const z = (25.5 - E) / sd;
+  const phi = x => { const t = 1/(1+0.2316419*Math.abs(x));
+    const dens = Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+    let pr = dens*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+    return x >= 0 ? 1-pr : pr; };
+  let P = Math.round(100 * (1 - phi(z)));
+  P = Math.max(1, Math.min(99, P));
+  const risk = domainRisk().filter(r => r.risk !== null);
+  const top = risk[0];
+  return { locked:false, P, E:Math.round(E*10)/10, sd:Math.round(sd*10)/10, N, top };
+}
+function verdictHTML(){
+  const v = examVerdict();
+  if(v.locked) return '<span class="sub">Verdict locks in after 40 first-attempt answers — ' + v.need + ' to go. Fastest route: one Fresh Exam.</span>';
+  const marks = v.E + '/40 expected (need 26, ±' + v.sd + ')';
+  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + '. <b>Book the exam.</b> More grinding past this point has diminishing returns.';
+  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
+  return '<b style="color:var(--bad);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + '. Not yet.' + (v.top ? ' Biggest recovery available: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks).' : '');
+}
 function genWeighted(preferFresh){
   const qs = allQuestions().filter(q => DW[q.domain]);
   const recs = LS.get(K.records, []);
@@ -560,7 +601,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.5';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.6';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -576,6 +617,7 @@ function buildHome(){
   document.getElementById('progline').textContent = recs.length
     ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
     : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
+  document.getElementById('verdictbox').innerHTML = verdictHTML();
   const nba = nextBestAction();
   document.getElementById('nextupline').textContent = nba.line;
   document.getElementById('nextupbtn').textContent = 'Start: ' + nba.label;
@@ -1083,6 +1125,8 @@ function finish(timedOut){
   document.getElementById('reswrong').textContent = wrong;
   document.getElementById('respass').textContent = passNeed;
   document.getElementById('resfresh').textContent = freshPct + '%';
+  const rv = examVerdict();
+  document.getElementById('resverdictline').innerHTML = rv.locked ? '' : verdictHTML();
   const v = document.getElementById('resverdict');
   v.textContent = passed ? 'PASS' : 'FAIL';
   v.className = 'verdicttag ' + (passed ? 'pass' : 'fail');
@@ -1262,6 +1306,11 @@ function buildDiagnostic(){
     uncCorrect.forEach(id => { const q = qById(id); L.push('- [' + id + '] ' + q.domain + ' — "' + q.question.slice(0,90).replace(/\n/g,' ') + '..."'); });
     L.push('');
   }
+  const vd = examVerdict();
+  L.push('## Pass probability');
+  if(vd.locked) L.push('- Locked: needs 40 first-attempt answers (' + vd.need + ' more).');
+  else L.push('- If sat today: ~' + vd.P + '% chance of passing · expected ' + vd.E + '/40 (need 26, sd ±' + vd.sd + ') · based on ' + vd.N + ' first attempts, exam-weighted.');
+  L.push('');
   L.push('## Learning diagnosis');
   const confErrs = recs.filter(r => !r.ok && r.cf === 's');
   const byGroup = arr => {
