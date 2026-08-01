@@ -173,6 +173,13 @@ body.dim .qbar{background:#37404e}
 body.dim button.ghost{color:#98a6ba}
 body.dim button.ghost:hover{color:#8ab0f5}
 body{transition:background .25s ease}
+.dots{display:flex;gap:5px;margin-top:8px;align-items:center}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--ok)}
+.dots i.today{outline:2px solid var(--accent);outline-offset:1px}
+.pomo{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pomochip{font-family:var(--mono);font-size:13px;padding:3px 10px;border-radius:14px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.pomochip.break{background:var(--ok-soft);color:var(--ok)}
 .themerow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .theme{display:flex;align-items:center;gap:7px;min-height:38px;padding:6px 13px;font-size:13.5px;border-radius:20px}
 .theme .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
@@ -207,6 +214,8 @@ body{transition:background .25s ease}
         <button class="primary" id="nextupbtn" onclick="runNextUp()"></button>
         <button onclick="startFreshExam()">Fresh Exam — 60 min</button>
       </div>
+      <div style="margin-top:14px;font-size:13.5px;color:var(--dim)" id="dailyline"></div>
+      <div class="dots" id="daydots"></div>
       <div class="sub" id="smartinfo" style="margin-top:12px"></div>
       <div class="row" style="margin-top:10px">
         <button class="ghost" onclick="startSmart()">Smart Review</button>
@@ -240,6 +249,19 @@ body{transition:background .25s ease}
       <button class="danger" onclick="resetAll()">Reset all data</button>
     </div>
     <div class="card mt">
+      <h2>Focus timer</h2>
+      <div class="row spread">
+        <div>
+          <span class="pomo" id="pomotime" style="font-size:26px;font-weight:600">25:00</span>
+          <span class="sub" id="pomophase" style="margin-left:10px">Work · 25 min, then a 5 min break</span>
+        </div>
+        <div class="row">
+          <button class="primary" id="pomobtn" onclick="pomoToggle()">Start</button>
+          <button class="ghost" onclick="pomoReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
       <h2>Appearance</h2>
       <div class="themerow">
         <button class="theme" data-t="exampaper" onclick="setTheme('exampaper')"><span class="dot" style="background:#2b50c8"></span>Exam Paper</button>
@@ -286,6 +308,7 @@ body{transition:background .25s ease}
       <div class="quizhead">
         <div class="prog" id="prog"></div>
         <div class="row" style="gap:12px">
+          <span class="pomochip" id="pomochip" style="display:none"></span>
           <div class="clock" id="clock"></div>
           <button class="ghost" onclick="toggleDim()" title="Dim surroundings">&#9789;</button>
           <button class="ghost" onclick="quitSession()">End</button>
@@ -396,6 +419,53 @@ body{transition:background .25s ease}
 </div>
 
 <script>
+const POMO_KEY = 'itil_pomo';
+const POMO = { work: 25*60*1000, brk: 5*60*1000 };
+function pomoState(){ try{ return JSON.parse(localStorage.getItem(POMO_KEY)) || null; }catch(e){ return null; } }
+function pomoSave(s){ try{ s ? localStorage.setItem(POMO_KEY, JSON.stringify(s)) : localStorage.removeItem(POMO_KEY); }catch(e){} }
+function pomoToggle(){
+  let s = pomoState();
+  if(!s || !s.running){
+    const remain = s && s.remain ? s.remain : POMO.work;
+    const phase = s && s.phase ? s.phase : 'work';
+    s = { running:true, phase, end: Date.now() + remain };
+  } else {
+    s = { running:false, phase:s.phase, remain: Math.max(0, s.end - Date.now()) };
+  }
+  pomoSave(s); pomoRender();
+}
+function pomoReset(){ pomoSave(null); pomoRender(); }
+function pomoTick(){
+  const s = pomoState();
+  if(!s || !s.running) return;
+  if(Date.now() >= s.end){
+    const nextPhase = s.phase === 'work' ? 'break' : 'work';
+    pomoSave({ running:true, phase:nextPhase, end: Date.now() + (nextPhase === 'work' ? POMO.work : POMO.brk) });
+  }
+  pomoRender();
+}
+function pomoRender(){
+  const s = pomoState();
+  const remain = !s ? POMO.work : (s.running ? Math.max(0, s.end - Date.now()) : (s.remain !== undefined ? s.remain : POMO.work));
+  const phase = s ? s.phase : 'work';
+  const t = fmt(remain);
+  const el = document.getElementById('pomotime');
+  if(el){
+    el.textContent = t;
+    document.getElementById('pomophase').textContent = phase === 'work' ? (s && s.running ? 'Work — break when it hits zero' : 'Work · 25 min, then a 5 min break') : 'Break — back to work at zero';
+    document.getElementById('pomobtn').textContent = s && s.running ? 'Pause' : 'Start';
+  }
+  const chip = document.getElementById('pomochip');
+  if(chip){
+    if(s && s.running && (!S || S.mode !== 'exam')){
+      chip.style.display = 'inline-block';
+      chip.textContent = (phase === 'work' ? '\u23F1 ' : '\u2615 ') + t;
+      chip.classList.toggle('break', phase === 'break');
+    } else chip.style.display = 'none';
+  }
+}
+setInterval(pomoTick, 1000);
+
 const THEME_KEY = 'itil_theme';
 const DIM_KEY = 'itil_dim';
 function dimOn(){ try{ return localStorage.getItem(DIM_KEY) === '1'; }catch(e){ return false; } }
@@ -490,8 +560,8 @@ function domainRisk(){
     return { dom, marks:DW[dom], n:s?s.n:0, w:s?s.w:0, rate, risk: rate === null ? null : DW[dom]*rate };
   }).sort((a,b) => (b.risk||0) - (a.risk||0));
 }
-function examVerdict(){
-  const recs = LS.get(K.records, []);
+function examVerdict(cutoff){
+  const recs = LS.get(K.records, []).filter(r => !cutoff || r.ts <= cutoff);
   const firstR = recs.filter(r => r.first && DW[r.domain]);
   const N = firstR.length;
   if(N < 40) return { locked:true, need:40 - N };
@@ -601,7 +671,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.6';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v2.7';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -617,7 +687,28 @@ function buildHome(){
   document.getElementById('progline').textContent = recs.length
     ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
     : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
-  document.getElementById('verdictbox').innerHTML = verdictHTML();
+  let vh = verdictHTML();
+  const vNow = examVerdict(), vWeek = examVerdict(Date.now() - 7*24*3600*1000);
+  if(!vNow.locked && !vWeek.locked && vNow.P !== vWeek.P){
+    const dP = vNow.P - vWeek.P;
+    vh += ' <span class="sub">(' + (dP > 0 ? '\u25B2 +' : '\u25BC ') + dP + ' pts vs last week)</span>';
+  }
+  document.getElementById('verdictbox').innerHTML = vh;
+  // daily consistency (derived, no streak punishment)
+  const dayKey = ts => { const d = new Date(ts); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); };
+  const perDay = {};
+  LS.get(K.records, []).forEach(r => { const k = dayKey(r.ts); perDay[k] = (perDay[k]||0)+1; });
+  const todayN = perDay[dayKey(Date.now())] || 0;
+  document.getElementById('dailyline').innerHTML = todayN >= 10
+    ? 'Today: <b style="color:var(--ok)">\u2713 ' + todayN + ' questions</b> — day counted.'
+    : 'Today: <b>' + todayN + '/10</b> questions for the day to count.';
+  let dotsHtml = '';
+  for(let i = 13; i >= 0; i--){
+    const k = dayKey(Date.now() - i*24*3600*1000);
+    dotsHtml += '<i class="' + (((perDay[k]||0) >= 10) ? 'on' : '') + (i === 0 ? ' today' : '') + '"></i>';
+  }
+  document.getElementById('daydots').innerHTML = dotsHtml + '<span class="sub" style="margin-left:8px">last 14 days</span>';
+  pomoRender();
   const nba = nextBestAction();
   document.getElementById('nextupline').textContent = nba.line;
   document.getElementById('nextupbtn').textContent = 'Start: ' + nba.label;
