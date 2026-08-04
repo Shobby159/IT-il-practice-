@@ -306,6 +306,18 @@ body{transition:background .25s ease}
         <button onclick="toggleTextBackup()">Backup as text</button>
         <input type="file" id="restorefile" accept=".json,application/json" style="display:none" onchange="importProgressFile(this)">
       </div>
+      <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:6px">Device sync (optional)</div>
+        <div class="sub" style="margin-bottom:10px">Create a <b>private</b> GitHub repo (e.g. <span style="font-family:var(--mono)">itil-progress</span>) and a fine-grained token scoped to only that repo (Contents: read/write). Enter the same details on every device. Sync merges — nothing is ever overwritten or lost.</div>
+        <div class="row" style="margin-bottom:8px">
+          <input id="syncrepo" placeholder="yourname/itil-progress" style="flex:1;min-width:180px;background:var(--panel2);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--mono)">
+          <input id="synctoken" type="password" placeholder="github_pat_..." style="flex:1;min-width:180px;background:var(--panel2);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--mono)">
+        </div>
+        <div class="row">
+          <button class="primary" onclick="syncNow(false)">Sync now</button>
+          <span class="sub" id="syncmsg"></span>
+        </div>
+      </div>
       <div id="textbackup" style="display:none" class="mt">
         <textarea id="backupbox" placeholder="Backup text appears here — copy it somewhere safe. To restore: paste a backup here and press Restore."></textarea>
         <div class="row" style="margin-top:8px">
@@ -740,7 +752,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.3';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.4';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1660,6 +1672,42 @@ function diagFallback(text){
   box.value = text; box.focus(); box.select();
   document.getElementById('backupmsg').textContent = 'Clipboard blocked by the browser — the diagnostic is selected above, copy it manually.';
 }
+// ---------- device sync ----------
+const SYNC_KEY = 'itil_sync';
+function syncCfg(){ try{ return JSON.parse(localStorage.getItem(SYNC_KEY)) || null; }catch(e){ return null; } }
+function b64e(s){ return btoa(unescape(encodeURIComponent(s))); }
+function b64d(s){ return decodeURIComponent(escape(atob(s.replace(/\n/g,'')))); }
+async function syncNow(silent, retry){
+  const msg = t => { const el = document.getElementById('syncmsg'); if(el && !silent) el.textContent = t; };
+  let cfg = syncCfg() || {};
+  const repoEl = document.getElementById('syncrepo'), tokEl = document.getElementById('synctoken');
+  if(repoEl && repoEl.value.trim()) cfg.repo = repoEl.value.trim();
+  if(tokEl && tokEl.value.trim()) cfg.token = tokEl.value.trim();
+  if(!cfg.repo || !cfg.token){ msg('Enter repo and token first.'); return; }
+  try{ localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); }catch(e){}
+  msg('Syncing\u2026');
+  const api = 'https://api.github.com/repos/' + cfg.repo + '/contents/itil-progress.json';
+  const headers = { 'Authorization':'Bearer ' + cfg.token, 'Accept':'application/vnd.github+json' };
+  try{
+    let sha = null;
+    const r = await fetch(api, { headers });
+    if(r.status === 200){
+      const j = await r.json();
+      sha = j.sha;
+      try{ mergeProgress(JSON.parse(b64d(j.content))); }catch(e){ msg('Remote data unreadable \u2014 not merged. Uploading local state.'); }
+    } else if(r.status === 401 || r.status === 403){ msg('Token rejected \u2014 check scope/expiry.'); return; }
+    else if(r.status !== 404){ msg('GitHub error ' + r.status + '.'); return; }
+    const put = await fetch(api, { method:'PUT', headers,
+      body: JSON.stringify(Object.assign({ message:'sync ' + new Date().toISOString(),
+        content: b64e(JSON.stringify(progressDump())) }, sha ? { sha } : {})) });
+    if(put.status === 409 && !retry){ return syncNow(silent, true); }  // raced another device: refetch + remerge once
+    if(!put.ok){ msg('Upload failed (' + put.status + ').'); return; }
+    cfg.lastTs = Date.now();
+    try{ localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); }catch(e){}
+    buildHome();
+    msg('Synced \u2713 ' + new Date().toLocaleTimeString());
+  }catch(e){ msg(silent ? '' : 'Offline or blocked \u2014 try again later.'); }
+}
 // ---------- import / reset ----------
 function doImport(){
   const msg = document.getElementById('importmsg');
@@ -1705,6 +1753,7 @@ function doImport(){
 function resetAll(){
   if(!confirm('Delete ALL history, statistics, the weakness pool and imported questions?')) return;
   Object.values(K).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem(SYNC_KEY);
   goHome();
 }
 
@@ -1758,6 +1807,15 @@ document.addEventListener('keydown', e => {
 migrate();
 buildHome();
 applyDim();
+(function(){
+  const c = syncCfg();
+  if(c){
+    const r = document.getElementById('syncrepo'), t = document.getElementById('synctoken');
+    if(r) r.value = c.repo || '';
+    if(t) t.value = c.token || '';
+    if(c.repo && c.token) syncNow(true);
+  }
+})();
 (function(){ let t='slate'; try{ t = localStorage.getItem(THEME_KEY) || 'slate'; }catch(e){}
   document.querySelectorAll('.theme').forEach(b => b.classList.toggle('sel', b.dataset.t === t)); })();
 </script>
