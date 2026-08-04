@@ -341,7 +341,7 @@ body{transition:background .25s ease}
       <div class="qtext" id="qtext"></div>
       <div id="opts"></div>
       <div id="confbar" style="display:none">
-        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(\u2190/\u2192 then Enter)</span></div>
+        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(&#8592;/&#8594; then Enter)</span></div>
         <div class="row">
           <button class="primary" onclick="chooseConf('s')">Sure</button>
           <button onclick="chooseConf('u')">Unsure</button>
@@ -705,7 +705,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.3';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.4';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
