@@ -618,10 +618,12 @@ function examVerdict(cutoff){
     const dr = firstR.filter(r => r.domain === dom);
     const n = dr.length, k = dr.filter(r => r.ok).length;
     const p = (k + m*overall) / (n + m);
-    E += wgt * p;
-    V += wgt * p * (1-p);                 // question-level variance
-    V += wgt * wgt * p * (1-p) / Math.max(n + m, 1); // parameter uncertainty
+    // conservative: use the lower confidence bound of accuracy, not the point estimate
+    const pLow = Math.max(0, p - 0.8 * Math.sqrt(p * (1-p) / (n + m)));
+    E += wgt * pLow;
+    V += wgt * pLow * (1-pLow);           // question-level variance
   });
+  E = Math.max(0, E - 1);                 // flat exam-day haircut (nerves, unfamiliar wording)
   const sd = Math.sqrt(V);
   const z = (25.5 - E) / sd;
   const phi = x => { const t = 1/(1+0.2316419*Math.abs(x));
@@ -638,8 +640,8 @@ function verdictHTML(){
   const v = examVerdict();
   if(v.locked) return '<span class="sub">Verdict locks in after 40 first-attempt answers — ' + v.need + ' to go. Fastest route: one Fresh Exam.</span>';
   const marks = v.E + '/40 expected (need 26, ±' + v.sd + ')';
-  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + '. <b>Book the exam.</b> More grinding past this point has diminishing returns.';
-  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
+  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + '. <b>Book the exam.</b> This is a deliberately conservative estimate — the real result is usually this or better.';
+  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of passing today</b> (conservative estimate). ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
   return '<b style="color:var(--bad);font-size:17px">' + v.P + '% chance of passing today.</b> ' + marks + '. Not yet.' + (v.top ? ' Biggest recovery available: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks).' : '');
 }
 function genWeighted(preferFresh){
@@ -717,7 +719,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.8';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.9';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1572,7 +1574,7 @@ function buildDiagnostic(){
   const vd = examVerdict();
   L.push('## Pass probability');
   if(vd.locked) L.push('- Locked: needs 40 first-attempt answers (' + vd.need + ' more).');
-  else L.push('- If sat today: ~' + vd.P + '% chance of passing · expected ' + vd.E + '/40 (need 26, sd ±' + vd.sd + ') · based on ' + vd.N + ' first attempts, exam-weighted.');
+  else L.push('- If sat today: ~' + vd.P + '% chance of passing (deliberately conservative: lower-bound accuracy per domain plus a 1-mark exam-day haircut) · expected ' + vd.E + '/40 (need 26, sd ±' + vd.sd + ') · based on ' + vd.N + ' first attempts, exam-weighted.');
   L.push('');
   const byQd = {};
   recs.forEach(r => {
