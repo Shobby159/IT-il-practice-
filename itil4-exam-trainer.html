@@ -119,6 +119,7 @@ html[data-theme="exampaper"] .opt.wrong{border-left-color:var(--bad)}
 .opt:disabled{cursor:default;opacity:1}
 .opt:disabled:not(.right):not(.wrong){opacity:.5}
 .opt.chosen{border-color:var(--accent);background:var(--accent-soft)}
+.opt.kb{outline:2px solid var(--accent);outline-offset:2px}
 html[data-theme="exampaper"] .opt.chosen{border-left-color:var(--accent)}
 #confbar{margin-top:14px;padding:14px 16px;background:var(--panel2);border:1.5px solid var(--line);border-radius:11px}
 #confbar .q{font-size:14px;font-weight:600;margin-bottom:10px}
@@ -362,7 +363,7 @@ body{transition:background .25s ease}
         <button class="primary wide" id="nextbtn" style="display:none" onclick="nextQ()">Next →</button>
         <button class="wide" id="poolbtn" style="display:none;margin-top:10px" onclick="releaseQ()">&#10003; Remove from weakness pool</button>
       </div>
-      <div class="kbd">Keys: 1–4 answer · Enter next</div>
+      <div class="kbd" id="kbdhint">Keys: 1–4 answer · Enter next</div>
     </div>
   </div>
 
@@ -703,7 +704,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.0';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.1';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1081,6 +1082,10 @@ function renderQ(){
   document.getElementById('prog').textContent = 'Question ' + (S.i+1) + ' / ' + S.queue.length + ' · ' + S.label;
   document.getElementById('qbarfill').style.width = Math.round(100*S.i/S.queue.length) + '%';
   S.pending = undefined;
+  S.kbSel = (S.mode === 'exam' && S.answers[q.id] !== undefined) ? S.perm.indexOf(S.answers[q.id]) : -1;
+  document.getElementById('kbdhint').textContent = S.mode === 'exam'
+    ? 'Keys: \u2191\u2193 select \u00B7 Enter/Space answer \u00B7 \u2190\u2192 previous/next \u00B7 1\u20134 direct'
+    : 'Keys: 1\u20134 answer \u00B7 Enter next';
   document.getElementById('confbar').style.display = 'none';
   const chip = document.getElementById('qdomain');
   chip.style.display = S.mode === 'exam' ? 'none' : 'inline-block';
@@ -1585,9 +1590,27 @@ function resetAll(){
 // ---------- util ----------
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+function kbHighlight(){
+  document.querySelectorAll('.opt').forEach((b, i) => b.classList.toggle('kb', i === S.kbSel));
+}
 document.addEventListener('keydown', e => {
   if(!document.getElementById('s-quiz').classList.contains('on')) return;
   if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if(S && S.mode === 'exam'){
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+      e.preventDefault();
+      const n = document.querySelectorAll('.opt').length;
+      if(S.kbSel === undefined || S.kbSel < 0) S.kbSel = e.key === 'ArrowDown' ? 0 : n - 1;
+      else S.kbSel = (S.kbSel + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
+      kbHighlight();
+      return;
+    }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); prevQ(); return; }
+    if(e.key === 'ArrowRight'){ e.preventDefault(); nextQexam(); return; }
+    if((e.key === 'Enter' || e.key === ' ') && S.kbSel !== undefined && S.kbSel >= 0){
+      e.preventDefault(); answer(S.kbSel); return;
+    }
+  }
   if(['1','2','3','4'].includes(e.key)){
     const btns = document.querySelectorAll('.opt');
     const b = btns[Number(e.key)-1];
