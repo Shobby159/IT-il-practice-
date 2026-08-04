@@ -340,7 +340,7 @@ body{transition:background .25s ease}
       <div class="qtext" id="qtext"></div>
       <div id="opts"></div>
       <div id="confbar" style="display:none">
-        <div class="q">How sure were you?</div>
+        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(S / U / G)</span></div>
         <div class="row">
           <button class="primary" onclick="chooseConf('s')">Sure</button>
           <button onclick="chooseConf('u')">Unsure</button>
@@ -704,7 +704,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.1';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.2';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1085,7 +1085,7 @@ function renderQ(){
   S.kbSel = (S.mode === 'exam' && S.answers[q.id] !== undefined) ? S.perm.indexOf(S.answers[q.id]) : -1;
   document.getElementById('kbdhint').textContent = S.mode === 'exam'
     ? 'Keys: \u2191\u2193 select \u00B7 Enter/Space answer \u00B7 \u2190\u2192 previous/next \u00B7 1\u20134 direct'
-    : 'Keys: 1\u20134 answer \u00B7 Enter next';
+    : 'Keys: \u2191\u2193 select \u00B7 Enter answer \u00B7 S/U/G confidence \u00B7 Enter next \u00B7 1\u20134 direct';
   document.getElementById('confbar').style.display = 'none';
   const chip = document.getElementById('qdomain');
   chip.style.display = S.mode === 'exam' ? 'none' : 'inline-block';
@@ -1126,6 +1126,8 @@ function chooseConf(cf){
   const pos = S.pending;
   if(pos === undefined) return;
   S.pending = undefined;
+  S.kbSel = -1;
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('kb'));
   document.getElementById('confbar').style.display = 'none';
   document.querySelectorAll('.opt').forEach(b => b.classList.remove('chosen'));
   resolveAnswer(pos, cf);
@@ -1596,27 +1598,37 @@ function kbHighlight(){
 document.addEventListener('keydown', e => {
   if(!document.getElementById('s-quiz').classList.contains('on')) return;
   if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  if(S && S.mode === 'exam'){
-    if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
-      e.preventDefault();
-      const n = document.querySelectorAll('.opt').length;
-      if(S.kbSel === undefined || S.kbSel < 0) S.kbSel = e.key === 'ArrowDown' ? 0 : n - 1;
-      else S.kbSel = (S.kbSel + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
-      kbHighlight();
-      return;
-    }
-    if(e.key === 'ArrowLeft'){ e.preventDefault(); prevQ(); return; }
-    if(e.key === 'ArrowRight'){ e.preventDefault(); nextQexam(); return; }
-    if((e.key === 'Enter' || e.key === ' ') && S.kbSel !== undefined && S.kbSel >= 0){
-      e.preventDefault(); answer(S.kbSel); return;
-    }
+  if(!S) return;
+  const k = e.key;
+  // phase: confidence bar open (non-exam, answer locked, awaiting S/U/G)
+  if(S.mode !== 'exam' && S.pending !== undefined){
+    const map = { 's':'s','S':'s','1':'s','Enter':'s','u':'u','U':'u','2':'u','g':'g','G':'g','3':'g' };
+    if(map[k] !== undefined){ e.preventDefault(); chooseConf(map[k]); }
+    return;
   }
-  if(['1','2','3','4'].includes(e.key)){
+  // phase: revealed (non-exam) — advance
+  if(S.mode !== 'exam' && document.getElementById('nextbtn').style.display !== 'none'){
+    if(k === 'Enter' || k === ' ' || k === 'ArrowRight'){ e.preventDefault(); nextQ(); }
+    return;
+  }
+  // phase: choosing (all modes)
+  if(k === 'ArrowDown' || k === 'ArrowUp'){
+    e.preventDefault();
+    const n = document.querySelectorAll('.opt').length;
+    if(S.kbSel === undefined || S.kbSel < 0) S.kbSel = k === 'ArrowDown' ? 0 : n - 1;
+    else S.kbSel = (S.kbSel + (k === 'ArrowDown' ? 1 : n - 1)) % n;
+    kbHighlight();
+    return;
+  }
+  if(S.mode === 'exam' && k === 'ArrowLeft'){ e.preventDefault(); prevQ(); return; }
+  if(S.mode === 'exam' && k === 'ArrowRight'){ e.preventDefault(); nextQexam(); return; }
+  if((k === 'Enter' || k === ' ') && S.kbSel !== undefined && S.kbSel >= 0){
+    e.preventDefault(); answer(S.kbSel); return;
+  }
+  if(['1','2','3','4'].includes(k)){
     const btns = document.querySelectorAll('.opt');
-    const b = btns[Number(e.key)-1];
+    const b = btns[Number(k)-1];
     if(b && !b.disabled) b.click();
-  } else if(e.key === 'Enter' && document.getElementById('nextbtn').style.display !== 'none'){
-    e.preventDefault(); nextQ();
   }
 });
 
