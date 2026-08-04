@@ -120,6 +120,7 @@ html[data-theme="exampaper"] .opt.wrong{border-left-color:var(--bad)}
 .opt:disabled:not(.right):not(.wrong){opacity:.5}
 .opt.chosen{border-color:var(--accent);background:var(--accent-soft)}
 .opt.kb{outline:2px solid var(--accent);outline-offset:2px}
+#confbar .row button.kb{outline:2px solid var(--accent);outline-offset:2px}
 html[data-theme="exampaper"] .opt.chosen{border-left-color:var(--accent)}
 #confbar{margin-top:14px;padding:14px 16px;background:var(--panel2);border:1.5px solid var(--line);border-radius:11px}
 #confbar .q{font-size:14px;font-weight:600;margin-bottom:10px}
@@ -340,7 +341,7 @@ body{transition:background .25s ease}
       <div class="qtext" id="qtext"></div>
       <div id="opts"></div>
       <div id="confbar" style="display:none">
-        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(S / U / G)</span></div>
+        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(\u2190/\u2192 then Enter)</span></div>
         <div class="row">
           <button class="primary" onclick="chooseConf('s')">Sure</button>
           <button onclick="chooseConf('u')">Unsure</button>
@@ -704,7 +705,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.2';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.3';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1085,7 +1086,7 @@ function renderQ(){
   S.kbSel = (S.mode === 'exam' && S.answers[q.id] !== undefined) ? S.perm.indexOf(S.answers[q.id]) : -1;
   document.getElementById('kbdhint').textContent = S.mode === 'exam'
     ? 'Keys: \u2191\u2193 select \u00B7 Enter/Space answer \u00B7 \u2190\u2192 previous/next \u00B7 1\u20134 direct'
-    : 'Keys: \u2191\u2193 select \u00B7 Enter answer \u00B7 S/U/G confidence \u00B7 Enter next \u00B7 1\u20134 direct';
+    : 'Keys: \u2191\u2193 select \u00B7 Enter answer \u00B7 \u2190\u2192 confidence \u00B7 Enter next';
   document.getElementById('confbar').style.display = 'none';
   const chip = document.getElementById('qdomain');
   chip.style.display = S.mode === 'exam' ? 'none' : 'inline-block';
@@ -1121,6 +1122,11 @@ function answer(pos){
   S.pending = pos;
   document.querySelectorAll('.opt').forEach((b, i) => { b.disabled = true; if(i === pos) b.classList.add('chosen'); });
   document.getElementById('confbar').style.display = 'block';
+  S.confSel = 0;
+  confHighlight();
+}
+function confHighlight(){
+  document.querySelectorAll('#confbar .row button').forEach((b, i) => b.classList.toggle('kb', i === S.confSel));
 }
 function chooseConf(cf){
   const pos = S.pending;
@@ -1602,7 +1608,11 @@ document.addEventListener('keydown', e => {
   const k = e.key;
   // phase: confidence bar open (non-exam, answer locked, awaiting S/U/G)
   if(S.mode !== 'exam' && S.pending !== undefined){
-    const map = { 's':'s','S':'s','1':'s','Enter':'s','u':'u','U':'u','2':'u','g':'g','G':'g','3':'g' };
+    const CONF = ['s','u','g'];
+    if(k === 'ArrowRight' || k === 'ArrowDown'){ e.preventDefault(); S.confSel = ((S.confSel||0) + 1) % 3; confHighlight(); return; }
+    if(k === 'ArrowLeft' || k === 'ArrowUp'){ e.preventDefault(); S.confSel = ((S.confSel||0) + 2) % 3; confHighlight(); return; }
+    if(k === 'Enter' || k === ' '){ e.preventDefault(); chooseConf(CONF[S.confSel||0]); return; }
+    const map = { 's':'s','S':'s','1':'s','u':'u','U':'u','2':'u','g':'g','G':'g','3':'g' };
     if(map[k] !== undefined){ e.preventDefault(); chooseConf(map[k]); }
     return;
   }
