@@ -705,7 +705,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.4';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.5';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1023,7 +1023,7 @@ function startSession(mode){
 
 function saveActive(){
   if(!S) return;
-  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, i:S.i, answers:S.answers,
+  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, perms:S.perms||null, i:S.i, answers:S.answers,
     wrongIds:S.wrongIds, correct:S.correct, unc:S.unc, seen:[...S.seenBefore],
     remainMs: S.mode === 'exam' ? Math.max(0, S.deadline - Date.now()) : null,
     elapsedMs: Date.now() - S.start, savedAt: Date.now() });
@@ -1036,7 +1036,7 @@ function discardActive(){
 function resumeSession(){
   const a = LS.get(K.active, null);
   if(!a){ buildHome(); return; }
-  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, i:a.i, answers:a.answers || {},
+  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, perms:a.perms||null, i:a.i, answers:a.answers || {},
         wrongIds:a.wrongIds || [], correct:a.correct || 0, perm:null, unc:a.unc || {},
         seenBefore:new Set(a.seen || []),
         start: Date.now() - (a.elapsedMs || 0),
@@ -1079,7 +1079,13 @@ function fmt(ms){
 
 function renderQ(){
   const q = qById(S.queue[S.i]);
-  S.perm = shuffle([0,1,2,3]);
+  if(S.mode === 'exam'){
+    if(!S.perms) S.perms = {};
+    if(!S.perms[q.id]) S.perms[q.id] = shuffle([0,1,2,3]);
+    S.perm = S.perms[q.id];
+  } else {
+    S.perm = shuffle([0,1,2,3]);
+  }
   document.getElementById('prog').textContent = 'Question ' + (S.i+1) + ' / ' + S.queue.length + ' · ' + S.label;
   document.getElementById('qbarfill').style.width = Math.round(100*S.i/S.queue.length) + '%';
   S.pending = undefined;
