@@ -379,6 +379,7 @@ body{transition:background .25s ease}
           <div class="stat">Wrong <b id="reswrong"></b></div>
           <div class="stat">Needed to pass (65%) <b id="respass"></b></div>
           <div class="stat">First attempts <b id="resfresh"></b></div>
+          <div class="stat" id="resretry" style="display:none">Fixed on retry <b id="resretryn"></b></div>
         </div>
         <div class="verdicttag" id="resverdict"></div>
       </div>
@@ -705,7 +706,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.5';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.6';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1023,7 +1024,7 @@ function startSession(mode){
 
 function saveActive(){
   if(!S) return;
-  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, perms:S.perms||null, i:S.i, answers:S.answers,
+  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, perms:S.perms||null, firstWrong:S.firstWrong||{}, retryFixed:S.retryFixed||{}, i:S.i, answers:S.answers,
     wrongIds:S.wrongIds, correct:S.correct, unc:S.unc, seen:[...S.seenBefore],
     remainMs: S.mode === 'exam' ? Math.max(0, S.deadline - Date.now()) : null,
     elapsedMs: Date.now() - S.start, savedAt: Date.now() });
@@ -1036,7 +1037,7 @@ function discardActive(){
 function resumeSession(){
   const a = LS.get(K.active, null);
   if(!a){ buildHome(); return; }
-  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, perms:a.perms||null, i:a.i, answers:a.answers || {},
+  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, perms:a.perms||null, firstWrong:a.firstWrong||{}, retryFixed:a.retryFixed||{}, i:a.i, answers:a.answers || {},
         wrongIds:a.wrongIds || [], correct:a.correct || 0, perm:null, unc:a.unc || {},
         seenBefore:new Set(a.seen || []),
         start: Date.now() - (a.elapsedMs || 0),
@@ -1150,8 +1151,19 @@ function resolveAnswer(pos, cf){
   const q = qById(S.queue[S.i]);
   const orig = S.perm[pos];
   const ok = orig === q.correct;
+  const isRetry = S.answers[q.id] !== undefined;
   S.answers[q.id] = orig;
-  if(ok) S.correct++; else S.wrongIds.push(q.id);
+  if(!isRetry){
+    if(ok) S.correct++;
+    else {
+      S.wrongIds.push(q.id);
+      if(!S.firstWrong) S.firstWrong = {};
+      S.firstWrong[q.id] = orig;
+    }
+  } else if(ok && S.wrongIds.includes(q.id)){
+    if(!S.retryFixed) S.retryFixed = {};
+    S.retryFixed[q.id] = true;
+  }
 
   // persistent records + wrong pool
   const rec = { id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now(), sid:S.start,
@@ -1303,7 +1315,10 @@ function finish(timedOut){
   const freshN = answeredIds.filter(id => !S.seenBefore.has(id)).length;
   const freshPct = answeredIds.length ? Math.round(100 * freshN / answeredIds.length) : 0;
   const ansMap = {};
-  S.wrongIds.forEach(id => { if(S.answers[id] !== undefined) ansMap[id] = S.answers[id]; });
+  S.wrongIds.forEach(id => {
+    const sel = (S.firstWrong && S.firstWrong[id] !== undefined) ? S.firstWrong[id] : S.answers[id];
+    if(sel !== undefined) ansMap[id] = sel;
+  });
   const sessions = LS.get(K.sessions, []);
   sessions.push({ ts:Date.now(), mode:S.mode, label:S.label, total:denom, correct:S.correct, wrong, wrongIds:S.wrongIds, ans:ansMap, fresh:freshPct });
   LS.set(K.sessions, sessions);
@@ -1318,6 +1333,9 @@ function finish(timedOut){
   document.getElementById('reswrong').textContent = wrong;
   document.getElementById('respass').textContent = passNeed;
   document.getElementById('resfresh').textContent = freshPct + '%';
+  const rf = S.retryFixed ? Object.keys(S.retryFixed).length : 0;
+  document.getElementById('resretry').style.display = rf ? 'block' : 'none';
+  document.getElementById('resretryn').textContent = rf;
   const rv = examVerdict();
   document.getElementById('resverdictline').innerHTML = rv.locked ? '' : verdictHTML();
   const v = document.getElementById('resverdict');
@@ -1328,7 +1346,7 @@ function finish(timedOut){
 
 // ---------- review (this session) ----------
 function reviewSession(){
-  renderReview(S.wrongIds.map(id => ({ id, mine:S.answers[id] })),
+  renderReview(S.wrongIds.map(id => ({ id, mine:(S.firstWrong && S.firstWrong[id] !== undefined) ? S.firstWrong[id] : S.answers[id] })),
     'Wrong answers — this session (' + S.wrongIds.length + ')');
 }
 function renderReview(items, title){
