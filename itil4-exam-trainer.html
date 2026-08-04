@@ -414,6 +414,11 @@ body{transition:background .25s ease}
       <div id="statbars"></div>
     </div>
     <div class="card">
+      <h2>Troubling questions</h2>
+      <div class="sub" style="margin-bottom:14px">Every question you have ever missed, worst first — with the wrong option you keep reaching for.</div>
+      <div id="troublelist"></div>
+    </div>
+    <div class="card">
       <h2>Sessions</h2>
       <div id="sesslist" style="font-size:13px;color:var(--dim)"></div>
     </div>
@@ -706,7 +711,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.6';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.7';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1166,7 +1171,7 @@ function resolveAnswer(pos, cf){
   }
 
   // persistent records + wrong pool
-  const rec = { id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now(), sid:S.start,
+  const rec = { id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now(), sid:S.start, sel:orig,
               first: !S.seenBefore.has(q.id), unc: !!S.unc[q.id] || cf === 'u' || cf === 'g',
               cf: cf || (S.unc[q.id] ? 'u' : 's') };
   const recs = LS.get(K.records, []);
@@ -1297,7 +1302,7 @@ function finish(timedOut){
       const q = qById(id);
       const ok = sel === q.correct;
       if(ok) S.correct++; else { S.wrongIds.push(id); poolX[id] = (poolX[id]||0)+1; }
-      const rec = { id, domain:q.domain, ok, mode:'exam', ts: now0 + idx,
+      const rec = { id, domain:q.domain, ok, mode:'exam', ts: now0 + idx, sel,
         sid:S.start, first: !S.seenBefore.has(id), unc: !!S.unc[id], cf: S.unc[id] ? 'u' : 's' };
       recsX.push(rec);
       masteryApply(MX, rec);
@@ -1437,6 +1442,30 @@ function showStats(){
     '<div class="bar"><i class="' + (r.risk !== null && r.risk < 1 ? 'good' : '') + '" style="width:' + Math.max(2, Math.round((r.risk||0)/17*100)) + '%"></i></div></div>';
   }).join('') : '<div class="empty">Answer some questions first.</div>';
 
+  // troubling questions: full history, worst first
+  const byQ = {};
+  recs.forEach(r => {
+    if(!qById(r.id)) return;
+    byQ[r.id] = byQ[r.id] || { n:0, w:0, hist:[], picks:{} };
+    const b = byQ[r.id];
+    b.n++; if(!r.ok){ b.w++; if(r.sel !== undefined) b.picks[r.sel] = (b.picks[r.sel]||0)+1; }
+    b.hist.push(r.ok);
+  });
+  const poolNow = LS.get(K.wrong, {});
+  const trouble = Object.entries(byQ).filter(([id,b]) => b.w > 0)
+    .sort((a,b) => b[1].w - a[1].w || (b[1].w/b[1].n) - (a[1].w/a[1].n)).slice(0, 15);
+  document.getElementById('troublelist').innerHTML = trouble.length ? trouble.map(([id, b]) => {
+    const q = qById(id);
+    const pat = b.hist.slice(-6).map(ok => ok ? '<span style="color:var(--ok)">\u2713</span>' : '<span style="color:var(--bad)">\u2717</span>').join(' ');
+    const topPick = Object.entries(b.picks).sort((x,y) => y[1]-x[1])[0];
+    return '<div class="card rev">' +
+      '<div class="meta">' + esc(q.exam) + ' \u00B7 ' + esc(q.domain) + ' \u00B7 wrong ' + b.w + ' of ' + b.n + ' attempts \u00B7 last: ' + pat + (poolNow[id] ? ' \u00B7 in weakness pool' : '') + '</div>' +
+      '<div class="q">' + esc(q.question) + '</div>' +
+      '<div class="ans ok">Correct: ' + esc(q.options[q.correct]) + '</div>' +
+      (topPick ? '<div class="ans bad">You keep picking: ' + esc(q.options[topPick[0]]) + ' (' + topPick[1] + '\u00D7)</div>' : '') +
+      (q.explanation_correct ? '<div class="ex">' + esc(q.explanation_correct) + '</div>' : '') +
+      '</div>';
+  }).join('') : '<div class="empty">No misses on record yet.</div>';
   const sess = LS.get(K.sessions, []).slice().reverse().slice(0, 20);
   document.getElementById('sesslist').innerHTML = sess.length ? sess.map(s =>
     '<div style="padding:6px 0;border-bottom:1px solid var(--line)">' +
@@ -1529,6 +1558,23 @@ function buildDiagnostic(){
   if(vd.locked) L.push('- Locked: needs 40 first-attempt answers (' + vd.need + ' more).');
   else L.push('- If sat today: ~' + vd.P + '% chance of passing · expected ' + vd.E + '/40 (need 26, sd ±' + vd.sd + ') · based on ' + vd.N + ' first attempts, exam-weighted.');
   L.push('');
+  const byQd = {};
+  recs.forEach(r => {
+    if(!qById(r.id)) return;
+    byQd[r.id] = byQd[r.id] || { n:0, w:0, picks:{} };
+    byQd[r.id].n++; if(!r.ok){ byQd[r.id].w++; if(r.sel !== undefined) byQd[r.id].picks[r.sel] = (byQd[r.id].picks[r.sel]||0)+1; }
+  });
+  const troubleD = Object.entries(byQd).filter(([id,b]) => b.w >= 2)
+    .sort((a,b) => b[1].w - a[1].w).slice(0, 5);
+  if(troubleD.length){
+    L.push('## Most troubling questions (missed 2+ times)');
+    troubleD.forEach(([id, b]) => {
+      const q = qById(id);
+      const tp = Object.entries(b.picks).sort((x,y) => y[1]-x[1])[0];
+      L.push('- [' + id + '] wrong ' + b.w + '/' + b.n + ' \u2014 "' + q.question.slice(0,80).replace(/\n/g,' ') + '..." | correct: ' + q.options[q.correct].slice(0,60) + (tp ? ' | keeps picking: ' + q.options[tp[0]].slice(0,60) + ' (' + tp[1] + 'x)' : ''));
+    });
+    L.push('');
+  }
   L.push('## Learning diagnosis');
   const confErrs = recs.filter(r => !r.ok && r.cf === 's');
   const byGroup = arr => {
