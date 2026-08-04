@@ -625,7 +625,7 @@ function examVerdict(cutoff){
   });
   E = Math.max(0, E - 1);                 // flat exam-day haircut (nerves, unfamiliar wording)
   const sd = Math.sqrt(V);
-  const z = (29.5 - E) / sd;  // target = 30/40 (73%); official pass is 26/40
+  const z = (26.5 - E) / sd;  // verdict bar = 27/40 (one mark above the official 26); session target stays 30/40
   const phi = x => { const t = 1/(1+0.2316419*Math.abs(x));
     const dens = Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
     let pr = dens*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
@@ -639,10 +639,10 @@ function examVerdict(cutoff){
 function verdictHTML(){
   const v = examVerdict();
   if(v.locked) return '<span class="sub">Verdict locks in after 40 first-attempt answers — ' + v.need + ' to go. Fastest route: one Fresh Exam.</span>';
-  const marks = v.E + '/40 expected (target 30, official pass 26, ±' + v.sd + ')';
-  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of clearing your 73% target today.</b> ' + marks + '. <b>Book the exam.</b> This is a deliberately conservative estimate — the real result is usually this or better.';
-  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of clearing your 73% target</b> (conservative estimate). ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
-  return '<b style="color:var(--bad);font-size:17px">' + v.P + '% chance of clearing your 73% target.</b> ' + marks + '. Not yet.' + (v.top ? ' Biggest recovery available: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks).' : '');
+  const marks = v.E + '/40 expected (verdict bar 27, official pass 26, ±' + v.sd + ')';
+  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of scoring 27+ today.</b> ' + marks + '. <b>Book the exam.</b> This is a deliberately conservative estimate — the real result is usually this or better.';
+  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of scoring 27+</b> (conservative estimate). ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
+  return '<b style="color:var(--bad);font-size:17px">' + v.P + '% chance of scoring 27+.</b> ' + marks + '. Not yet.' + (v.top ? ' Biggest recovery available: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks).' : '');
 }
 function genWeighted(preferFresh){
   const qs = allQuestions().filter(q => DW[q.domain]);
@@ -719,7 +719,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.0';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.1';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -1574,7 +1574,7 @@ function buildDiagnostic(){
   const vd = examVerdict();
   L.push('## Pass probability');
   if(vd.locked) L.push('- Locked: needs 40 first-attempt answers (' + vd.need + ' more).');
-  else L.push('- If sat today: ~' + vd.P + '% chance of clearing the 73% training target (30/40; official pass is 26/40). Deliberately conservative: lower-bound accuracy per domain plus a 1-mark exam-day haircut. Expected ' + vd.E + '/40 (sd ±' + vd.sd + ') from ' + vd.N + ' first attempts, exam-weighted.');
+  else L.push('- If sat today: ~' + vd.P + '% chance of scoring 27+ (one mark above the official 26/40 pass). Deliberately conservative: lower-bound accuracy per domain plus a 1-mark exam-day haircut. Session training target remains 30/40. Expected ' + vd.E + '/40 (sd ±' + vd.sd + ') from ' + vd.N + ' first attempts, exam-weighted.');
   L.push('');
   const byQd = {};
   recs.forEach(r => {
