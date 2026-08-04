@@ -588,6 +588,11 @@ function migrate(){
     dropOrphans();
     LS.set(K.schema, 5);
   }
+  if(LS.get(K.schema, 1) < 7){
+    keyFix('hard4-q29', 1);
+    keyFix('hard3-q23', 1);
+    LS.set(K.schema, 7);
+  }
   if(LS.get(K.schema, 1) < 6){
     // answer-key corrections: hard4-q29 and hard3-q23 (correct = option index 1, "2 and 3")
     const QFIX = { 'hard4-q29':1, 'hard3-q23':1 };
@@ -609,6 +614,35 @@ function migrate(){
     rebuildMastery();
     LS.set(K.schema, 6);
   }
+}
+function keyFix(id, corr){
+  let recs = LS.get(K.records, []);
+  let wrongs = 0;
+  recs = recs.filter(r => {
+    if(r.id !== id) return true;
+    if(r.sel === undefined) return false;
+    r.ok = (r.sel === corr);
+    r.rk = true;
+    if(!r.ok) wrongs++;
+    return true;
+  });
+  LS.set(K.records, recs);
+  const pool = LS.get(K.wrong, {});
+  if(wrongs > 0) pool[id] = wrongs; else delete pool[id];
+  LS.set(K.wrong, pool);
+  if(wrongs === 0){
+    const sess = LS.get(K.sessions, []);
+    sess.forEach(s => {
+      if(s.wrongIds && s.wrongIds.includes(id)){
+        s.wrongIds = s.wrongIds.filter(x => x !== id);
+        s.wrong = Math.max(0, (s.wrong||0) - 1);
+        s.correct = Math.min(s.total || (s.correct+1), (s.correct||0) + 1);
+        if(s.ans) delete s.ans[id];
+      }
+    });
+    LS.set(K.sessions, sess);
+  }
+  rebuildMastery();
 }
 function dropOrphans(){
   const valid = new Set(allQuestions().map(q => q.id));
@@ -724,17 +758,50 @@ function rebuildMastery(){
   LS.get(K.records, []).slice().sort((a,b) => a.ts - b.ts).forEach(r => masteryApply(M, r));
   LS.set(K.mast, M);
 }
+function getConfidentErrorSummary(){
+  const recs = LS.get(K.records, []);
+  const M = LS.get(K.mast, {});
+  const ids = [...new Set(recs.filter(r => !r.ok && r.cf === 's').map(r => r.id))].filter(id => qById(id));
+  const out = { active:[], relapsed:[], repaired:[], lifetimeTotal: ids.length };
+  ids.forEach(id => {
+    const st = (M[id] || {}).st;
+    if(st === 'mastered') out.repaired.push(id);
+    else if(st === 'relapsed') out.relapsed.push(id);
+    else out.active.push(id);
+  });
+  return out;
+}
+function getReviewQueueSummary(now){
+  now = now || Date.now();
+  const M = LS.get(K.mast, {});
+  let due = 0, later = 0, invalid = 0;
+  const tracked = [];
+  Object.entries(M).forEach(([id, m]) => {
+    if(!qById(id) || !['weak','relapsed','improving'].includes(m.st)) return;
+    tracked.push(id);
+    const bad = !(typeof m.next === 'number' && isFinite(m.next));
+    if(bad) invalid++;
+    if(bad || m.next <= now) due++; else later++;
+  });
+  const poolManual = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id)).length;
+  let repeats = 0;
+  const a = LS.get(K.active, null);
+  if(a && a.requeued) repeats = Object.keys(a.requeued).length;
+  return { uniqueWeakQuestions: tracked.length, dueNowUnique: due, scheduledLaterUnique: later,
+           invalidSchedules: invalid, poolManual, immediateRepeatsUnique: repeats };
+}
 function dueIds(){
   const M = LS.get(K.mast, {});
   const now = Date.now();
-  const recs = LS.get(K.records, []);
-  const confErr = new Set(recs.filter(r => !r.ok && r.cf === 's').map(r => r.id));
+  const ce = getConfidentErrorSummary();
+  const hot = new Set([...ce.active, ...ce.relapsed]);
   return Object.entries(M)
-    .filter(([id,m]) => qById(id) && m.next <= now && ['weak','relapsed','improving'].includes(m.st))
+    .filter(([id,m]) => qById(id) && ['weak','relapsed','improving'].includes(m.st) &&
+      (!(typeof m.next === 'number' && isFinite(m.next)) || m.next <= now))
     .sort((a,b) =>
       ((b[1].st==='relapsed')-(a[1].st==='relapsed')) ||
-      ((confErr.has(b[0])?1:0)-(confErr.has(a[0])?1:0)) ||
-      a[1].next - b[1].next)
+      ((hot.has(b[0])?1:0)-(hot.has(a[0])?1:0)) ||
+      ((a[1].next||0) - (b[1].next||0)))
     .map(([id]) => id);
 }
 
@@ -752,7 +819,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.4';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.5';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -942,8 +1009,10 @@ function smartScore(id){
   const wShare = (DW[q.domain] || 2) / 40;
   const recs = LS.get(K.records, []).filter(r => r.id === id);
   const M = LS.get(K.mast, {})[id];
+  const ceS = getConfidentErrorSummary();
   let f = 1.0;
-  if(recs.some(r => !r.ok && r.cf === 's')) f = 2.0;
+  if(ceS.relapsed.includes(id)) f = 2.2;
+  else if(ceS.active.includes(id)) f = 2.0;
   else if(M && M.st === 'relapsed') f = 1.7;
   else if(recs.filter(r => !r.ok).length >= 2) f = 1.7;
   else if(recs.some(r => !r.ok)) f = 1.4;
@@ -1465,15 +1534,16 @@ function showStats(){
   const allSess = LS.get(K.sessions, []);
   const last5 = allSess.slice(-5).map(s =>
     Math.round(100*s.correct/s.total) + '%' + (s.fresh !== undefined ? ' (fresh ' + s.fresh + '%)' : '')).join(' · ');
-  const confErrN = recs.filter(r => !r.ok && r.cf === 's').length;
   const okUnsureN = recs.filter(r => r.ok && r.cf === 'u').length;
   const okGuessN = recs.filter(r => r.ok && r.cf === 'g').length;
-  const dueNow = dueIds().length;
+  const RQ = getReviewQueueSummary();
+  const CE = getConfidentErrorSummary();
   const M = LS.get(K.mast, {});
   const mastN = Object.values(M).filter(m => m.st === 'mastered').length;
   document.getElementById('statover').innerHTML =
-    '<div>Due for review now: <b>' + dueNow + '</b> · Mastered: <b>' + mastN + '</b></div>' +
-    '<div>Confident errors (wrong while sure): <b>' + confErrN + '</b> · Correct but unsure: <b>' + okUnsureN + '</b> · Correct guesses: <b>' + okGuessN + '</b></div>' +
+    '<div>Tracked weaknesses: <b>' + RQ.uniqueWeakQuestions + '</b> unique questions (due now <b>' + RQ.dueNowUnique + '</b> · scheduled later <b>' + RQ.scheduledLaterUnique + '</b>) · Manual pool: <b>' + RQ.poolManual + '</b> · Mastered: <b>' + mastN + '</b></div>' +
+    '<div>Confident errors — active: <b>' + CE.active.length + '</b> · relapsed: <b>' + CE.relapsed.length + '</b> · repaired: <b>' + CE.repaired.length + '</b> · lifetime: <b>' + CE.lifetimeTotal + '</b></div>' +
+    '<div>Correct but unsure: <b>' + okUnsureN + '</b> · Correct guesses: <b>' + okGuessN + '</b></div>' +
     '<div>First-attempt accuracy: <b>' + (acc(firstR) === null ? '–' : acc(firstR) + '%') + '</b> (' + firstR.length + ' answers) — your honest readiness signal</div>' +
     '<div>Repeated-question accuracy: <b>' + (acc(repR) === null ? '–' : acc(repR) + '%') + '</b> (' + repR.length + ' answers)</div>' +
     '<div>Bank coverage: <b>' + seenN + ' / ' + bankN + '</b> questions seen (' + Math.round(100*seenN/Math.max(bankN,1)) + '%)</div>' +
@@ -1554,13 +1624,10 @@ function buildDiagnostic(){
   L.push('- First attempts (honest readiness): ' + acc(firstR));
   L.push('- Repeated questions: ' + acc(repR));
   L.push('- Bank coverage: ' + seen.size + '/' + bankN + ' seen (' + Math.round(100*seen.size/Math.max(bankN,1)) + '%)');
-  const poolIds = Object.keys(pool).filter(id => qById(id));
-  const M0 = LS.get(K.mast, {});
-  const nowT = Date.now();
+  const RQd = getReviewQueueSummary();
   const dueNowIds = dueIds();
-  const schedLater = Object.entries(M0).filter(([id,m]) => qById(id) && m.next > nowT && ['weak','relapsed','improving'].includes(m.st)).length;
-  const flaggedUnscheduled = poolIds.filter(id => !M0[id]).length;
-  L.push('- Weakness pool: ' + poolIds.length + ' (due now: ' + dueNowIds.length + ' · scheduled later: ' + schedLater + ' · flagged but not yet answered: ' + flaggedUnscheduled + ')');
+  L.push('- Tracked weaknesses: ' + RQd.uniqueWeakQuestions + ' unique questions · due now: ' + RQd.dueNowUnique + ' · scheduled later: ' + RQd.scheduledLaterUnique + (RQd.invalidSchedules ? ' · invalid schedules treated as due: ' + RQd.invalidSchedules : ''));
+  L.push('- Manual weakness pool (kept until you release them): ' + RQd.poolManual + ' · immediate repeats waiting in the open session: ' + RQd.immediateRepeatsUnique);
   L.push('- Marked uncertain: ' + Object.keys(uncSet).length + ' questions');
   L.push('');
   const risk = domainRisk();
@@ -1633,8 +1700,11 @@ function buildDiagnostic(){
     arr.forEach(r => { const q = qById(r.id); const key = q && q.g && GROUPS[q.g] ? GROUPS[q.g][0] : (q ? q.domain : '?'); g[key] = (g[key]||0)+1; });
     return Object.entries(g).sort((a,b)=>b[1]-a[1]).slice(0,4);
   };
-  L.push('Confident errors (wrong while sure):');
-  const ce = byGroup(confErrs);
+  const CEd = getConfidentErrorSummary();
+  L.push('Confident errors — active unresolved: ' + CEd.active.length + ' · relapsed: ' + CEd.relapsed.length + ' · repaired historically: ' + CEd.repaired.length + ' · lifetime total: ' + CEd.lifetimeTotal);
+  L.push('By concept (active + relapsed only):');
+  const hotRecs = recs.filter(r => !r.ok && r.cf === 's' && (CEd.active.includes(r.id) || CEd.relapsed.includes(r.id)));
+  const ce = byGroup(hotRecs);
   ce.length ? ce.forEach(([k,n]) => L.push('- ' + k + ': ' + n)) : L.push('- none');
   const okUnsure = recs.filter(r => r.ok && (r.cf === 'u' || r.cf === 'g'));
   L.push('Correct but unsure/guessed:');
@@ -1647,10 +1717,10 @@ function buildDiagnostic(){
   L.push('');
   L.push('## Suggested focus (priority order)');
   let step = 1;
-  const ceIds = [...new Set(confErrs.map(r => r.id))].filter(id => qById(id));
-  if(ceIds.length){
-    const ceTop = byGroup(confErrs)[0];
-    L.push(step + '. Fix your ' + ceIds.length + ' confident errors first — wrong while sure is the most dangerous state.' + (ceTop ? ' Biggest cluster: ' + ceTop[0] + '.' : '')); step++;
+  const CEf = getConfidentErrorSummary();
+  const hotN = CEf.active.length + CEf.relapsed.length;
+  if(hotN){
+    L.push(step + '. Fix your ' + hotN + ' active or relapsed confident errors first' + (CEf.relapsed.length ? ' (' + CEf.relapsed.length + ' relapsed — top priority)' : '') + '. ' + CEf.repaired.length + ' others are already repaired and need nothing.'); step++;
   }
   if(weakest.length){ L.push(step + '. Highest exam return: ' + DSHORT[weakest[0].d] + ' — ' + (Math.round((weakest[0].rate*DW[weakest[0].d])*10)/10) + ' marks at risk (' + (weakest[0].n - weakest[0].w) + '/' + weakest[0].n + ' first attempts correct). Prioritize by marks at risk, not raw error %.'); step++; }
   if(dueNowIds.length){ L.push(step + '. Smart Review: ' + dueNowIds.length + ' due now. Keep each weakness in review until it is answered correctly after a delay, in a separate session — one confident answer is not mastery.'); step++; }
