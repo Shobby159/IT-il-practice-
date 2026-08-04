@@ -232,6 +232,12 @@ body{transition:background .25s ease}
       <div class="sub" id="smartinfo" style="margin-top:12px"></div>
       <div class="row" style="margin-top:10px">
         <button class="ghost" onclick="startSmart()">Smart Review</button>
+        <select id="smartlen" onchange="try{localStorage.setItem('itil_smartlen',this.value)}catch(e){}" style="width:auto;min-height:38px;padding:6px 10px;font-size:13.5px" title="Smart Review session length">
+          <option value="10">10 questions</option>
+          <option value="20">20 questions</option>
+          <option value="40">40 questions</option>
+          <option value="all">Everything due + pool</option>
+        </select>
         <button class="ghost" onclick="startDrill()">Distinction Drill</button>
         <button class="ghost" onclick="showStats()">Statistics</button>
         <button class="ghost" onclick="showWrongs()">Wrong answers</button>
@@ -711,7 +717,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.7';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · syllabus-verified · v3.8';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
@@ -749,6 +755,7 @@ function buildHome(){
   }
   document.getElementById('daydots').innerHTML = dotsHtml + '<span class="sub" style="margin-left:8px">last 14 days</span>';
   pomoRender();
+  try{ const sl = localStorage.getItem('itil_smartlen'); if(sl) document.getElementById('smartlen').value = sl; }catch(e){}
   const nba = nextBestAction();
   document.getElementById('nextupline').textContent = nba.line;
   document.getElementById('nextupbtn').textContent = 'Start: ' + nba.label;
@@ -951,9 +958,18 @@ function startSmart(){
   const unseen = shuffle(allQuestions().map(q => q.id).filter(id => !seen.has(id)))
     .sort((a,b) => (topDoms.includes(qById(b).domain)?1:0) - (topDoms.includes(qById(a).domain)?1:0));
   const byScore = arr => arr.slice().sort((a,b) => smartScore(b) - smartScore(a));
+  let lenSetting = '10';
+  try{ lenSetting = localStorage.getItem('itil_smartlen') || document.getElementById('smartlen').value || '10'; }catch(e){}
+  if(lenSetting === 'all'){
+    const q = [...new Set([...due, ...pool, ...uncOk])];
+    if(!q.length){ alert('Nothing to review yet — answer some questions first.'); return; }
+    launch('smart', shuffle(q), 'Smart Review (all ' + q.length + ')');
+    return;
+  }
+  const LEN = parseInt(lenSetting, 10) || 10;
   const q = [];
   const domCount = {};
-  const CAP = 6;
+  const CAP = Math.ceil(LEN * 0.6);
   const add = id => {
     const dom = (qById(id)||{}).domain;
     if(q.includes(id)) return false;
@@ -961,9 +977,9 @@ function startSmart(){
     q.push(id); domCount[dom] = (domCount[dom]||0) + 1; return true;
   };
   const take = (arr, n) => { let got = 0; for(const id of byScore(arr)){ if(got >= n) break; if(add(id)) got++; } };
-  take(due, 4); take(pool, 2); take(uncOk, 2); take(unseen, 2);
-  [due, pool, uncOk, unseen].forEach(arr => byScore(arr).forEach(id => { if(q.length < 10) add(id); }));
-  if(q.length < 10) [due, pool, uncOk, unseen].forEach(arr => arr.forEach(id => { if(q.length < 10 && !q.includes(id)) q.push(id); }));
+  take(due, Math.round(LEN*0.4)); take(pool, Math.round(LEN*0.2)); take(uncOk, Math.round(LEN*0.2)); take(unseen, Math.round(LEN*0.2));
+  [due, pool, uncOk, unseen].forEach(arr => byScore(arr).forEach(id => { if(q.length < LEN) add(id); }));
+  if(q.length < LEN) [due, pool, uncOk, unseen].forEach(arr => arr.forEach(id => { if(q.length < LEN && !q.includes(id)) q.push(id); }));
   if(!q.length){ alert('Nothing to review yet — answer some questions first.'); return; }
   launch('smart', shuffle(q), 'Smart Review');
 }
