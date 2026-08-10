@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1b2d">
+<title>Certification Command Center</title>
+<style>
+:root{
+  --navy:#0f1b2d; --navy2:#16263f; --bg:#f4f6f9; --panel:#ffffff; --line:#dde3ec;
+  --txt:#17233a; --dim:#5d6b82; --blue:#2563eb; --blue-soft:#e8effd;
+  --green:#0e7a4a; --green-soft:#e2f2ea; --amber:#b45309; --amber-soft:#fdf1de;
+  --red:#bb2d2d; --red-soft:#fbe9e9; --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.5}
+#app{display:flex;min-height:100vh}
+nav{width:210px;background:var(--navy);color:#c6d2e4;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh}
+nav .brand{padding:0 20px 18px;font-weight:700;color:#fff;font-size:15px;letter-spacing:.3px;border-bottom:1px solid #22344f;margin-bottom:10px}
+nav .brand span{display:block;font-size:11px;font-weight:500;color:#7d8fa9;letter-spacing:1.5px;margin-top:2px}
+nav a{display:block;padding:9px 20px;color:#c6d2e4;text-decoration:none;font-size:13.5px;font-weight:500;border-left:3px solid transparent;cursor:pointer}
+nav a:hover{background:var(--navy2)}
+nav a.on{background:var(--navy2);color:#fff;border-left-color:var(--blue)}
+main{flex:1;padding:28px 34px;max-width:1080px}
+h1{font-size:21px;font-weight:700;margin-bottom:4px;letter-spacing:-.2px}
+h2{font-size:12px;font-weight:650;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim);margin:26px 0 12px}
+.sub{color:var(--dim);font-size:13.5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{justify-content:space-between}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi .n{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);font-weight:600;margin-top:2px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:9px 16px;border-radius:8px;font-weight:600;font-size:13.5px;min-height:40px}
+button:hover{border-color:var(--blue)}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button.primary:hover{background:#1d4fc4}
+button.ghost{background:transparent;border-color:transparent;color:var(--blue);padding:6px 8px;min-height:32px}
+button.danger{color:var(--red)}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+.tag.official{background:var(--blue-soft);color:var(--blue)}
+.tag.video{background:#efe7fb;color:#6d28d9}
+.tag.paid{background:var(--amber-soft);color:var(--amber)}
+.tag.practice{background:var(--green-soft);color:var(--green)}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.8px;padding:3px 10px;border-radius:12px}
+.pill.green{background:var(--green-soft);color:var(--green)}
+.pill.amber{background:var(--amber-soft);color:var(--amber)}
+.pill.red{background:var(--red-soft);color:var(--red)}
+.pill.blue{background:var(--blue-soft);color:var(--blue)}
+.pill.gray{background:#eceff4;color:var(--dim)}
+.bar{height:7px;background:#e8ecf2;border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:4px}
+.bar i.green{background:var(--green)} .bar i.amber{background:var(--amber)} .bar i.red{background:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+input,select,textarea{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--txt);width:100%;min-height:40px}
+textarea{min-height:80px;resize:vertical}
+label{font-size:12px;font-weight:600;color:var(--dim);display:block;margin-bottom:4px;letter-spacing:.4px}
+.field{margin-bottom:12px}
+.gate td{padding:6px 10px}
+.gate .ok{color:var(--green);font-weight:700}
+.gate .fail{color:var(--red);font-weight:700}
+.next-action{background:var(--navy);color:#fff;border-radius:12px;padding:24px 26px;margin-bottom:16px}
+.next-action .k{font-size:11px;letter-spacing:2px;color:#8fa2bd;font-weight:700}
+.next-action .a{font-size:19px;font-weight:700;margin:8px 0 4px}
+.next-action .why{font-size:13.5px;color:#b9c6d9;line-height:1.55}
+.next-action .meta{font-family:var(--mono);font-size:12.5px;color:#8fa2bd;margin-top:10px}
+.pipe .nm{font-weight:650;width:90px;display:inline-block}
+.clickable{cursor:pointer}
+.clickable:hover{background:#fafbfd}
+.screen{display:none}.screen.on{display:block}
+.rlabel{font-size:12px;color:var(--dim);font-weight:600;letter-spacing:.6px;width:84px;flex-shrink:0}
+.mist{border-left:3px solid var(--red);padding-left:14px;margin-bottom:12px}
+.mist.REPAIRED{border-left-color:var(--green);opacity:.75}
+.mist.RELAPSED{border-left-color:var(--amber)}
+.small{font-size:12.5px;color:var(--dim)}
+.hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+#searchbox{max-width:420px}
+.labrow select{width:170px;min-height:34px;padding:5px 8px;font-size:12.5px}
+@media(max-width:840px){
+  #app{flex-direction:column}
+  nav{width:100%;height:auto;position:static;display:flex;overflow-x:auto;padding:10px}
+  nav .brand{display:none}
+  nav a{white-space:nowrap;border-left:none;border-bottom:3px solid transparent}
+  nav a.on{border-bottom-color:var(--blue)}
+  main{padding:18px 16px}
+  .g4,.g3{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="nav">
+  <div class="brand">Command Center<span>MICROSOFT CERTIFICATIONS</span></div>
+  <a data-s="today" class="on" onclick="go('today')">Today</a>
+  <a data-s="dash" onclick="go('dash')">Dashboard</a>
+  <a data-s="certs" onclick="go('certs')">Certifications</a>
+  <a data-s="practice" onclick="go('practice')">Practice</a>
+  <a data-s="mistakes" onclick="go('mistakes')">Mistakes</a>
+  <a data-s="labs" onclick="go('labs')">Hands-on</a>
+  <a data-s="plan" onclick="go('plan')">Plan</a>
+  <a data-s="resources" onclick="go('resources')">Resources</a>
+  <a data-s="settings" onclick="go('settings')">Settings</a>
+</nav>
+<main>
+  <div id="s-today" class="screen on"></div>
+  <div id="s-dash" class="screen"></div>
+  <div id="s-certs" class="screen"></div>
+  <div id="s-cert" class="screen"></div>
+  <div id="s-practice" class="screen"></div>
+  <div id="s-mistakes" class="screen"></div>
+  <div id="s-labs" class="screen"></div>
+  <div id="s-plan" class="screen"></div>
+  <div id="s-resources" class="screen"></div>
+  <div id="s-settings" class="screen"></div>
+</main>
+</div>
+<script>
+// ================= DATA =================
+const DEADLINE = '2026-09-30';
+const CERTS = [
+ {id:'az900', name:'AZ-900', full:'Azure Fundamentals', tier:'fund', order:1, target:'2026-08-13', effort:[4,6],
+  domains:[{n:'Cloud concepts',w:27.5,lo:25,hi:30},{n:'Azure architecture and services',w:37.5,lo:35,hi:40},{n:'Azure management and governance',w:32.5,lo:30,hi:35}],
+  resources:[
+   {label:'John Savill AZ-900 Study Cram', url:'https://www.youtube.com/watch?v=luhAq9o-15Q', tag:'video', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-900', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-900', tag:'practice', role:'PRACTICE'}]},
+ {id:'sc900', name:'SC-900', full:'Security, Compliance & Identity Fundamentals', tier:'fund', order:2, target:'2026-08-16', effort:[4,6],
+  domains:[{n:'Concepts of security, compliance, and identity',w:12.5,lo:10,hi:15},{n:'Microsoft Entra capabilities',w:27.5,lo:25,hi:30},{n:'Microsoft security solutions',w:37.5,lo:35,hi:40},{n:'Microsoft compliance solutions',w:22.5,lo:20,hi:25}],
+  resources:[
+   {label:'John Savill SC-900 Study Cram V2', url:'https://www.classcentral.com/course/youtube-sc-900-microsoft-security-compliance-and-identity-fundamentals-study-cram-v2-327561', tag:'video', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-900', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-900', tag:'practice', role:'PRACTICE'}]},
+ {id:'ab730', name:'AB-730', full:'Generative AI for Business', tier:'fund', order:3, target:'2026-08-19', effort:[4,6],
+  domains:[{n:'Core domains — verify on official study guide',w:100,lo:100,hi:100}],
+  resources:[
+   {label:'Official Microsoft AB-730T00 Course', url:'https://learn.microsoft.com/en-us/training/courses/ab-730t00', tag:'official', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ab-730', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ab-730', tag:'practice', role:'PRACTICE'}]},
+ {id:'ab731', name:'AB-731', full:'AI Transformation & Adoption', tier:'fund', order:4, target:'2026-08-23', effort:[5,7],
+  domains:[{n:'Core domains — verify on official study guide',w:100,lo:100,hi:100}],
+  resources:[
+   {label:'Official Microsoft AB-731T00 Course', url:'https://learn.microsoft.com/en-us/training/courses/ab-731t00', tag:'official', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ab-731', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ab-731', tag:'practice', role:'PRACTICE'}]},
+ {id:'dp900', name:'DP-900', full:'Azure Data Fundamentals', tier:'fund', order:5, target:'2026-08-27', effort:[4,6],
+  domains:[{n:'Core data concepts',w:27.5,lo:25,hi:30},{n:'Relational data on Azure',w:22.5,lo:20,hi:25},{n:'Non-relational data on Azure',w:17.5,lo:15,hi:20},{n:'Analytics workloads on Azure',w:27.5,lo:25,hi:30}],
+  resources:[
+   {label:'Official Microsoft DP-900 Course', url:'https://learn.microsoft.com/en-us/training/courses/dp-900t00', tag:'official', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-900', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-900', tag:'practice', role:'PRACTICE'}]},
+ {id:'pl900', name:'PL-900', full:'Power Platform Fundamentals', tier:'fund', order:6, target:'2026-08-30', effort:[4,6],
+  domains:[{n:'Business value of Power Platform',w:17.5,lo:15,hi:20},{n:'Core components of Power Platform',w:42.5,lo:40,hi:45},{n:'Power BI capabilities',w:12.5,lo:10,hi:15},{n:'Power Apps capabilities',w:12.5,lo:10,hi:15},{n:'Power Automate capabilities',w:12.5,lo:10,hi:15}],
+  resources:[
+   {label:'Official Microsoft PL-900 Course', url:'https://learn.microsoft.com/en-us/training/courses/pl-900t00', tag:'official', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/pl-900', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Microsoft Practice Assessment (via study guide page)', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/pl-900', tag:'practice', role:'PRACTICE'}]},
+ {id:'pl300', name:'PL-300', full:'Power BI Data Analyst', tier:'assoc', order:7, target:'2026-09-06', effort:[18,24],
+  domains:[{n:'Prepare the data',w:27.5,lo:25,hi:30},{n:'Model the data',w:27.5,lo:25,hi:30},{n:'Visualize and analyze the data',w:27.5,lo:25,hi:30},{n:'Manage and secure Power BI',w:17.5,lo:15,hi:20}],
+  labs:['Power Query transformations','Data cleaning & profiling','Relationships & cardinality','Star schema design','DAX fundamentals','Measures vs calculated columns','Visualizations & report design','Workspaces & deployment','Row-level security'],
+  resources:[
+   {label:'PL-300 Exam Readiness Zone — Prepare the Data', url:'https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-pl-300-prepare-the-data', tag:'official', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/pl-300', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Ravikiran PL-300 Practice Tests / PBIX Labs', url:'https://www.udemy.com/course/pl-300-practice-tests-microsoft-power-bi-data-analyst/', tag:'paid', role:'PRACTICE'},
+   {label:'Phillip Burton PL-300 (repair weak areas only)', url:'https://www.udemy.com/course/70-778-analyzing-and-visualizing-data-with-power-bi/', tag:'paid', role:'BACKUP'}]},
+ {id:'sc300', name:'SC-300', full:'Identity & Access Administrator', tier:'assoc', order:8, target:'2026-09-13', effort:[16,22],
+  domains:[{n:'Implement and manage user identities',w:22.5,lo:20,hi:25},{n:'Implement authentication and access management',w:27.5,lo:25,hi:30},{n:'Plan and implement workload identities',w:22.5,lo:20,hi:25},{n:'Plan and automate identity governance',w:27.5,lo:25,hi:30}],
+  labs:['Microsoft Entra ID tenant basics','Users & groups administration','Authentication methods & MFA','Conditional Access policies','Identity governance & access reviews','Workload identities','Privileged Identity Management concepts'],
+  resources:[
+   {label:'John Savill SC-300 Study Cram', url:'https://www.youtube.com/watch?v=LGpgqRVG65g', tag:'video', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-300', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Tutorials Dojo SC-300 Practice Exams', url:'https://portal.tutorialsdojo.com/courses/sc-300-microsoft-identity-and-access-administrator-practice-exams/', tag:'paid', role:'PRACTICE'}]},
+ {id:'sc401', name:'SC-401', full:'Information Security Administrator', tier:'assoc', order:9, target:'2026-09-20', effort:[12,18],
+  domains:[{n:'Implement information protection',w:33,lo:30,hi:35},{n:'Implement DLP and retention',w:33,lo:30,hi:35},{n:'Manage risks, alerts, and activities',w:34,lo:30,hi:35}],
+  labs:['Microsoft Purview portal navigation','Sensitivity labels & policies','Information protection scanners/classifiers','DLP policies','Retention policies & labels','Insider Risk management','Alerts & audit','eDiscovery concepts'],
+  resources:[
+   {label:'John Christopher SC-401 Course', url:'https://www.udemy.com/course/sc-400-course-microsoft-information-protection-administrator/', tag:'paid', role:'PRIMARY'},
+   {label:'Official SC-401T00 Course', url:'https://learn.microsoft.com/en-us/training/courses/sc-401t00', tag:'official', role:'BACKUP'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/sc-401', tag:'official', role:'OFFICIAL BLUEPRINT'}]},
+ {id:'az104', name:'AZ-104', full:'Azure Administrator', tier:'capstone', order:10, target:'2026-09-27', effort:[28,36],
+  domains:[{n:'Manage Azure identities and governance',w:22.5,lo:20,hi:25},{n:'Implement and manage storage',w:17.5,lo:15,hi:20},{n:'Deploy and manage compute resources',w:22.5,lo:20,hi:25},{n:'Implement and manage virtual networking',w:17.5,lo:15,hi:20},{n:'Monitor and maintain Azure resources',w:12.5,lo:10,hi:15}],
+  labs:['Entra ID + RBAC assignments','Subscriptions & resource groups','Azure Policy','Storage accounts & blob/file storage','Virtual machines','App Service','Containers','Virtual networks & NSGs','DNS & load balancing','Monitoring & alerts','Backup & recovery','Azure CLI basics','PowerShell basics','ARM/Bicep awareness'],
+  resources:[
+   {label:'John Christopher AZ-104 Course (with simulations)', url:'https://www.udemy.com/course/az-104-microsoft-azure-administrator-course-with-simulations/', tag:'paid', role:'PRIMARY'},
+   {label:'Official Study Guide', url:'https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104', tag:'official', role:'OFFICIAL BLUEPRINT'},
+   {label:'Tutorials Dojo AZ-104 Practice Exams', url:'https://portal.tutorialsdojo.com/courses/az-104-microsoft-azure-administrator-practice-exams/', tag:'paid', role:'PRACTICE'}]}
+];
+const COMPLETED_PRIOR = [{name:'ITIL 4 Foundation', score:'35 / 40', pct:'87.5%'}];
+const GATES = {
+ fund:   {freshN:2, avg:80, weakDom:70, hands:0,  label:'Fundamentals gate'},
+ assoc:  {freshN:2, avg:80, weakDom:75, hands:80, label:'Associate gate'},
+ capstone:{freshN:2, avg:82, weakDom:75, hands:90, label:'Capstone gate'}
+};
+// ================= STORAGE (raw records; derived stats always recomputed) =================
+const LS = {
+ get(k,f){ try{ const v = localStorage.getItem('mscc_'+k); return v===null?f:JSON.parse(v);}catch(e){return f;} },
+ set(k,v){ try{ localStorage.setItem('mscc_'+k, JSON.stringify(v)); }catch(e){} },
+ del(k){ try{ localStorage.removeItem('mscc_'+k); }catch(e){} }
+};
+const uid = p => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+function certState(){ return LS.get('certs', {}); }          // {cid:{status, examDate, examScore, notes, domains?}}
+function attempts(){ return LS.get('attempts', []); }         // raw practice attempts
+function mistakes(){ return LS.get('mistakes', []); }         // raw mistake records
+function labState(){ return LS.get('labs', {}); }             // {cid:{labName:level}}
+function sessions(){ return LS.get('sessions', []); }         // study session log
+function certOf(cid){ return CERTS.find(c => c.id === cid); }
+function domainsOf(cid){ const ov = (certState()[cid]||{}).domains; return ov && ov.length ? ov : certOf(cid).domains; }
+function statusOf(cid){ return (certState()[cid]||{}).status || 'NOT STARTED'; }
+function setCert(cid, patch){ const s = certState(); s[cid] = Object.assign(s[cid]||{}, patch); LS.set('certs', s); }
+function currentCert(){
+ for(const c of CERTS){ if(statusOf(c.id) !== 'PASSED') return c; }
+ return null;
+}
+// ================= DERIVED STATS =================
+function attemptsFor(cid){ return attempts().filter(a => a.cid === cid).sort((a,b) => a.ts - b.ts); }
+function freshAttempts(cid){ return attemptsFor(cid).filter(a => a.fresh); }
+function pct(a){ return a.total ? Math.round(100*a.correct/a.total) : 0; }
+function overall(cid){
+ const fr = freshAttempts(cid);
+ if(!fr.length) return null;
+ const last = fr.slice(-2);   // current level = last two fresh results; the baseline is diagnosis, not evidence
+ return Math.round(last.reduce((s,a) => s + pct(a), 0) / last.length);
+}
+function domainStats(cid){
+ const out = {};
+ domainsOf(cid).forEach(d => out[d.n] = {c:0,t:0,w:d.w});
+ attemptsFor(cid).forEach(a => {
+  const mult = a.fresh ? 2 : 1;                       // fresh evidence counts double
+  Object.entries(a.domainScores||{}).forEach(([dn,ds]) => {
+   if(out[dn] && ds.t > 0){ out[dn].c += ds.c*mult; out[dn].t += ds.t*mult; }
+  });
+ });
+ Object.values(out).forEach(o => o.acc = o.t ? Math.round(100*o.c/o.t) : null);
+ return out;
+}
+function weakestDomain(cid){
+ const ds = Object.entries(domainStats(cid)).filter(([n,o]) => o.acc !== null);
+ if(!ds.length) return null;
+ ds.sort((a,b) => a[1].acc - b[1].acc);
+ return { name:ds[0][0], acc:ds[0][1].acc };
+}
+function domainPriority(cid){
+ return Object.entries(domainStats(cid)).map(([n,o]) => {
+  const deficit = o.acc === null ? 0.6 : (1 - o.acc/100);
+  const hotErr = mistakes().some(m => m.cid===cid && m.domain===n && m.confidence==='Sure' && m.state!=='REPAIRED');
+  return { n, w:o.w, acc:o.acc, score: (o.w/100) * deficit * (hotErr ? 1.5 : 1) };
+ }).sort((a,b) => b.score - a.score);
+}
+function confErrSummary(cid){
+ const ms = mistakes().filter(m => m.cid === cid && m.confidence === 'Sure');
+ return { active: ms.filter(m => m.state === 'ACTIVE'),
+          relapsed: ms.filter(m => m.state === 'RELAPSED'),
+          repaired: ms.filter(m => m.state === 'REPAIRED'),
+          lifetime: ms.length };
+}
+function handsOn(cid){
+ const c = certOf(cid);
+ if(!c.labs) return null;
+ const st = labState()[cid] || {};
+ const V = {'NOT STARTED':0,'ATTEMPTED':0.25,'CAN DO WITH HELP':0.5,'CAN DO ALONE':1,'MASTERED':1};
+ const tot = c.labs.reduce((s,l) => s + (V[st[l]||'NOT STARTED']), 0);
+ return Math.round(100 * tot / c.labs.length);
+}
+function strongFreshCount(cid, g){ return freshAttempts(cid).filter(a => pct(a) >= g.avg - 5).length; }
+function readiness(cid){
+ const c = certOf(cid), g = GATES[c.tier];
+ const ov = overall(cid), wd = weakestDomain(cid), ho = handsOn(cid), ce = confErrSummary(cid);
+ const hot = ce.active.length + ce.relapsed.length;
+ const lines = [];
+ const sf = strongFreshCount(cid, g);
+ lines.push({k:'Fresh practice attempts (\u2265'+g.freshN+' strong)', v: sf + ' strong', ok: sf >= g.freshN});
+ lines.push({k:'Fresh average \u2265 '+g.avg+'%', v: ov === null ? 'no data' : ov + '%', ok: ov !== null && ov >= g.avg});
+ lines.push({k:'Weakest domain \u2265 '+g.weakDom+'%', v: wd ? wd.acc + '% (' + wd.name + ')' : 'no data', ok: !!wd && wd.acc >= g.weakDom});
+ if(c.labs) lines.push({k:'Hands-on \u2265 '+g.hands+'%', v: ho + '%', ok: ho >= g.hands});
+ lines.push({k:'Active/relapsed confident errors = 0', v: hot + ' remaining', ok: hot === 0});
+ const okN = lines.filter(l => l.ok).length;
+ const rdy = okN === lines.length;
+ // explainable %: component share + partial credit on the score components
+ let p = 0, per = 100/lines.length;
+ lines.forEach(l => {
+  if(l.ok){ p += per; return; }
+  if(l.k.startsWith('Fresh average') && ov !== null) p += per * Math.min(1, ov/g.avg) * 0.7;
+  if(l.k.startsWith('Weakest') && wd) p += per * Math.min(1, wd.acc/g.weakDom) * 0.7;
+  if(l.k.startsWith('Hands-on') && ho) p += per * Math.min(1, ho/g.hands) * 0.7;
+ });
+ return { pct: Math.round(p), ready: rdy, lines, gate: g, ov, wd, ho, hot };
+}
+function hoursLogged(cid){ return Math.round(sessions().filter(s => s.cid === cid).reduce((t,s) => t + (s.mins||0), 0) / 6) / 10; }
+function estRemaining(){
+ let h = 0;
+ CERTS.forEach(c => {
+  if(statusOf(c.id) === 'PASSED') return;
+  const mid = (c.effort[0] + c.effort[1]) / 2;
+  h += Math.max(0, mid - hoursLogged(c.id));
+ });
+ return Math.round(h);
+}
+function daysLeft(){ return Math.max(0, Math.ceil((new Date(DEADLINE) - new Date()) / 864e5)); }
+// ================= TODAY ENGINE (deterministic, explainable) =================
+function nextAction(cid){
+ const c = certOf(cid), g = GATES[c.tier], st = statusOf(cid);
+ const ats = attemptsFor(cid), ov = overall(cid), ce = confErrSummary(cid);
+ const hot = ce.active.length + ce.relapsed.length;
+ const R = readiness(cid);
+ const res = r => (c.resources.find(x => x.role === r) || c.resources[0]);
+ if(st === 'FAILED — RETAKE')
+  return { a:'Retake mode: repair weakest domains, then one fresh mock', why:'Exam not passed. Do not restart the certification — target the domains that failed you, clear confident errors, prove it with one fresh strong practice, then rebook.', mins:90, link:res('PRACTICE') };
+ if(!ats.length)
+  return { a:'Take baseline practice assessment', why:'No data yet. The baseline tells us which domains to skip and which to attack — never start with the full course.', mins:30, link:res('PRACTICE'), stage:'BASELINE' };
+ const dp = domainPriority(cid)[0];
+ if(ov !== null && ov < 70)
+  return { a:'Study highest-weight weak domain: ' + dp.n, why:'Baseline/fresh average is ' + ov + '%. ' + dp.n + ' carries ~' + dp.w + '% of the exam' + (dp.acc !== null ? ' and your accuracy there is ' + dp.acc + '%' : '') + '. Highest marks-per-minute available.', mins:60, link:res('PRIMARY'), stage:'LEARN' };
+ if(hot > 0 && ov !== null && ov >= g.avg)
+  return { a:'Repair ' + Math.min(3, hot) + ' confident error' + (hot>1?'s':''), why:'Score is at gate level but ' + hot + ' wrong-while-sure mistake' + (hot>1?'s':'') + ' remain' + (ce.relapsed.length ? ' (' + ce.relapsed.length + ' relapsed — top priority)' : '') + '. Confident errors cost real exam marks; repaired knowledge does not.', mins:30, kind:'mistakes', stage:'REPAIR' };
+ if(c.labs && handsOn(cid) < g.hands && ov !== null && ov >= g.avg - 5)
+  return { a:'Complete hands-on lab work', why:'Practice scores are near gate but hands-on is at ' + handsOn(cid) + '% (needs ' + g.hands + '%). ' + c.name + ' tests doing, not recognizing.', mins:60, kind:'labs', stage:'HANDS-ON' };
+ if(R.ready)
+  return { a:'BOOK / TAKE THE EXAM', why:'All gate conditions pass: ' + R.lines.map(l => l.k.split(' \u2265')[0]).join(', ') + '. More study past this point is deadline theft — ' + (CERTS.length - CERTS.filter(x=>statusOf(x.id)==='PASSED').length - 1) + ' certifications still wait behind this one.', mins:60, kind:'exam', stage:'EXAM' };
+ const wd = weakestDomain(cid);
+ if(wd && wd.acc < g.weakDom)
+  return { a:'Targeted practice: ' + wd.name, why:'Overall is close but ' + wd.name + ' sits at ' + wd.acc + '% (gate: ' + g.weakDom + '%). Ignore your strong domains completely.', mins:45, link:res('PRACTICE'), stage:'PRACTICE' };
+ return { a:'Take a fresh practice assessment', why:'You need ' + g.freshN + ' strong FRESH results to trust readiness (currently ' + strongFreshCount(cid,g) + '). Repeated questions do not count as evidence.', mins:35, link:res('PRACTICE'), stage:'FRESH RETEST' };
+}
+function stageOf(cid){
+ if(statusOf(cid) === 'PASSED') return 'PASSED';
+ if(statusOf(cid) === 'FAILED — RETAKE') return 'RETAKE';
+ const na = nextAction(cid);
+ return na.stage || (readiness(cid).ready ? 'READY' : 'PRACTICE');
+}
+// ================= RENDER =================
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function go(s, arg){
+ document.querySelectorAll('.screen').forEach(x => x.classList.remove('on'));
+ document.querySelectorAll('nav a').forEach(x => x.classList.toggle('on', x.dataset.s === s));
+ $('s-'+s).classList.add('on');
+ render(s, arg);
+ window.scrollTo(0,0);
+}
+function pillFor(v, warn, bad){ return v >= warn ? 'green' : v >= bad ? 'amber' : 'red'; }
+function resBtn(r){
+ return '<div class="row spread" style="padding:8px 0;border-bottom:1px solid var(--line)">' +
+  '<div><span class="rlabel">'+esc(r.role)+'</span> <b style="font-size:13.5px">'+esc(r.label)+'</b> <span class="tag '+r.tag+'">'+r.tag+'</span></div>' +
+  '<a href="'+esc(r.url)+'" target="_blank" rel="noopener"><button class="ghost">OPEN \u2197</button></a></div>';
+}
+// -------- TODAY --------
+function renderToday(){
+ const c = currentCert();
+ const el = $('s-today');
+ if(!c){
+  el.innerHTML = '<h1>10 / 10</h1><div class="sub">Every certification passed. Close the laptop.</div>';
+  return;
+ }
+ const na = nextAction(c.id), R = readiness(c.id);
+ const next = CERTS.find(x => x.order === c.order + 1);
+ const sess = LS.get('activeSession', null);
+ el.innerHTML =
+  '<h1>Today</h1><div class="sub">' + new Date().toDateString() + ' \u00B7 ' + daysLeft() + ' days to deadline</div>' +
+  '<div class="next-action" style="margin-top:16px">' +
+   '<div class="k">CURRENT \u00B7 ' + esc(c.name) + ' \u2014 ' + esc(c.full) + ' \u00B7 STAGE: ' + esc(stageOf(c.id)) + ' \u00B7 READINESS ' + R.pct + '%</div>' +
+   '<div class="a">NEXT ACTION: ' + esc(na.a) + '</div>' +
+   '<div class="why">Why: ' + esc(na.why) + '</div>' +
+   '<div class="meta">Estimated: ~' + na.mins + ' min</div>' +
+   '<div class="row" style="margin-top:14px">' +
+    (na.link ? '<a href="'+esc(na.link.url)+'" target="_blank" rel="noopener"><button class="primary">START \u2014 OPEN RESOURCE \u2197</button></a>' : '') +
+    (na.kind === 'mistakes' ? '<button class="primary" onclick="go(\'mistakes\')">START \u2014 OPEN MISTAKES</button>' : '') +
+    (na.kind === 'labs' ? '<button class="primary" onclick="go(\'labs\')">START \u2014 OPEN HANDS-ON</button>' : '') +
+    (na.kind === 'exam' ? '<button class="primary" onclick="openCert(\''+c.id+'\')">RECORD EXAM RESULT</button>' : '') +
+    (sess ? '<button onclick="endSession()">END SESSION ('+Math.round((Date.now()-sess.start)/60000)+' min)</button>'
+          : '<button onclick="startSession(\''+c.id+'\')">START SESSION TIMER</button>') +
+   '</div>' +
+  '</div>' +
+  '<div class="card"><h2 style="margin-top:0">After this</h2><ol style="padding-left:20px;font-size:14px;line-height:1.9">' +
+   '<li>Log the result under Practice (or mark labs / repair mistakes)</li>' +
+   '<li>Recheck the readiness gate on the ' + esc(c.name) + ' page</li>' +
+   '<li>Follow the new NEXT ACTION \u2014 never improvise the sequence</li></ol></div>' +
+  (next ? '<div class="sub" style="margin-top:4px">Next up after ' + esc(c.name) + ': <b>' + esc(next.name) + '</b> \u2014 target ' + esc(next.target) + '. Do not think about it yet.</div>' : '');
+}
+function startSession(cid){ LS.set('activeSession', {cid, start: Date.now()}); renderToday(); }
+function endSession(){
+ const s = LS.get('activeSession', null);
+ if(!s) return;
+ const mins = Math.max(1, Math.round((Date.now() - s.start)/60000));
+ const learned = prompt('Session done \u2014 ' + mins + ' min.\nWhat did you learn / do? (one line)') || '';
+ const all = sessions();
+ all.push({ id:uid('ses'), cid:s.cid, ts:Date.now(), mins, note:learned });
+ LS.set('sessions', all);
+ LS.del('activeSession');
+ renderToday();
+}
+// -------- DASHBOARD --------
+function renderDash(){
+ const passed = CERTS.filter(c => statusOf(c.id) === 'PASSED').length;
+ const cur = currentCert();
+ const req = daysLeft() ? Math.round(10 * estRemaining() / daysLeft())/10 : 0;
+ $('s-dash').innerHTML =
+  '<h1>Dashboard</h1>' +
+  '<div class="grid g4" style="margin-top:16px">' +
+   '<div class="kpi"><div class="n">' + passed + ' / ' + CERTS.length + '</div><div class="l">Passed</div></div>' +
+   '<div class="kpi"><div class="n">' + daysLeft() + '</div><div class="l">Days to 30 Sep</div></div>' +
+   '<div class="kpi"><div class="n">~' + estRemaining() + 'h</div><div class="l">Est. hours left</div></div>' +
+   '<div class="kpi"><div class="n">' + req + 'h</div><div class="l">Required / day</div></div>' +
+  '</div>' +
+  (cur ? (function(){ const R = readiness(cur.id), na = nextAction(cur.id);
+   return '<div class="card" style="margin-top:14px"><div class="row spread"><div>' +
+    '<div class="small">CURRENT CERTIFICATION</div><div style="font-size:18px;font-weight:700">' + esc(cur.name) + ' \u2014 ' + esc(cur.full) + '</div>' +
+    '<div class="small" style="margin-top:4px">Readiness <b>' + R.pct + '%</b> \u00B7 Next: ' + esc(na.a) + ' (~' + na.mins + ' min)</div></div>' +
+    '<button class="primary" onclick="go(\'today\')">GO TO TODAY</button></div></div>'; })() : '') +
+  '<h2>Pipeline</h2><div class="card pipe">' +
+  CERTS.map(c => {
+   const st = statusOf(c.id), R = readiness(c.id);
+   const p = st === 'PASSED' ? 100 : R.pct;
+   const cls = st === 'PASSED' ? 'green' : (cur && c.id === cur.id ? '' : '');
+   const pill = st === 'PASSED' ? '<span class="pill green">PASSED</span>' :
+     (cur && c.id === cur.id) ? '<span class="pill blue">' + esc(stageOf(c.id)) + '</span>' :
+     (cur && c.order === cur.order+1) ? '<span class="pill amber">NEXT</span>' : '<span class="pill gray">LATER</span>';
+   return '<div class="row clickable" style="padding:8px 6px;border-bottom:1px solid var(--line)" onclick="openCert(\''+c.id+'\')">' +
+    '<span class="nm">' + esc(c.name) + '</span>' +
+    '<div class="bar" style="flex:1"><i class="' + (st==='PASSED'?'green':'') + '" style="width:' + p + '%"></i></div>' +
+    '<span style="font-family:var(--mono);font-size:12.5px;width:44px;text-align:right">' + p + '%</span>' + pill + '</div>';
+  }).join('') + '</div>' +
+  '<h2>Completed certifications</h2><div class="card">' +
+  COMPLETED_PRIOR.map(p => '<div class="row spread"><div><b>' + esc(p.name) + '</b> <span class="small">' + esc(p.score) + ' \u00B7 ' + esc(p.pct) + '</span></div><span class="pill green">COMPLETED</span></div>').join('') +
+  CERTS.filter(c => statusOf(c.id)==='PASSED').map(c => { const s = certState()[c.id]||{}; return '<div class="row spread" style="margin-top:8px"><div><b>' + esc(c.name) + '</b> <span class="small">' + esc(s.examScore||'') + ' \u00B7 ' + esc(s.examDate||'') + '</span></div><span class="pill green">PASSED</span></div>'; }).join('') +
+  '</div>';
+}
+// -------- CERT LIST + DETAIL --------
+function renderCerts(){
+ $('s-certs').innerHTML = '<h1>Certifications</h1>' +
+  '<div class="card" style="margin-top:16px">' + CERTS.map(c => {
+   const st = statusOf(c.id), R = readiness(c.id);
+   return '<div class="row spread clickable" style="padding:10px 6px;border-bottom:1px solid var(--line)" onclick="openCert(\''+c.id+'\')">' +
+    '<div><b>' + esc(c.name) + '</b> <span class="small">' + esc(c.full) + '</span><div class="small">Target ' + esc(c.target) + ' \u00B7 ~' + c.effort[0] + '\u2013' + c.effort[1] + 'h \u00B7 logged ' + hoursLogged(c.id) + 'h</div></div>' +
+    '<div class="row">' + (st === 'PASSED' ? '<span class="pill green">PASSED</span>' : '<span class="pill ' + (R.ready?'green':'blue') + '">' + (R.ready ? 'READY' : R.pct + '%') + '</span>') + '</div></div>';
+  }).join('') + '</div>';
+}
+function openCert(cid){ go('cert', cid); }
+function renderCert(cid){
+ const c = certOf(cid), st = statusOf(cid), R = readiness(cid), na = nextAction(cid), ds = domainStats(cid), ce = confErrSummary(cid);
+ const ats = attemptsFor(cid).slice().reverse();
+ $('s-cert').innerHTML =
+  '<div class="row spread"><div><h1>' + esc(c.name) + ' \u2014 ' + esc(c.full) + '</h1>' +
+  '<div class="sub">' + esc(st) + ' \u00B7 target ' + esc(c.target) + ' \u00B7 ' + hoursLogged(cid) + 'h logged of ~' + c.effort[0] + '\u2013' + c.effort[1] + 'h \u00B7 readiness <b>' + R.pct + '%</b></div></div>' +
+  '<button class="ghost" onclick="go(\'certs\')">\u2190 All</button></div>' +
+  '<div class="card" style="margin-top:14px;border-left:4px solid var(--blue)"><b>NEXT ACTION:</b> ' + esc(na.a) + '<div class="small" style="margin-top:4px">' + esc(na.why) + ' \u00B7 ~' + na.mins + ' min</div></div>' +
+  '<h2>Official exam domains \u00B7 my performance \u00B7 priority</h2><div class="card">' +
+  domainPriority(cid).map(d => {
+   const o = ds[d.n];
+   const pr = d.score > 0.18 ? '<span class="pill red">VERY HIGH</span>' : d.score > 0.10 ? '<span class="pill amber">HIGH</span>' : d.score > 0.05 ? '<span class="pill blue">MEDIUM</span>' : '<span class="pill gray">LOW</span>';
+   const dom = domainsOf(cid).find(x => x.n === d.n);
+   return '<div style="padding:9px 0;border-bottom:1px solid var(--line)"><div class="row spread"><b style="font-size:13.5px">' + esc(d.n) + '</b><div class="row"><span class="small">' + dom.lo + '\u2013' + dom.hi + '% of exam</span>' + pr + '</div></div>' +
+    '<div class="row" style="margin-top:6px"><div class="bar" style="flex:1"><i class="' + (o.acc===null?'':o.acc>=80?'green':o.acc>=65?'amber':'red') + '" style="width:' + (o.acc||0) + '%"></i></div>' +
+    '<span style="font-family:var(--mono);font-size:12px;width:70px;text-align:right">' + (o.acc===null?'no data':o.acc + '% ('+o.t+')') + '</span></div></div>';
+  }).join('') +
+  '<div class="row" style="margin-top:10px"><button class="ghost" onclick="editDomains(\''+cid+'\')">Edit domains/weights (verify vs official study guide)</button></div></div>' +
+  '<h2>Resources \u2014 shortest reliable path</h2><div class="card">' + c.resources.map(resBtn).join('') + '</div>' +
+  (c.labs ? '<h2>Hands-on</h2><div class="card"><div class="row spread"><div>Independent-execution score: <b>' + handsOn(cid) + '%</b> (gate: ' + GATES[c.tier].hands + '%)</div><button class="ghost" onclick="go(\'labs\')">Open tracker</button></div></div>' : '') +
+  '<h2>Exam gate \u2014 ' + esc(R.gate.label) + '</h2><div class="card"><table class="gate">' +
+  R.lines.map(l => '<tr><td>' + esc(l.k) + '</td><td>' + esc(l.v) + '</td><td class="' + (l.ok?'ok':'fail') + '">' + (l.ok?'PASS':'FAIL') + '</td></tr>').join('') +
+  '</table><div class="hr"></div><div class="row spread"><b style="font-size:16px" class="' + (R.ready?'':'') + '">' + (R.ready ? '<span style="color:var(--green)">READY \u2014 book it.</span>' : '<span style="color:var(--amber)">NOT READY</span>') + '</b>' +
+  '<div class="row"><button onclick="recordExam(\''+cid+'\', true)">Record PASS</button><button class="danger" onclick="recordExam(\''+cid+'\', false)">Record FAIL</button></div></div></div>' +
+  '<h2>Confident errors</h2><div class="card"><div class="row" style="gap:16px">' +
+   '<span>Active: <b style="color:var(--red)">' + ce.active.length + '</b></span><span>Relapsed: <b style="color:var(--amber)">' + ce.relapsed.length + '</b></span>' +
+   '<span>Repaired: <b style="color:var(--green)">' + ce.repaired.length + '</b></span><span class="small">Lifetime: ' + ce.lifetime + '</span>' +
+   '<button class="ghost" onclick="go(\'mistakes\')">Open mistakes</button></div></div>' +
+  '<h2>Practice history</h2><div class="card">' + (ats.length ? '<table><tr><th>Date</th><th>Source</th><th>Type</th><th>Score</th><th>Conf. errors</th></tr>' +
+   ats.map(a => '<tr><td>' + new Date(a.ts).toLocaleDateString() + '</td><td>' + esc(a.source) + '</td><td>' + esc(a.type) + (a.fresh ? ' \u00B7 <b>FRESH</b>' : '') + '</td><td><b>' + pct(a) + '%</b> (' + a.correct + '/' + a.total + ')</td><td>' + (a.confErrors||0) + '</td></tr>').join('') + '</table>'
+   : '<span class="sub">No attempts yet \u2014 the baseline is your next action.</span>') +
+  '<div class="row" style="margin-top:12px"><button class="primary" onclick="go(\'practice\', \''+cid+'\')">Log practice attempt</button></div></div>' +
+  '<h2>Last-minute sheet</h2><div class="card"><textarea id="lm-'+cid+'" placeholder="Only high-yield distinctions, traps, rules, and your frequent mistakes. Keep it tiny.">' + esc((certState()[cid]||{}).notes||'') + '</textarea>' +
+  '<div class="row" style="margin-top:10px"><button onclick="setCert(\''+cid+'\',{notes:$(\'lm-'+cid+'\').value});render(\'cert\',\''+cid+'\')">Save sheet</button></div></div>';
+}
+function editDomains(cid){
+ const cur = JSON.stringify(domainsOf(cid).map(d => ({n:d.n, lo:d.lo, hi:d.hi, w:d.w})), null, 1);
+ const v = prompt('Edit domains as JSON [{n,lo,hi,w}] \u2014 verify against the official study guide:', cur);
+ if(!v) return;
+ try{ const arr = JSON.parse(v); if(Array.isArray(arr) && arr.every(d => d.n && d.w)) { setCert(cid, {domains:arr}); render('cert', cid); } else alert('Invalid structure.'); }
+ catch(e){ alert('Invalid JSON: ' + e.message); }
+}
+function recordExam(cid, pass){
+ const score = prompt(pass ? 'Passed! Official score (e.g. 850/1000):' : 'Score on the failed attempt:') || '';
+ if(pass){
+  setCert(cid, {status:'PASSED', examDate:new Date().toISOString().slice(0,10), examScore:score});
+  alert(certOf(cid).name + ' PASSED. Next certification is now active.');
+ } else {
+  setCert(cid, {status:'FAILED \u2014 RETAKE', examScore:score});
+  alert('Retake mode: the Today engine now targets weak domains + fresh practice only. No restart.');
+ }
+ go('dash');
+}
+// -------- PRACTICE ENTRY --------
+function renderPractice(cid){
+ const sel = cid || (currentCert()||CERTS[0]).id;
+ const c = certOf(sel);
+ $('s-practice').innerHTML =
+  '<h1>Log practice attempt</h1><div class="sub">Raw records feed everything: domain accuracy, readiness, the Today engine.</div>' +
+  '<div class="card" style="margin-top:16px"><div class="grid g2">' +
+  '<div class="field"><label>Certification</label><select id="pa-cid" onchange="renderPractice(this.value)">' +
+   CERTS.map(x => '<option value="'+x.id+'"' + (x.id===sel?' selected':'') + '>' + esc(x.name) + '</option>').join('') + '</select></div>' +
+  '<div class="field"><label>Source</label><input id="pa-src" placeholder="MS Practice Assessment / Tutorials Dojo..."></div>' +
+  '<div class="field"><label>Type</label><select id="pa-type"><option>BASELINE</option><option>TARGETED</option><option selected>FRESH</option><option>REPEAT</option><option>OFFICIAL PRACTICE</option></select></div>' +
+  '<div class="field"><label>Fresh questions? (first exposure)</label><select id="pa-fresh"><option value="1" selected>Yes \u2014 fresh</option><option value="0">No \u2014 repeated</option></select></div>' +
+  '<div class="field"><label>Questions</label><input id="pa-total" type="number" min="1" inputmode="numeric"></div>' +
+  '<div class="field"><label>Correct</label><input id="pa-correct" type="number" min="0" inputmode="numeric"></div>' +
+  '<div class="field"><label>Confident errors in this attempt</label><input id="pa-ce" type="number" min="0" value="0" inputmode="numeric"></div>' +
+  '<div class="field"><label>Notes</label><input id="pa-notes" placeholder="optional"></div>' +
+  '</div>' +
+  '<h2>Per-domain scores (optional but powerful)</h2>' +
+  domainsOf(sel).map((d,i) => '<div class="row" style="margin-bottom:8px"><span style="flex:1;font-size:13px">' + esc(d.n) + '</span>' +
+   '<input style="width:90px" id="pa-dc-'+i+'" type="number" min="0" placeholder="correct" inputmode="numeric">' +
+   '<input style="width:90px" id="pa-dt-'+i+'" type="number" min="0" placeholder="total" inputmode="numeric"></div>').join('') +
+  '<div class="row" style="margin-top:14px"><button class="primary" onclick="saveAttempt(\''+sel+'\')">Save attempt</button><span class="small" id="pa-msg"></span></div></div>';
+}
+function saveAttempt(cid){
+ const total = parseInt($('pa-total').value, 10), correct = parseInt($('pa-correct').value, 10);
+ if(!(total > 0) || !(correct >= 0) || correct > total){ $('pa-msg').textContent = 'Enter valid question/correct counts.'; return; }
+ const dsc = {};
+ domainsOf(cid).forEach((d,i) => {
+  const c2 = parseInt($('pa-dc-'+i).value, 10), t2 = parseInt($('pa-dt-'+i).value, 10);
+  if(t2 > 0 && c2 >= 0 && c2 <= t2) dsc[d.n] = {c:c2, t:t2};
+ });
+ const all = attempts();
+ all.push({ id:uid('att'), cid, ts:Date.now(), source:$('pa-src').value || 'unspecified', type:$('pa-type').value,
+   fresh:$('pa-fresh').value === '1', total, correct, domainScores:dsc,
+   confErrors: parseInt($('pa-ce').value, 10) || 0, notes:$('pa-notes').value || '' });
+ LS.set('attempts', all);
+ const n = parseInt($('pa-ce').value, 10) || 0;
+ if(n > 0 && confirm(n + ' confident error' + (n>1?'s':'') + ' \u2014 log them in the Mistakes tracker now? (Strongly recommended)')){ go('mistakes', cid); return; }
+ openCert(cid);
+}
+// -------- MISTAKES --------
+function renderMistakes(cid){
+ const ms = mistakes().slice().reverse();
+ const q = ($('mi-q') && $('mi-q').value || '').toLowerCase();
+ $('s-mistakes').innerHTML =
+  '<h1>Mistakes</h1><div class="sub">Wrong-while-sure = confident error = highest repair priority. Repair means a later, independent, correct recall \u2014 not rereading.</div>' +
+  '<div class="card" style="margin-top:16px"><h2 style="margin-top:0">Log mistake</h2><div class="grid g3">' +
+  '<div class="field"><label>Certification</label><select id="mi-cid">' + CERTS.map(x => '<option value="'+x.id+'"' + (x.id===(cid||(currentCert()||CERTS[0]).id)?' selected':'') + '>' + esc(x.name) + '</option>').join('') + '</select></div>' +
+  '<div class="field"><label>Domain</label><input id="mi-dom" placeholder="exam domain"></div>' +
+  '<div class="field"><label>Confidence when wrong</label><select id="mi-conf"><option selected>Sure</option><option>Unsure</option><option>Guess</option></select></div></div>' +
+  '<div class="field"><label>Concept / question topic</label><input id="mi-con"></div>' +
+  '<div class="grid g2"><div class="field"><label>My wrong instinct</label><input id="mi-wrong"></div>' +
+  '<div class="field"><label>Correct rule</label><input id="mi-right"></div></div>' +
+  '<div class="field"><label>Why I got it wrong</label><input id="mi-why"></div>' +
+  '<button class="primary" onclick="saveMistake()">Save mistake</button></div>' +
+  '<div class="row spread" style="margin:18px 0 10px"><h2 style="margin:0">All mistakes (' + ms.length + ')</h2><input id="mi-q" style="max-width:260px" placeholder="filter..." value="' + esc(q) + '" oninput="renderMistakes()"></div>' +
+  ms.filter(m => !q || JSON.stringify(m).toLowerCase().includes(q)).map(m => {
+   const c = certOf(m.cid);
+   return '<div class="card mist ' + m.state + '"><div class="row spread"><div>' +
+    '<b>' + esc(m.concept) + '</b> <span class="small">' + esc(c ? c.name : '') + ' \u00B7 ' + esc(m.domain||'') + ' \u00B7 ' + esc(m.confidence) + (m.confidence==='Sure' ? ' \u26A0' : '') + '</span>' +
+    '<div class="small" style="margin-top:5px"><b style="color:var(--red)">Wrong instinct:</b> ' + esc(m.wrong||'\u2014') + '<br><b style="color:var(--green)">Correct rule:</b> ' + esc(m.right||'\u2014') + (m.why ? '<br><b>Why:</b> ' + esc(m.why) : '') + '</div>' +
+    '<div class="small" style="margin-top:4px">Logged ' + new Date(m.ts).toLocaleDateString() + (m.repairedTs ? ' \u00B7 repaired ' + new Date(m.repairedTs).toLocaleDateString() : '') + '</div></div>' +
+    '<div style="text-align:right"><span class="pill ' + (m.state==='ACTIVE'?'red':m.state==='RELAPSED'?'amber':'green') + '">' + m.state + '</span>' +
+    '<div class="row" style="margin-top:8px;justify-content:flex-end">' +
+    (m.state !== 'REPAIRED' ? '<button class="ghost" onclick="mState(\''+m.id+'\',\'REPAIRED\')">Repaired \u2713</button>' : '<button class="ghost" onclick="mState(\''+m.id+'\',\'RELAPSED\')">Relapsed \u21BA</button>') +
+    '<button class="ghost danger" onclick="mDel(\''+m.id+'\')">delete</button></div></div></div></div>';
+  }).join('');
+}
+function saveMistake(){
+ if(!$('mi-con').value.trim()){ alert('Concept is required.'); return; }
+ const all = mistakes();
+ all.push({ id:uid('mis'), cid:$('mi-cid').value, domain:$('mi-dom').value.trim(), concept:$('mi-con').value.trim(),
+  wrong:$('mi-wrong').value.trim(), right:$('mi-right').value.trim(), why:$('mi-why').value.trim(),
+  confidence:$('mi-conf').value, ts:Date.now(), state:'ACTIVE' });
+ LS.set('mistakes', all);
+ renderMistakes();
+}
+function mState(id, st){
+ const all = mistakes();
+ const m = all.find(x => x.id === id);
+ if(!m) return;
+ if(st === 'REPAIRED' && !confirm('Repaired = you recalled the correct rule independently, later, without looking. True?')) return;
+ m.state = st;
+ if(st === 'REPAIRED') m.repairedTs = Date.now();
+ LS.set('mistakes', all);
+ renderMistakes();
+}
+function mDel(id){ if(!confirm('Delete this mistake record?')) return; LS.set('mistakes', mistakes().filter(m => m.id !== id)); renderMistakes(); }
+// -------- LABS --------
+function renderLabs(){
+ const LV = ['NOT STARTED','ATTEMPTED','CAN DO WITH HELP','CAN DO ALONE','MASTERED'];
+ $('s-labs').innerHTML = '<h1>Hands-on tracker</h1><div class="sub">Watching a demo earns nothing here. Score reflects independent execution.</div>' +
+  CERTS.filter(c => c.labs).map(c => {
+   const st = labState()[c.id] || {};
+   return '<h2>' + esc(c.name) + ' \u2014 ' + handsOn(c.id) + '% (gate ' + GATES[c.tier].hands + '%)</h2><div class="card">' +
+    c.labs.map(l => '<div class="row spread labrow" style="padding:6px 0;border-bottom:1px solid var(--line)"><span style="font-size:13.5px">' + esc(l) + '</span>' +
+     '<select onchange="setLab(\''+c.id+'\', this.dataset.l, this.value)" data-l="' + esc(l) + '">' +
+     LV.map(v => '<option' + ((st[l]||'NOT STARTED')===v?' selected':'') + '>' + v + '</option>').join('') + '</select></div>').join('') + '</div>';
+  }).join('');
+}
+function setLab(cid, lab, v){ const s = labState(); s[cid] = s[cid] || {}; s[cid][lab] = v; LS.set('labs', s); renderLabs(); }
+// -------- PLAN --------
+function renderPlan(){
+ $('s-plan').innerHTML = '<h1>Plan</h1><div class="sub">Targets, not hard deadlines \u2014 readiness overrides schedule. The only fixed date is 30 September.</div>' +
+  '<div class="card" style="margin-top:16px"><table><tr><th>Cert</th><th>Target</th><th>Effort</th><th>Logged</th><th>Status</th><th>Deadline impact</th></tr>' +
+  CERTS.map(c => {
+   const st = statusOf(c.id), R = readiness(c.id);
+   const late = new Date(c.target) < new Date() && st !== 'PASSED';
+   return '<tr class="clickable" onclick="openCert(\''+c.id+'\')"><td><b>' + esc(c.name) + '</b></td><td>' + esc(c.target) + '</td>' +
+    '<td>~' + c.effort[0] + '\u2013' + c.effort[1] + 'h</td><td>' + hoursLogged(c.id) + 'h</td>' +
+    '<td>' + (st==='PASSED' ? '<span class="pill green">PASSED</span>' : R.ready ? '<span class="pill green">READY</span>' : '<span class="pill blue">' + R.pct + '%</span>') + '</td>' +
+    '<td>' + (st==='PASSED' ? '\u2014' : late ? '<span class="pill amber">BEHIND TARGET</span>' : '<span class="pill gray">on track</span>') + '</td></tr>';
+  }).join('') + '</table>' +
+  '<div class="small" style="margin-top:12px">Sep 28\u201330 is buffer/retake. If a cert is ready early, take the exam early \u2014 the sequence continues automatically after each PASS.</div></div>' +
+  '<h2>Study sessions (' + sessions().length + ')</h2><div class="card">' +
+  (sessions().length ? '<table><tr><th>Date</th><th>Cert</th><th>Min</th><th>Note</th></tr>' +
+   sessions().slice(-25).reverse().map(s => '<tr><td>' + new Date(s.ts).toLocaleDateString() + '</td><td>' + esc((certOf(s.cid)||{}).name||'') + '</td><td>' + s.mins + '</td><td>' + esc(s.note||'') + '</td></tr>').join('') + '</table>' : '<span class="sub">No sessions yet \u2014 use the timer on Today.</span>') + '</div>';
+}
+// -------- RESOURCES + SEARCH --------
+function renderResources(){
+ const q = ($('res-q') && $('res-q').value || '').toLowerCase();
+ $('s-resources').innerHTML = '<h1>Resources</h1>' +
+  '<input id="res-q" style="max-width:420px;margin:14px 0" placeholder="Search exam, domain, resource, mistake, note..." value="' + esc(q) + '" oninput="renderResources()">' +
+  CERTS.filter(c => !q || c.name.toLowerCase().includes(q) || c.full.toLowerCase().includes(q) ||
+    c.resources.some(r => r.label.toLowerCase().includes(q)) || domainsOf(c.id).some(d => d.n.toLowerCase().includes(q)))
+   .map(c => '<h2>' + esc(c.name) + '</h2><div class="card">' + c.resources.map(resBtn).join('') + '</div>').join('') +
+  (q ? (function(){
+   const mHits = mistakes().filter(m => JSON.stringify(m).toLowerCase().includes(q));
+   const nHits = CERTS.filter(c => ((certState()[c.id]||{}).notes||'').toLowerCase().includes(q));
+   return (mHits.length ? '<h2>Mistakes matching</h2><div class="card">' + mHits.map(m => '<div class="small" style="padding:5px 0">' + esc((certOf(m.cid)||{}).name||'') + ' \u00B7 <b>' + esc(m.concept) + '</b> \u2014 ' + esc(m.right||'') + '</div>').join('') + '</div>' : '') +
+    (nHits.length ? '<h2>Memory sheets matching</h2><div class="card">' + nHits.map(c => '<div class="small clickable" style="padding:5px 0" onclick="openCert(\''+c.id+'\')"><b>' + esc(c.name) + '</b> sheet</div>').join('') + '</div>' : '');
+  })() : '');
+}
+// -------- SETTINGS --------
+function renderSettings(){
+ $('s-settings').innerHTML = '<h1>Settings & data</h1>' +
+  '<h2>Backup</h2><div class="card"><div class="row">' +
+  '<button class="primary" onclick="exportBackup()">EXPORT BACKUP</button>' +
+  '<button onclick="$(\'imp-file\').click()">IMPORT BACKUP</button>' +
+  '<input type="file" id="imp-file" accept="application/json" style="display:none" onchange="importBackup(this.files[0])"></div>' +
+  '<div class="small" style="margin-top:8px" id="bk-msg">Everything lives in this browser\u2019s localStorage. Export after real sessions; import on your other device.</div></div>' +
+  '<h2>Reset</h2><div class="card"><div class="row">' +
+  '<select id="rst-cid" style="max-width:220px">' + CERTS.map(c => '<option value="'+c.id+'">' + esc(c.name) + '</option>').join('') + '</select>' +
+  '<button class="danger" onclick="resetCert()">Reset certification</button>' +
+  '<button class="danger" onclick="resetAll()">RESET ALL DATA</button></div></div>' +
+  '<div class="small">Command Center v1.0 \u00B7 raw records (attempts, mistakes, labs, sessions) are the source of truth; every statistic is recomputed from them.</div>';
+}
+function exportBackup(){
+ const dump = { v:1, exported:Date.now(), certs:certState(), attempts:attempts(), mistakes:mistakes(), labs:labState(), sessions:sessions() };
+ const blob = new Blob([JSON.stringify(dump)], {type:'application/json'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = 'cert-command-center-backup-' + new Date().toISOString().slice(0,10) + '.json';
+ a.click();
+}
+function importBackup(file){
+ if(!file) return;
+ const r = new FileReader();
+ r.onload = () => {
+  try{
+   const d = JSON.parse(r.result);
+   if(!d || d.v !== 1) throw new Error('Not a valid backup.');
+   // merge, dedupe by id, never lose records
+   const mergeArr = (key, cur) => {
+    const seen = new Set(cur.map(x => x.id));
+    (d[key]||[]).forEach(x => { if(!seen.has(x.id)) cur.push(x); });
+    return cur;
+   };
+   LS.set('attempts', mergeArr('attempts', attempts()));
+   LS.set('mistakes', mergeArr('mistakes', mistakes()));
+   LS.set('sessions', mergeArr('sessions', sessions()));
+   const lc = labState(); Object.entries(d.labs||{}).forEach(([cid,m]) => { lc[cid] = Object.assign({}, m, lc[cid]||{}); }); LS.set('labs', lc);
+   const cc = certState(); Object.entries(d.certs||{}).forEach(([cid,m]) => { cc[cid] = Object.assign({}, m, cc[cid]||{}); }); LS.set('certs', cc);
+   $('bk-msg').textContent = 'Merged: ' + attempts().length + ' attempts \u00B7 ' + mistakes().length + ' mistakes \u00B7 ' + sessions().length + ' sessions.';
+  } catch(e){ $('bk-msg').textContent = 'Import failed: ' + e.message; }
+ };
+ r.readAsText(file);
+}
+function resetCert(){
+ const cid = $('rst-cid').value;
+ if(!confirm('Reset ALL data for ' + certOf(cid).name + '? Cannot be undone.')) return;
+ LS.set('attempts', attempts().filter(a => a.cid !== cid));
+ LS.set('mistakes', mistakes().filter(m => m.cid !== cid));
+ LS.set('sessions', sessions().filter(s => s.cid !== cid));
+ const l = labState(); delete l[cid]; LS.set('labs', l);
+ const c = certState(); delete c[cid]; LS.set('certs', c);
+ renderSettings();
+}
+function resetAll(){
+ if(!confirm('Reset EVERYTHING?')) return;
+ if(!confirm('Really? All attempts, mistakes, labs, sessions, statuses.')) return;
+ ['certs','attempts','mistakes','labs','sessions','activeSession'].forEach(k => LS.del(k));
+ go('today');
+}
+// -------- ROUTER --------
+function render(s, arg){
+ if(s === 'today') renderToday();
+ else if(s === 'dash') renderDash();
+ else if(s === 'certs') renderCerts();
+ else if(s === 'cert') renderCert(arg);
+ else if(s === 'practice') renderPractice(arg);
+ else if(s === 'mistakes') renderMistakes(arg);
+ else if(s === 'labs') renderLabs();
+ else if(s === 'plan') renderPlan();
+ else if(s === 'resources') renderResources();
+ else if(s === 'settings') renderSettings();
+}
+renderToday();
+</script>
+</body>
+</html>
