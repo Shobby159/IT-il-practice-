@@ -105,6 +105,7 @@ label{font-size:12px;font-weight:600;color:var(--dim);display:block;margin-botto
   <a data-s="plan" onclick="go('plan')">Plan</a>
   <a data-s="resources" onclick="go('resources')">Resources</a>
   <a data-s="settings" onclick="go('settings')">Settings</a>
+  <a href="https://shobby159.github.io/IT-il-practice-/itil4-exam-trainer.html" target="_blank" rel="noopener" style="margin-top:14px;border-top:1px solid #22344f;padding-top:14px;color:#8fa2bd">ITIL Trainer &#8599;</a>
 </nav>
 <main>
   <div id="s-today" class="screen on"></div>
@@ -472,7 +473,7 @@ function renderDash(){
     '<span style="font-family:var(--mono);font-size:12.5px;width:44px;text-align:right">' + p + '%</span>' + pill + '</div>';
   }).join('') + '</div>' +
   '<h2>Completed certifications</h2><div class="card">' +
-  COMPLETED_PRIOR.map(p => '<div class="row spread"><div><b>' + esc(p.name) + '</b> <span class="small">' + esc(p.score) + ' \u00B7 ' + esc(p.pct) + '</span></div><span class="pill green">COMPLETED</span></div>').join('') +
+  COMPLETED_PRIOR.map(p => '<div class="row spread"><div><b>' + esc(p.name) + '</b> <span class="small">' + esc(p.score) + ' \u00B7 ' + esc(p.pct) + '</span></div><div class="row"><span class="pill green">COMPLETED</span><a href="https://shobby159.github.io/IT-il-practice-/itil4-exam-trainer.html" target="_blank" rel="noopener"><button class="ghost">OPEN TRAINER &#8599;</button></a></div></div>').join('') +
   CERTS.filter(c => statusOf(c.id)==='PASSED').map(c => { const s = certState()[c.id]||{}; return '<div class="row spread" style="margin-top:8px"><div><b>' + esc(c.name) + '</b> <span class="small">' + esc(s.examScore||'') + ' \u00B7 ' + esc(s.examDate||'') + '</span></div><span class="pill green">PASSED</span></div>'; }).join('') +
   '</div>';
 }
