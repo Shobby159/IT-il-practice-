@@ -202,7 +202,8 @@ body{transition:background .25s ease}
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div><h1>ITIL 4 Exam Trainer<span class="tag">FOUNDATION</span></h1><div class="sub" id="bankline"></div></div>
+    <div><h1>ITIL 4 Exam Trainer<span class="tag">FOUNDATION</span></h1><div class="sub" id="bankline"></div>
+      <div class="sub" style="margin-top:4px"><a class="link" href="https://shobby159.github.io/IT-il-practice-/microsoft-command-center.html">&#8594; Microsoft Command Center</a></div></div>
     <a class="link" id="homelink" onclick="goHome()" style="display:none">← Home</a>
   </div>
 
@@ -846,7 +847,7 @@ function buildHome(){
   const doms = {};
   qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
   document.getElementById('bankline').textContent =
-    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.6';
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 73% (official pass 65%) · v4.7';
   const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
   const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
   const sel = document.getElementById('src');
