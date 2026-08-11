@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AZ-900 Exam Trainer</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ITIL 4 Trainer">
+<meta name="theme-color" content="#1d5fd8">
+<style>
+:root{
+  --bg:#eff2f6; --panel:#ffffff; --panel2:#f4f7fa; --line:#d9e1ea;
+  --txt:#1d2936; --dim:#64748b; --accent:#1d5fd8; --accent-deep:#1747ae;
+  --accent-soft:#e6eefc; --ok:#047857; --ok-soft:#e1f2ec; --bad:#c62f2f; --bad-soft:#fbe9e9;
+  --warn:#b45309; --unc-soft:#f9f1de;
+  --shadow:0 1px 2px rgba(20,35,55,.05), 0 4px 16px rgba(20,35,55,.07);
+  --serif:ui-serif,'New York','Iowan Old Style',Georgia,serif;
+  --mono:'Cascadia Code','Consolas',ui-monospace,monospace;
+}
+html[data-theme="exampaper"]{
+  --bg:#f4f2ec; --panel:#fdfcf8; --panel2:#f4f1e9; --line:#e2ded3;
+  --txt:#20242c; --dim:#79746a; --accent:#2b50c8; --accent-deep:#1f3da3;
+  --accent-soft:#e9edfa; --ok:#196b45; --ok-soft:#e5f0e9; --bad:#b23a2e; --bad-soft:#f8eae7;
+  --warn:#a3670a; --unc-soft:#f6efdc;
+  --shadow:none;
+}
+html[data-theme="indigo"]{
+  --bg:#f2f3f8; --panel:#ffffff; --panel2:#f7f7fb; --line:#e5e7f0;
+  --txt:#242a3d; --dim:#79808f; --accent:#5646c8; --accent-deep:#4536ad;
+  --accent-soft:#eeecfa; --ok:#158a5c; --ok-soft:#e4f4ec; --bad:#c8402f; --bad-soft:#fceceb;
+  --warn:#b8860b; --unc-soft:#fdf6e4;
+  --shadow:0 1px 2px rgba(35,40,66,.05), 0 4px 16px rgba(35,40,66,.06);
+}
+html[data-theme="paper"]{
+  --bg:#f7f4ee; --panel:#fffdf9; --panel2:#f3efe7; --line:#e4ddcf;
+  --txt:#2b2721; --dim:#7d7568; --accent:#0f766e; --accent-deep:#0c5f58;
+  --accent-soft:#e2efed; --ok:#15803d; --ok-soft:#e3f1e7; --bad:#b3341f; --bad-soft:#f9e9e5;
+  --warn:#a16207; --unc-soft:#f7efdb;
+  --shadow:0 1px 2px rgba(60,50,30,.05), 0 4px 16px rgba(60,50,30,.07);
+}
+html[data-theme="rosewood"]{
+  --bg:#f7f3f2; --panel:#fffdfd; --panel2:#f5eef0; --line:#e8dcdf;
+  --txt:#2c2226; --dim:#84747b; --accent:#9c3a5c; --accent-deep:#7f2e4b;
+  --accent-soft:#f6e7ec; --ok:#1b7a4b; --ok-soft:#e4f2ea; --bad:#bc3a24; --bad-soft:#f9e9e5;
+  --warn:#a3670a; --unc-soft:#f8f0dd;
+  --shadow:0 1px 2px rgba(70,35,45,.05), 0 4px 16px rgba(70,35,45,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-gutter:stable}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.55;min-height:100vh}
+.wrap{max-width:840px;margin:0 auto;padding:26px 20px calc(70px + env(safe-area-inset-bottom))}
+h1{font-size:21px;font-weight:650;letter-spacing:-.2px}
+h1 .tag{color:var(--accent);font-family:var(--mono);font-size:11px;margin-left:10px;letter-spacing:2.5px;font-weight:600;vertical-align:2px}
+h2{font-size:16px;font-weight:650;margin-bottom:14px;letter-spacing:-.1px}
+html[data-theme="exampaper"] h2{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+.sub{color:var(--dim);font-size:13px;margin-top:4px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:30px}
+.screen{display:none}.screen.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.mode{cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;border-top:3px solid var(--accent)}
+.mode:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(86,70,200,.14);border-color:var(--accent)}
+.mode h3{font-size:15px;margin-bottom:6px;font-weight:650}
+.mode p{color:var(--dim);font-size:13px;line-height:1.5}
+.mode .k{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;display:block;margin-bottom:10px;font-weight:600}
+select,textarea{width:100%;background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;transition:border-color .12s}
+select:hover,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+textarea{font-family:var(--mono);font-size:12px;min-height:140px;background:var(--panel2)}
+button{background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 18px;min-height:44px;font-size:14.5px;font-family:inherit;font-weight:500;cursor:pointer;transition:border-color .12s,background .12s,color .12s}
+button.wide{width:100%;display:block}
+button.ghost{border-color:transparent;background:transparent;color:var(--dim);min-height:36px;padding:6px 10px;font-size:13.5px}
+button.ghost:hover{color:var(--accent);border-color:transparent}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;box-shadow:0 2px 10px rgba(86,70,200,.25)}
+button.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
+button.danger:hover{border-color:var(--bad);color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+button:disabled:hover{border-color:var(--line);color:var(--txt)}
+#poolbtn{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+#uncbtn.on{color:var(--warn);background:var(--unc-soft);border-color:transparent}
+#flagbtn:disabled{color:var(--bad);opacity:.8}
+#poolbtn:hover{background:var(--ok);color:#fff}
+#poolbtn:disabled:hover{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+button:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{justify-content:space-between}
+.mt{margin-top:18px}
+/* quiz */
+.quizbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 2px;margin:-10px 0 0}
+.quizhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px}
+.prog{font-size:13px;color:var(--dim);font-weight:500}
+.clock{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:.5px;color:var(--accent);font-variant-numeric:tabular-nums}
+html[data-theme="exampaper"] .clock{color:var(--txt)}
+.clock.mid{color:var(--warn)}
+.clock.low{color:var(--bad)}
+.qbar{height:2px;background:var(--line);overflow:hidden;margin-bottom:0}
+.qbar i{display:block;height:100%;background:var(--accent);transition:width .2s ease}
+.timerule{height:3px;background:var(--panel2);overflow:hidden;margin:3px 0 20px}
+.timerule i{display:block;height:100%;background:var(--txt);transition:width .5s linear}
+.timerule i.mid{background:var(--warn)}
+.timerule i.low{background:var(--bad)}
+.chip{display:inline-block;font-size:11px;font-family:var(--mono);letter-spacing:.5px;color:var(--accent);background:var(--accent-soft);border-radius:20px;padding:4px 12px;margin-bottom:14px;font-weight:600}
+.qtext{font-size:18.5px;font-weight:550;margin-bottom:20px;white-space:pre-wrap;line-height:1.6;letter-spacing:-.1px}
+html[data-theme="exampaper"] .qtext{font-family:var(--serif);font-size:19px;font-weight:500;letter-spacing:0}
+.opt{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;margin-bottom:10px;padding:14px 16px;min-height:52px;font-size:16px;line-height:1.5;border-radius:11px;background:var(--panel2);border:1.5px solid var(--line)}
+html[data-theme="exampaper"] #opts{border-top:1px solid var(--line)}
+html[data-theme="exampaper"] .opt{font-family:var(--serif);font-size:16.5px;margin:0;padding:15px 10px;border-radius:0;background:transparent;border:none;border-bottom:1px solid var(--line);border-left:3px solid transparent}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--txt)}
+html[data-theme="exampaper"] .opt:hover:not(:disabled){border-left-color:var(--accent)}
+.opt .n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 8px;flex-shrink:0}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+html[data-theme="exampaper"] .opt.right{border-left-color:var(--ok)}
+.opt.right .n{color:#fff;background:var(--ok);border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+html[data-theme="exampaper"] .opt.wrong{border-left-color:var(--bad)}
+.opt.wrong .n{color:#fff;background:var(--bad);border-color:var(--bad)}
+.opt:disabled{cursor:default;opacity:1}
+.opt:disabled:not(.right):not(.wrong){opacity:.5}
+.opt.chosen{border-color:var(--accent);background:var(--accent-soft)}
+.opt.kb{outline:2px solid var(--accent);outline-offset:2px}
+#confbar .row button.kb{outline:2px solid var(--accent);outline-offset:2px}
+html[data-theme="exampaper"] .opt.chosen{border-left-color:var(--accent)}
+#confbar{margin-top:14px;padding:14px 16px;background:var(--panel2);border:1.5px solid var(--line);border-radius:11px}
+#confbar .q{font-size:14px;font-weight:600;margin-bottom:10px}
+#confbar .row button{flex:1;min-width:90px}
+.contrast{margin-top:10px;padding:12px 14px;background:var(--panel2);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;font-size:13.5px;line-height:1.55}
+.contrast .lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--warn);display:block;margin-bottom:4px;font-weight:600}
+@keyframes fadein{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.explain{background:var(--accent-soft);border-radius:8px;padding:16px 18px;margin-top:16px;font-size:14px;line-height:1.55;animation:fadein .15s ease}
+.explain .verdict{font-weight:650;margin-bottom:8px;font-size:15px}
+.explain .verdict.ok{color:var(--ok)} .explain .verdict.bad{color:var(--bad)}
+.explain .block{margin-top:10px}
+.explain .lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--accent);display:block;margin-bottom:4px;font-weight:600}
+/* results */
+.score{display:flex;gap:34px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--mono);font-size:54px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.pass{color:var(--ok)} .fail{color:var(--bad)}
+.stat{font-size:14px;color:var(--dim);margin:2px 0} .stat b{color:var(--txt);font-family:var(--mono);font-size:17px;margin-left:6px}
+.verdicttag{font-family:var(--mono);font-size:12px;letter-spacing:2.5px;padding:6px 16px;border-radius:20px;font-weight:700}
+.verdicttag.pass{background:var(--ok-soft);color:var(--ok)}
+.verdicttag.fail{background:var(--bad-soft);color:var(--bad)}
+html[data-theme="exampaper"] .verdicttag{font-size:13px;letter-spacing:3px;padding:8px 18px;border-radius:4px;border:2px solid;background:transparent}
+html[data-theme="exampaper"] .verdicttag.pass{color:var(--ok);border-color:var(--ok)}
+html[data-theme="exampaper"] .verdicttag.fail{color:var(--bad);border-color:var(--bad)}
+/* stats bars */
+.bar-row{margin-bottom:16px}
+.bar-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;gap:10px}
+.bar-top .d{font-weight:550}
+.bar-top .v{font-family:var(--mono);color:var(--dim);font-size:12px;white-space:nowrap}
+.bar{height:9px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--bad);border-radius:4px}
+.bar i.good{background:var(--ok)}
+/* review cards */
+.rev{border-left:4px solid var(--bad)}
+.rev .q{font-weight:550;margin-bottom:8px}
+.rev .meta{font-size:11px;font-family:var(--mono);color:var(--dim);margin-bottom:10px;letter-spacing:.3px}
+.rev .ans{font-size:14px;margin:4px 0;padding:6px 10px;border-radius:8px;display:inline-block}
+.rev .ans.bad{color:var(--bad);background:var(--bad-soft)} .rev .ans.ok{color:var(--ok);background:var(--ok-soft)}
+.rev .ex{color:var(--dim);font-size:13px;margin-top:10px;line-height:1.55}
+.banklist{font-size:13px;color:var(--dim);columns:2;column-gap:34px;list-style:none}
+@media(max-width:700px){.banklist{columns:1}}
+.banklist li{margin-bottom:5px;break-inside:avoid;padding-left:14px;position:relative}
+.banklist li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.4}
+a.link{color:var(--accent);cursor:pointer;text-decoration:none;font-size:14px;font-weight:500}
+a.link:hover{text-decoration:underline}
+.empty{color:var(--dim);font-size:14px;padding:34px 0;text-align:center}
+.kbd{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:16px;opacity:.75}
+@media (hover:none){.kbd{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+details.bank summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none;min-height:32px}
+details.bank summary::-webkit-details-marker{display:none}
+details.bank summary::after{content:' ▸';color:var(--dim)}
+details.bank[open] summary::after{content:' ▾'}
+.toolsrow button{min-height:38px;padding:8px 14px;font-size:13.5px;color:var(--dim)}
+.toolsrow button:hover{color:var(--accent)}
+#homesnap{font-size:13.5px;color:var(--dim);margin-top:10px;line-height:1.7}
+#homesnap b{color:var(--txt);font-family:var(--mono)}
+body.dim{background:#232a35}
+body.dim .quizbar{background:#232a35}
+body.dim .prog{color:#98a6ba}
+body.dim .clock{color:#8ab0f5}
+body.dim .clock.low{color:#f08a7d}
+body.dim .qbar{background:#37404e}
+body.dim button.ghost{color:#98a6ba}
+body.dim button.ghost:hover{color:#8ab0f5}
+body{transition:background .25s ease}
+.dots{display:flex;gap:5px;margin-top:8px;align-items:center}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--ok)}
+.dots i.today{outline:2px solid var(--accent);outline-offset:1px}
+.pomo{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pomochip{font-family:var(--mono);font-size:13px;padding:3px 10px;border-radius:14px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.pomochip.break{background:var(--ok-soft);color:var(--ok)}
+.themerow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.theme{display:flex;align-items:center;gap:7px;min-height:38px;padding:6px 13px;font-size:13.5px;border-radius:20px}
+.theme .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.theme.sel{border-color:var(--accent);color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div><h1>AZ-900 Exam Trainer<span class="tag">AZURE FUNDAMENTALS</span></h1><div class="sub" id="bankline"></div>
+      <div class="sub" style="margin-top:4px"><a class="link" href="https://shobby159.github.io/IT-il-practice-/microsoft-command-center.html">&#8594; Microsoft Command Center</a> &nbsp;·&nbsp; <a class="link" href="itil4-exam-trainer.html">ITIL Trainer</a></div></div>
+    <a class="link" id="homelink" onclick="goHome()" style="display:none">← Home</a>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen on" id="s-home">
+    <div class="card" id="resumecard" style="display:none;border-left:4px solid var(--accent)">
+      <h2>Unfinished session</h2>
+      <div class="sub" id="resumeinfo"></div>
+      <div class="row mt">
+        <button class="primary" onclick="resumeSession()">Resume</button>
+        <button class="danger" onclick="discardActive()">Discard</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Exam verdict</h2>
+      <div style="font-size:15px;line-height:1.6" id="verdictbox"></div>
+    </div>
+    <div class="card">
+      <h2>Next up</h2>
+      <div style="font-size:15px;margin-bottom:12px" id="nextupline"></div>
+      <div class="row">
+        <button class="primary" id="nextupbtn" onclick="runNextUp()"></button>
+        <button onclick="startFreshExam()">Fresh Exam — 60 min</button>
+      </div>
+      <div style="margin-top:14px;font-size:13.5px;color:var(--dim)" id="dailyline"></div>
+      <div class="dots" id="daydots"></div>
+      <div class="sub" id="smartinfo" style="margin-top:12px"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="ghost" onclick="startSmart()">Smart Review</button>
+        <select id="smartlen" onchange="try{localStorage.setItem('az9_smartlen',this.value)}catch(e){}" style="width:auto;min-height:38px;padding:6px 10px;font-size:13.5px" title="Smart Review session length">
+          <option value="10">10 questions</option>
+          <option value="20">20 questions</option>
+          <option value="40">40 questions</option>
+          <option value="all">Everything due + pool</option>
+        </select>
+        <button class="ghost" onclick="startDrill()">Distinction Drill</button>
+        <button class="ghost" onclick="showStats()">Statistics</button>
+        <button class="ghost" onclick="showWrongs()">Wrong answers</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Question source</h2>
+      <select id="src"></select>
+      <div class="sub mt" style="margin-top:8px">Applies to Practice and Exam mode. Weakness mode always uses your accumulated wrong answers.</div>
+      <div id="homesnap"></div>
+    </div>
+    <div class="grid">
+      <div class="card mode" onclick="startSession('practice')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('practice')">
+        <span class="k">MODE 1</span><h3>Practice</h3>
+        <p>Instant feedback with explanations. Untimed. Uses: <b class="srcecho"></b></p>
+      </div>
+      <div class="card mode" onclick="startSession('exam')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('exam')">
+        <span class="k">MODE 2</span><h3>Exam</h3>
+        <p>60-minute countdown, score at the end, auto-submit at 0:00. Uses: <b class="srcecho"></b></p>
+      </div>
+      <div class="card mode" onclick="startSession('weakness')" tabindex="0" onkeydown="if(event.key==='Enter')startSession('weakness')">
+        <span class="k">MODE 3</span><h3>Weakness</h3>
+        <p id="weakdesc">Retrain every question you have ever missed or flagged. Questions stay in the pool until you remove them yourself.</p>
+      </div>
+    </div>
+
+    <div class="card mt">
+      <h2>Focus timer</h2>
+      <div class="row spread">
+        <div>
+          <span class="pomo" id="pomotime" style="font-size:26px;font-weight:600">25:00</span>
+          <span class="sub" id="pomophase" style="margin-left:10px">Work · 25 min, then a 5 min break</span>
+        </div>
+        <div class="row">
+          <button class="primary" id="pomobtn" onclick="pomoToggle()">Start</button>
+          <button class="ghost" onclick="pomoReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Settings &amp; data</h2>
+      <details class="bank">
+        <summary>Appearance</summary>
+        <div style="margin-top:12px">
+      <div class="themerow">
+        <button class="theme" data-t="slate" onclick="setTheme('slate')"><span class="dot" style="background:#1d5fd8"></span>Slate &amp; Blue</button>
+        <button class="theme" data-t="exampaper" onclick="setTheme('exampaper')"><span class="dot" style="background:#2b50c8"></span>Exam Paper</button>
+        <button class="theme" data-t="paper" onclick="setTheme('paper')"><span class="dot" style="background:#0f766e"></span>Paper &amp; Teal</button>
+        <button class="theme" data-t="rosewood" onclick="setTheme('rosewood')"><span class="dot" style="background:#9c3a5c"></span>Rosewood</button>
+        <button class="theme" data-t="indigo" onclick="setTheme('indigo')"><span class="dot" style="background:#5646c8"></span>Indigo</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button id="dimbtn" onclick="toggleDim()"></button>
+        <span class="sub">Darkens the area around the question during Practice, Exam and Weakness sessions.</span>
+      </div>
+        </div>
+      </details>
+      <details class="bank" style="margin-top:14px">
+        <summary>Progress backup</summary>
+        <div style="margin-top:12px">
+      <div class="sub" style="margin-bottom:12px" id="progline"></div>
+      <div class="row">
+        <button class="primary" onclick="exportProgress()">Export backup file</button>
+        <button onclick="copyDiagnostic()">Copy diagnostic for AI</button>
+        <button onclick="document.getElementById('restorefile').click()">Import backup file</button>
+        <button onclick="toggleTextBackup()">Backup as text</button>
+        <input type="file" id="restorefile" accept=".json,application/json" style="display:none" onchange="importProgressFile(this)">
+      </div>
+      <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:6px">Device sync (optional)</div>
+        <div class="sub" style="margin-bottom:10px">Create a <b>private</b> GitHub repo (e.g. <span style="font-family:var(--mono)">itil-progress</span>) and a fine-grained token scoped to only that repo (Contents: read/write). Enter the same details on every device. Sync merges — nothing is ever overwritten or lost.</div>
+        <div class="row" style="margin-bottom:8px">
+          <input id="syncrepo" placeholder="yourname/itil-progress" style="flex:1;min-width:180px;background:var(--panel2);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--mono)">
+          <input id="synctoken" type="password" placeholder="github_pat_..." style="flex:1;min-width:180px;background:var(--panel2);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--mono)">
+        </div>
+        <div class="row">
+          <button class="primary" onclick="syncNow(false)">Sync now</button>
+          <span class="sub" id="syncmsg"></span>
+        </div>
+      </div>
+      <div id="textbackup" style="display:none" class="mt">
+        <textarea id="backupbox" placeholder="Backup text appears here — copy it somewhere safe. To restore: paste a backup here and press Restore."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button onclick="fillBackupText()">Show my backup text</button>
+          <button onclick="restoreFromText()">Restore from pasted text</button>
+          <span class="sub" id="backupmsg"></span>
+        </div>
+      </div>
+        </div>
+      </details>
+      <details class="bank" style="margin-top:14px">
+        <summary>Question bank</summary>
+        <ul class="banklist" id="banklist" style="margin-top:12px"></ul>
+      </details>
+      <div class="row" style="margin-top:16px">
+        <button class="ghost" onclick="show('s-import')">Import questions</button>
+        <button class="ghost danger" onclick="resetAll()">Reset all data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="s-quiz">
+    <div class="quizbar">
+      <div class="quizhead">
+        <div class="prog" id="prog"></div>
+        <div class="row" style="gap:12px">
+          <span class="pomochip" id="pomochip" style="display:none"></span>
+          <div class="clock" id="clock"></div>
+          <button class="ghost" onclick="toggleDim()" title="Dim surroundings">&#9789;</button>
+          <button class="ghost" onclick="quitSession()">End</button>
+        </div>
+      </div>
+      <div class="qbar"><i id="qbarfill" style="width:0%"></i></div>
+      <div class="timerule" id="timerule" style="display:none"><i id="timefill" style="width:100%"></i></div>
+    </div>
+    <div class="card">
+      <span class="chip" id="qdomain"></span>
+      <div class="qtext" id="qtext"></div>
+      <div id="opts"></div>
+      <div id="confbar" style="display:none">
+        <div class="q">How sure were you? <span class="sub" style="font-weight:400">(&#8592;/&#8594; then Enter)</span></div>
+        <div class="row">
+          <button class="primary" onclick="chooseConf('s')">Sure</button>
+          <button onclick="chooseConf('u')">Unsure</button>
+          <button onclick="chooseConf('g')">Guessed</button>
+        </div>
+      </div>
+      <div id="explain"></div>
+      <div class="row spread mt">
+        <div class="row">
+          <button class="ghost" id="flagbtn" onclick="flagQ()" title="Add this question to the weakness pool">&#128078; To weakness pool</button>
+          <button class="ghost" id="uncbtn" onclick="toggleUnc()" title="Mark that you are unsure, even if you answer correctly">? Uncertain</button>
+        </div>
+        <div class="row" id="examnav" style="display:none">
+          <button class="ghost" id="prevbtn" onclick="prevQ()">&#8592; Prev</button>
+          <button class="ghost" id="examnextbtn" onclick="nextQexam()">Next &#8594;</button>
+          <button class="primary" id="submitbtn" onclick="submitExam()">Submit</button>
+        </div>
+      </div>
+      <div class="mt">
+        <button class="primary wide" id="nextbtn" style="display:none" onclick="nextQ()">Next →</button>
+        <button class="wide" id="poolbtn" style="display:none;margin-top:10px" onclick="releaseQ()">&#10003; Remove from weakness pool</button>
+      </div>
+      <div class="kbd" id="kbdhint">Keys: 1–4 answer · Enter next</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="s-results">
+    <div class="card">
+      <h2 id="restitle"></h2>
+      <div class="score mt">
+        <div class="big" id="respct"></div>
+        <div>
+          <div class="stat">Correct <b id="rescorrect"></b></div>
+          <div class="stat">Wrong <b id="reswrong"></b></div>
+          <div class="stat">Needed for target (80%) <b id="respass"></b></div>
+          <div class="stat">First attempts <b id="resfresh"></b></div>
+          <div class="stat" id="resretry" style="display:none">Fixed on retry <b id="resretryn"></b></div>
+        </div>
+        <div class="verdicttag" id="resverdict"></div>
+      </div>
+      <div class="sub mt" id="resverdictline" style="font-size:14px;line-height:1.6"></div>
+      <div class="row mt">
+        <button class="primary" onclick="reviewSession()">Review wrong answers</button>
+        <button onclick="copyDiagnostic()">Copy diagnostic for AI</button>
+        <button onclick="showWrongs()">All wrong answers (every exam)</button>
+        <button onclick="showStats()">Domain statistics</button>
+        <button onclick="goHome()">Home</button>
+      </div>
+      <div class="sub mt">Tip: progress is saved on this device automatically. Use "Export backup file" on the home screen now and then so a browser reset can never cost you your history.</div>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="screen" id="s-review">
+    <h2 id="revtitle"></h2>
+    <div id="revlist"></div>
+    <div class="row mt"><button onclick="goHome()">Home</button></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="screen" id="s-stats">
+    <div class="card">
+      <h2>Overview</h2>
+      <div id="statover" style="font-size:14px"></div>
+    </div>
+    <div class="card">
+      <h2>Exam-weighted risk by domain</h2>
+      <div class="sub" style="margin-bottom:16px">Ranked by estimated marks at risk = official exam marks × first-attempt error rate. A 60% error rate in a 2-mark domain matters less than 40% in the 17-mark domain.</div>
+      <div id="statbars"></div>
+    </div>
+    <div class="card">
+      <h2>Troubling questions</h2>
+      <div class="sub" style="margin-bottom:14px">Every question you have ever missed, worst first — with the wrong option you keep reaching for.</div>
+      <div id="troublelist"></div>
+    </div>
+    <div class="card">
+      <h2>Sessions</h2>
+      <div id="sesslist" style="font-size:13px;color:var(--dim)"></div>
+    </div>
+    <div class="row"><button onclick="goHome()">Home</button></div>
+  </div>
+
+  <!-- WRONGS -->
+  <div class="screen" id="s-wrongs">
+    <div class="row spread" style="margin-bottom:14px">
+      <h2 id="wrongtitle">All wrong answers</h2>
+      <button class="primary" onclick="startSession('weakness')">Practice these now</button>
+    </div>
+    <div id="wronglist"></div>
+    <div class="row mt"><button onclick="goHome()">Home</button></div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="screen" id="s-import">
+    <div class="card">
+      <h2>Import questions (JSON)</h2>
+      <div class="sub" style="margin-bottom:10px">Paste a JSON array. Schema per question: id, exam, domain, question, options[4], correct (0-based index), explanation_correct. Duplicates by id are skipped.</div>
+      <textarea id="importbox" placeholder='[{"id":"myexam-q01", ...}]'></textarea>
+      <div class="row mt">
+        <button class="primary" onclick="doImport()">Import</button>
+        <button onclick="goHome()">Cancel</button>
+        <span class="sub" id="importmsg"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const POMO_KEY = 'az9_pomo';
+const POMO = { work: 25*60*1000, brk: 5*60*1000 };
+function pomoState(){ try{ return JSON.parse(localStorage.getItem(POMO_KEY)) || null; }catch(e){ return null; } }
+function pomoSave(s){ try{ s ? localStorage.setItem(POMO_KEY, JSON.stringify(s)) : localStorage.removeItem(POMO_KEY); }catch(e){} }
+function pomoToggle(){
+  let s = pomoState();
+  if(!s || !s.running){
+    const remain = s && s.remain ? s.remain : POMO.work;
+    const phase = s && s.phase ? s.phase : 'work';
+    s = { running:true, phase, end: Date.now() + remain, rounds: s ? (s.rounds||0) : 0 };
+  } else {
+    s = { running:false, phase:s.phase, remain: Math.max(0, s.end - Date.now()), rounds: s.rounds||0 };
+  }
+  pomoSave(s); pomoRender();
+}
+function pomoReset(){ pomoSave(null); pomoRender(); }
+function pomoTick(){
+  const s = pomoState();
+  if(!s || !s.running) return;
+  if(Date.now() >= s.end){
+    const nextPhase = s.phase === 'work' ? 'break' : 'work';
+    const rounds = (s.rounds||0) + (s.phase === 'work' ? 1 : 0);
+    pomoSave({ running:true, phase:nextPhase, end: Date.now() + (nextPhase === 'work' ? POMO.work : POMO.brk), rounds });
+  }
+  pomoRender();
+}
+function pomoRender(){
+  const s = pomoState();
+  const remain = !s ? POMO.work : (s.running ? Math.max(0, s.end - Date.now()) : (s.remain !== undefined ? s.remain : POMO.work));
+  const phase = s ? s.phase : 'work';
+  const t = fmt(remain);
+  const el = document.getElementById('pomotime');
+  if(el){
+    el.textContent = t;
+    const r = s && s.rounds ? s.rounds : 0;
+    document.getElementById('pomophase').textContent =
+      (r ? r + ' round' + (r>1?'s':'') + ' done · ' : '') +
+      (phase === 'work' ? (s && s.running ? 'Work — break when it hits zero' : 'Work · 25 min, then a 5 min break') : 'Break — back to work at zero');
+    document.getElementById('pomobtn').textContent = s && s.running ? 'Pause' : 'Start';
+  }
+  const chip = document.getElementById('pomochip');
+  if(chip){
+    if(s && s.running && (!S || S.mode !== 'exam')){
+      chip.style.display = 'inline-block';
+      chip.textContent = (phase === 'work' ? '\u23F1 ' : '\u2615 ') + t + (s.rounds ? ' \u00D7' + s.rounds : '');
+      chip.classList.toggle('break', phase === 'break');
+    } else chip.style.display = 'none';
+  }
+}
+setInterval(pomoTick, 1000);
+
+const THEME_KEY = 'az9_theme';
+const DIM_KEY = 'az9_dim';
+function dimOn(){ try{ return localStorage.getItem(DIM_KEY) === '1'; }catch(e){ return false; } }
+function applyDim(){
+  const inQuiz = document.getElementById('s-quiz').classList.contains('on');
+  document.body.classList.toggle('dim', dimOn() && inQuiz);
+  const b = document.getElementById('dimbtn');
+  if(b) b.textContent = 'Session dimming: ' + (dimOn() ? 'On' : 'Off');
+}
+function toggleDim(){
+  try{ localStorage.setItem(DIM_KEY, dimOn() ? '0' : '1'); }catch(e){}
+  applyDim();
+}
+function setTheme(t){
+  if(t === 'slate') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.dataset.theme = t;
+  try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+  document.querySelectorAll('.theme').forEach(b => b.classList.toggle('sel', b.dataset.t === t));
+}
+(function(){
+  let t = 'slate';
+  try{ t = localStorage.getItem(THEME_KEY) || 'slate'; }catch(e){}
+  if(t !== 'slate') document.documentElement.dataset.theme = t;
+})();
+
+const BANK = [{"id":"az-q001","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which cloud model provides services over the public internet to anyone who wants to purchase them, with resources owned by the cloud provider?","options":["Private cloud","Public cloud","Hybrid cloud","Community cloud"],"correct":1,"explanation_correct":"Public cloud: provider-owned shared infrastructure, available to the general public, no capital hardware purchase."},{"id":"az-q002","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"A company runs sensitive workloads in its own datacenter but bursts seasonal web traffic to Azure. Which model is this?","options":["Public cloud","Private cloud","Hybrid cloud","Multi-cloud"],"correct":2,"explanation_correct":"Hybrid combines private/on-premises infrastructure with public cloud, letting workloads move or burst between them."},{"id":"az-q003","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which is an advantage of a PRIVATE cloud compared to public cloud?","options":["Lower upfront cost","Greater control over hardware, data and security","No maintenance responsibility","Unlimited instant scale"],"correct":1,"explanation_correct":"Private cloud gives maximum control and can meet strict regulatory/data-residency needs — at the price of cost and maintenance."},{"id":"az-q004","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which statement about public cloud is CORRECT?","options":["You must buy hardware before deploying workloads","You pay only for what you use under a consumption model","You are responsible for datacenter physical security","Scaling requires a hardware procurement cycle"],"correct":1,"explanation_correct":"Public cloud replaces capital hardware purchase with consumption-based payment; the provider runs the datacenter."},{"id":"az-q005","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Using both Azure and another provider such as AWS for different workloads is called:","options":["Hybrid cloud","Multi-cloud","Community cloud","Federated cloud"],"correct":1,"explanation_correct":"Multi-cloud = using multiple PUBLIC cloud providers; hybrid = mixing private/on-prem with public."},{"id":"az-q006","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which scenario BEST fits a hybrid cloud?","options":["A startup with no existing infrastructure","Regulations require some data on-premises while other apps run in Azure","A team wants to stop managing all infrastructure","A company wants to resell cloud capacity"],"correct":1,"explanation_correct":"Hybrid suits organizations that must keep some systems local (compliance/latency/legacy) while using public cloud for the rest."},{"id":"az-q007","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"What is the difference between scalability and elasticity?","options":["They are identical","Scalability is the ability to add resources; elasticity does it automatically based on demand","Elasticity only applies to storage","Scalability only applies to virtual machines"],"correct":1,"explanation_correct":"Scalability = capacity can grow/shrink; elasticity = that adjustment happens automatically with demand."},{"id":"az-q008","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"Adding more virtual machines to handle load is called:","options":["Vertical scaling (scale up)","Horizontal scaling (scale out)","Elastic pooling","Bursting"],"correct":1,"explanation_correct":"Scale out adds instances; scale up increases the size/power of an existing instance."},{"id":"az-q009","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"Which benefit describes the ability of a system to recover from failures and continue functioning?","options":["Predictability","Reliability","Manageability","Governance"],"correct":1,"explanation_correct":"Reliability is resilience — recovering from failure and continuing to operate, aided by AZs, region pairs and redundancy."},{"id":"az-q010","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"High availability primarily refers to:","options":["Encrypting data at rest","Maximizing uptime by removing single points of failure","Reducing monthly cost","Automating deployments"],"correct":1,"explanation_correct":"HA = ensuring the service stays reachable at agreed levels, achieved through redundancy across fault domains/zones."},{"id":"az-q011","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"Which benefit lets you forecast cost and performance because the cloud behaves consistently?","options":["Elasticity","Predictability","Agility","Geo-distribution"],"correct":1,"explanation_correct":"Predictability covers both cost predictability (spend forecasting) and performance predictability (autoscale, load balancing)."},{"id":"az-q012","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"What does \"agility\" mean in cloud computing?","options":["Servers respond with low latency","Ability to deploy and reconfigure resources quickly as needs change","Data is replicated across regions","Applications never fail"],"correct":1,"explanation_correct":"Agility: provision in minutes, experiment, pivot — no procurement cycles."},{"id":"az-q013","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"Buying physical servers for your own datacenter is an example of:","options":["Operational expenditure (OpEx)","Capital expenditure (CapEx)","Consumption-based pricing","Elastic spending"],"correct":1,"explanation_correct":"CapEx = upfront investment in physical assets that depreciate over time."},{"id":"az-q014","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"Paying monthly for the Azure VMs you actually ran is an example of:","options":["CapEx","OpEx under a consumption-based model","A reservation","Depreciation"],"correct":1,"explanation_correct":"Cloud shifts spend to OpEx: pay-as-you-go for what you consume, no upfront asset purchase."},{"id":"az-q015","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"Which is a benefit of the consumption-based model?","options":["You pay for peak capacity even when idle","No wasted spend on unused capacity — stop paying when you deprovision","Costs never change month to month","Hardware refresh is your responsibility"],"correct":1,"explanation_correct":"Consumption model: pay only for resources used; deprovision and the charge stops."},{"id":"az-q016","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"A finance team wants IT costs to appear as ongoing operating costs rather than depreciated assets. Which approach fits?","options":["Build a private datacenter","Use public cloud pay-as-you-go services","Purchase spare servers","Extend hardware warranties"],"correct":1,"explanation_correct":"Public cloud converts infrastructure spend from CapEx (assets) to OpEx (operating cost)."},{"id":"az-q017","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"Which statement about CapEx is CORRECT?","options":["It has no upfront cost","Value is deducted (depreciated) over years","It scales instantly with demand","It is billed per second"],"correct":1,"explanation_correct":"CapEx buys assets up front whose value depreciates over their lifetime — the opposite of consumption billing."},{"id":"az-q018","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"In which service model does the CUSTOMER manage the operating system, middleware and applications, while the provider manages physical hosts, network and datacenter?","options":["SaaS","PaaS","IaaS","Serverless"],"correct":2,"explanation_correct":"IaaS: provider gives virtualized infrastructure; you patch and manage the OS upward."},{"id":"az-q019","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"Which is the best example of SaaS?","options":["Azure Virtual Machines","Azure App Service","Microsoft 365 / Outlook on the web","Azure SQL Database"],"correct":2,"explanation_correct":"SaaS = complete application consumed as a service; you manage only your data, devices and accounts."},{"id":"az-q020","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"In EVERY cloud service model, which responsibility ALWAYS remains with the customer?","options":["Physical network cabling","Data, devices, accounts and identities","Hypervisor patching","Datacenter cooling"],"correct":1,"explanation_correct":"The customer always owns their information/data, endpoints, and identity/access management; the provider always owns the physical layer."},{"id":"az-q021","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"Azure App Service, where Microsoft manages OS and runtime and you deploy code, is an example of:","options":["IaaS","PaaS","SaaS","On-premises"],"correct":1,"explanation_correct":"PaaS: platform (OS, middleware, runtime) is managed for you; you bring application and data."},{"id":"az-q022","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"Which model gives the customer the GREATEST management burden?","options":["SaaS","PaaS","IaaS","They are equal"],"correct":2,"explanation_correct":"IaaS leaves OS, middleware, runtime, apps and data to the customer — most flexibility, most responsibility."},{"id":"az-q023","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"For a PaaS database like Azure SQL Database, who patches the underlying operating system?","options":["The customer","Microsoft","A third-party auditor","Nobody — PaaS has no OS"],"correct":1,"explanation_correct":"In PaaS the provider maintains infrastructure and OS; the customer manages data, access and configuration."},{"id":"az-q024","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"Which responsibility is SHARED or varies by service model rather than fixed to one party?","options":["Physical datacenter security","Identity and directory infrastructure","Network controls and applications","Information and data classification"],"correct":2,"explanation_correct":"Items like network controls, applications and OS shift between customer and provider depending on IaaS/PaaS/SaaS."},{"id":"az-q025","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"What is serverless computing?","options":["Code runs without any servers existing","The provider fully manages server infrastructure; you pay per execution and never manage the servers","A VM with no public IP","A container that cannot scale"],"correct":1,"explanation_correct":"Serverless (e.g., Azure Functions on consumption plan): servers exist but are abstracted away; billing is per use, scale is automatic."},{"id":"az-q026","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"What is an Azure region?","options":["A single datacenter","One or more datacenters connected by a low-latency network in a geographic area","A billing boundary","A resource group location tag only"],"correct":1,"explanation_correct":"A region is a geographic area containing one or more datacenters networked with low latency."},{"id":"az-q027","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"What is an Availability Zone?","options":["A backup region on another continent","A physically separate location within a region with independent power, cooling and networking","A subnet in a VNet","A pricing tier"],"correct":1,"explanation_correct":"AZs are physically separate datacenter locations inside a region — protection against datacenter-level failure."},{"id":"az-q028","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"How many Availability Zones does a zone-enabled Azure region have at minimum?","options":["Two","Three","Four","One"],"correct":1,"explanation_correct":"Zone-enabled regions provide a minimum of three separate zones."},{"id":"az-q029","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"Deploying VMs across multiple Availability Zones protects PRIMARILY against:","options":["Region-wide disaster","Failure of a single datacenter","Subscription deletion","Application code bugs"],"correct":1,"explanation_correct":"AZs isolate datacenter failures; region-wide events need cross-region (paired region) strategies."},{"id":"az-q030","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"What is a region pair?","options":["Two subscriptions billed together","Two regions in the same geography, typically 300+ miles apart, replicating for disaster recovery","Two AZs connected by peering","Two datacenters in one campus"],"correct":1,"explanation_correct":"Region pairs sit in the same geography for data residency but far enough apart to survive regional disasters; updates roll out sequentially across the pair."},{"id":"az-q031","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"Which is a benefit of region pairs?","options":["Updates are applied to both regions simultaneously","If a broad outage occurs, one region of the pair is prioritized for restoration","They remove the need for backups","They share a single power grid"],"correct":1,"explanation_correct":"Pairs get sequential platform updates and prioritized recovery — one is restored first in a multi-region outage."},{"id":"az-q032","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"Azure Government and Azure China are examples of:","options":["Availability Zones","Sovereign clouds — physically and logically isolated Azure instances","Resource groups","Edge zones"],"correct":1,"explanation_correct":"Sovereign clouds are separate Azure environments for compliance/regulatory isolation (e.g., US government, China operated by 21Vianet)."},{"id":"az-q033","exam":"Regions, environments and Availability Zones","domain":"Azure architecture and services","g":"raz","question":"A service listed as \"zone-redundant\" means:","options":["It runs in one zone with backups","The platform automatically replicates it across multiple Availability Zones","It only works in paired regions","It cannot fail"],"correct":1,"explanation_correct":"Zone-redundant services spread instances/replicas across zones automatically (e.g., ZRS storage, zone-redundant SQL)."},{"id":"az-q034","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"What is the difference between authentication and authorization?","options":["They are synonyms","Authentication proves who you are; authorization determines what you can do","Authorization happens first","Authentication assigns roles"],"correct":1,"explanation_correct":"AuthN = identity verification (who); AuthZ = permission evaluation (what you may access). AuthN precedes AuthZ."},{"id":"az-q035","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"What is Microsoft Entra ID (formerly Azure AD)?","options":["An on-premises domain controller in the cloud","A cloud-based identity and access management service","A VPN service","A password vault for VMs"],"correct":1,"explanation_correct":"Entra ID is the cloud identity provider for Azure, Microsoft 365 and thousands of SaaS apps — not a cloud domain controller."},{"id":"az-q036","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"Multifactor authentication requires two or more of which factor categories?","options":["Two passwords from different systems","Something you know, something you have, something you are","A password and a security question","A PIN and a password"],"correct":1,"explanation_correct":"MFA combines distinct factor types: knowledge (password/PIN), possession (phone/token), inherence (biometrics)."},{"id":"az-q037","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"Which feature lets partner users from another organization access your resources with their OWN credentials?","options":["Entra B2B (guest access)","A shared admin account","Password writeback","A service principal"],"correct":0,"explanation_correct":"Entra B2B invites external identities as guests; they authenticate with their home organization credentials."},{"id":"az-q038","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"Passwordless sign-in options in Entra ID include:","options":["SMS only","Windows Hello, FIDO2 security keys, and the Microsoft Authenticator app","Shared secrets stored in Key Vault","Certificates emailed to users"],"correct":1,"explanation_correct":"Microsoft passwordless methods: Windows Hello for Business, FIDO2 keys, Authenticator app."},{"id":"az-q039","exam":"Identity, authentication, authorization and Microsoft Entra ID","domain":"Azure architecture and services","g":"aa","question":"A device joined to Microsoft Entra ID primarily enables:","options":["Faster local disk access","Organizational sign-in, conditional access evaluation and SSO on that device","Free Azure credits","Automatic OS licensing"],"correct":1,"explanation_correct":"Entra-joined devices become known identities: users sign in with org accounts and policies like CA can evaluate device state."},{"id":"az-q040","exam":"Conditional Access and SSO","domain":"Azure architecture and services","g":"aa","question":"What is single sign-on (SSO)?","options":["Using one very strong password everywhere manually","Authenticating once and accessing multiple applications without re-entering credentials","Disabling MFA for convenience","A password manager browser plugin"],"correct":1,"explanation_correct":"SSO: one identity/one sign-in grants access to many connected apps — fewer credentials to manage and attack."},{"id":"az-q041","exam":"Conditional Access and SSO","domain":"Azure architecture and services","g":"aa","question":"Conditional Access is best described as:","options":["A firewall for VNets","If-then policies that evaluate signals (user, location, device, risk) before granting or blocking access","A backup policy","Role assignments at subscription scope"],"correct":1,"explanation_correct":"CA = policy engine: signals in (who/where/what device/risk), decision out (allow, require MFA, block)."},{"id":"az-q042","exam":"Conditional Access and SSO","domain":"Azure architecture and services","g":"aa","question":"A company wants MFA required ONLY when users sign in from outside the corporate network. Which feature?","options":["Azure Policy","Conditional Access","Resource locks","NSG rules"],"correct":1,"explanation_correct":"That is a classic Conditional Access policy: condition = untrusted location, control = require MFA."},{"id":"az-q043","exam":"Conditional Access and SSO","domain":"Azure architecture and services","g":"aa","question":"Which Entra ID capability requires a Premium license (P1/P2)?","options":["Basic user creation","Conditional Access","Password change","Group creation"],"correct":1,"explanation_correct":"Conditional Access is an Entra ID P1+ feature; P2 adds risk-based (Identity Protection) conditions."},{"id":"az-q044","exam":"Conditional Access and SSO","domain":"Azure architecture and services","g":"aa","question":"Blocking legacy authentication protocols is typically enforced through:","options":["Azure Advisor","A Conditional Access policy","Cost Management","A route table"],"correct":1,"explanation_correct":"CA policies can target and block legacy auth clients that bypass MFA."},{"id":"az-q045","exam":"Governance: RBAC","domain":"Azure architecture and services","g":"rpl","question":"Azure role-based access control (RBAC) is used to:","options":["Enforce resource configuration standards","Grant users/groups specific permissions on Azure resources at a chosen scope","Encrypt storage accounts","Monitor sign-in risk"],"correct":1,"explanation_correct":"RBAC answers WHO can do WHAT on WHICH resources — security principal + role definition + scope."},{"id":"az-q046","exam":"Governance: RBAC","domain":"Azure architecture and services","g":"rpl","question":"Which built-in role allows full management of resources INCLUDING assigning access to others?","options":["Contributor","Owner","Reader","User Access Administrator only"],"correct":1,"explanation_correct":"Owner = full control incl. delegating access. Contributor manages resources but cannot grant access."},{"id":"az-q047","exam":"Governance: RBAC","domain":"Azure architecture and services","g":"rpl","question":"A user needs to manage all resources in a resource group but must NOT grant permissions to others. Assign:","options":["Owner","Contributor at the resource group scope","Reader at subscription scope","Global Administrator"],"correct":1,"explanation_correct":"Contributor = create/manage resources, no access delegation; scope it to the resource group (least privilege)."},{"id":"az-q048","exam":"Governance: RBAC","domain":"Azure architecture and services","g":"rpl","question":"How do RBAC assignments flow through the hierarchy?","options":["They apply only at the assigned resource","They are inherited by child scopes (MG → subscription → RG → resource)","They flow upward to parents","They require re-assignment per resource"],"correct":1,"explanation_correct":"Assignments at a parent scope are inherited by everything beneath it."},{"id":"az-q049","exam":"Governance: Azure Policy and budgets","domain":"Azure management and governance","g":"rpl","question":"What is the primary purpose of Azure Policy?","options":["Grant users permissions","Enforce and audit organizational standards for resource configurations","Encrypt network traffic","Schedule VM backups"],"correct":1,"explanation_correct":"Policy governs WHAT can be deployed and HOW it must be configured (e.g., allowed regions, required tags) — RBAC governs WHO."},{"id":"az-q050","exam":"Governance: Azure Policy and budgets","domain":"Azure management and governance","g":"rpl","question":"A policy with the DENY effect assigned at a management group will:","options":["Only warn administrators","Prevent non-compliant resources from being created anywhere below that management group","Delete existing non-compliant resources","Apply only to new subscriptions"],"correct":1,"explanation_correct":"Deny blocks non-compliant deployments; assignments inherit down the hierarchy. Existing resources are flagged non-compliant, not deleted."},{"id":"az-q051","exam":"Governance: Azure Policy and budgets","domain":"Azure management and governance","g":"rpl","question":"What is an initiative in Azure Policy?","options":["A single policy rule","A group of related policy definitions managed and assigned as one unit","A cost alert","A blueprint replacement for RBAC"],"correct":1,"explanation_correct":"Initiatives (policy sets) bundle policies — e.g., dozens of rules behind one compliance goal — assigned together."},{"id":"az-q052","exam":"Governance: Azure Policy and budgets","domain":"Azure management and governance","g":"rpl","question":"You must ensure every resource has a costCenter tag, adding it automatically when missing. Which effect fits?","options":["Deny","Audit","Modify / append","ReadOnly lock"],"correct":2,"explanation_correct":"Modify/append effects can add or correct properties like tags during deployment; audit only reports, deny only blocks."},{"id":"az-q053","exam":"Governance: Azure Policy and budgets","domain":"Azure management and governance","g":"cst","question":"An Azure budget, when its threshold is reached, will by default:","options":["Shut down all resources","Send notifications/alerts — it does not stop resources by itself","Delete the subscription","Downgrade VM sizes"],"correct":1,"explanation_correct":"Budgets alert on spend thresholds; stopping resources needs additional automation you configure yourself."},{"id":"az-q054","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"Order the Azure hierarchy from TOP to bottom:","options":["Subscription → Management group → Resource group → Resource","Management group → Subscription → Resource group → Resource","Resource group → Subscription → Management group → Resource","Tenant → Resource → Resource group"],"correct":1,"explanation_correct":"MGs contain subscriptions; subscriptions contain resource groups; RGs contain resources."},{"id":"az-q055","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"What is the primary purpose of management groups?","options":["Billing consolidation only","Organize multiple subscriptions and apply governance (policy/RBAC) across them","Group VMs for load balancing","Store ARM templates"],"correct":1,"explanation_correct":"MGs let you apply policy and access at scale over many subscriptions, with inheritance downward."},{"id":"az-q056","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"Which statements about resource groups are TRUE?","options":["A resource can belong to multiple resource groups","Deleting a resource group deletes all resources inside it","Resource groups can be nested","Resources cannot be moved between resource groups"],"correct":1,"explanation_correct":"RGs are flat (no nesting), a resource lives in exactly one RG, resources can be moved, and deleting the RG removes its contents."},{"id":"az-q057","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"A subscription is best described as:","options":["A physical datacenter allocation","A unit of management, billing and scale that resources deploy into","A password policy boundary only","An Entra ID replacement"],"correct":1,"explanation_correct":"Subscriptions are billing + management boundaries associated with a Microsoft Entra tenant."},{"id":"az-q058","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"A company wants separate billing for Dev and Prod while applying one security policy over both. Best structure?","options":["Two tenants","Two subscriptions under one management group with the policy assigned at the MG","One subscription with two resource groups","Two Azure accounts with no relationship"],"correct":1,"explanation_correct":"Subscriptions give billing separation; a shared MG applies the policy once with inheritance."},{"id":"az-q059","exam":"Scopes: management groups, subscriptions, resource groups","domain":"Azure management and governance","g":"scp","question":"Trust between Azure subscriptions and identity is established because every subscription:","options":["Contains its own domain controller","Trusts (is associated with) a Microsoft Entra tenant","Uses local accounts","Shares keys via Key Vault"],"correct":1,"explanation_correct":"Each subscription trusts exactly one Entra tenant for identity; a tenant can have many subscriptions."},{"id":"az-q060","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"What is Azure Resource Manager (ARM)?","options":["A billing portal","The deployment and management layer through which ALL Azure management requests flow","A VM agent","An on-premises gateway"],"correct":1,"explanation_correct":"Portal, CLI, PowerShell, SDKs and templates all call ARM — one consistent management plane with RBAC/policy/locks applied."},{"id":"az-q061","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"Which statement about ARM templates is CORRECT?","options":["They are imperative scripts run line by line","They are declarative JSON defining desired state, and deployments are idempotent","They can only create one resource at a time","They replace RBAC"],"correct":1,"explanation_correct":"Templates declare WHAT you want; ARM figures out how, and re-deploying the same template yields the same result (idempotent)."},{"id":"az-q062","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"What is Bicep?","options":["A monitoring agent","A domain-specific language that transpiles to ARM templates with simpler syntax","A cost calculator","A Linux shell"],"correct":1,"explanation_correct":"Bicep is the friendlier authoring language for ARM deployments — same engine, cleaner syntax."},{"id":"az-q063","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"Azure Cloud Shell provides:","options":["A local-only PowerShell module","A browser-based shell with Azure CLI and Azure PowerShell pre-installed and authenticated","A VM RDP client","A REST API mock"],"correct":1,"explanation_correct":"Cloud Shell runs in the browser (Bash or PowerShell) with tools ready and your identity signed in."},{"id":"az-q064","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"Which tool extends Azure management (Policy, RBAC-style governance) to servers running ON-PREMISES or in other clouds?","options":["Azure Bastion","Azure Arc","Azure Advisor","ExpressRoute"],"correct":1,"explanation_correct":"Azure Arc projects external machines/Kubernetes into ARM so Azure governance and tooling apply to them."},{"id":"az-q065","exam":"ARM and management tools","domain":"Azure management and governance","g":"arm","question":"Azure CLI and Azure PowerShell differ in that:","options":["Only CLI works on Windows","CLI uses az commands; PowerShell uses cmdlets like New-AzResourceGroup — both are cross-platform and call ARM","PowerShell cannot create resources","CLI cannot be scripted"],"correct":1,"explanation_correct":"Both are cross-platform automation tools over the same ARM API; syntax style is the difference."},{"id":"az-q066","exam":"Resource locks and tags","domain":"Azure management and governance","g":"lck","question":"A ReadOnly lock on a resource group means:","options":["Resources can be modified but not deleted","No modification or deletion — resources can only be read","Only the owner can edit","Diagnostics are disabled"],"correct":1,"explanation_correct":"ReadOnly prevents changes and deletion; CanNotDelete allows changes but blocks deletion."},{"id":"az-q067","exam":"Resource locks and tags","domain":"Azure management and governance","g":"lck","question":"Who is affected by a CanNotDelete resource lock?","options":["Only Readers","ALL users, including Owners, until the lock is removed","Only guest accounts","Only service principals"],"correct":1,"explanation_correct":"Locks apply regardless of RBAC role — even Owners must remove the lock first. That is the safety point."},{"id":"az-q068","exam":"Resource locks and tags","domain":"Azure management and governance","g":"lck","question":"Do resource locks inherit?","options":["No, they must be set per resource","Yes — a lock at subscription or RG scope applies to all resources within","Only ReadOnly locks inherit","Only within one region"],"correct":1,"explanation_correct":"Locks assigned at a parent scope apply to child resources."},{"id":"az-q069","exam":"Resource locks and tags","domain":"Azure management and governance","g":"lck","question":"Which statement about tags is CORRECT?","options":["Tags applied to a resource group are automatically inherited by resources by default","Tags are name/value metadata for organizing and cost-reporting; RG tags do NOT inherit by default","Tags control access permissions","A resource supports only one tag"],"correct":1,"explanation_correct":"Tags = metadata (env=prod, costCenter=123). Inheritance is not default (a policy can enforce/append it). They do not grant access."},{"id":"az-q070","exam":"Resource locks and tags","domain":"Azure management and governance","g":"lck","question":"The most common enterprise use of tags is:","options":["Encrypting resources","Cost reporting and chargeback by department/environment","Improving VM performance","Replacing naming conventions entirely"],"correct":1,"explanation_correct":"Tags feed cost analysis grouping — spend by cost center, project, environment."},{"id":"az-q071","exam":"Cloud Adoption Framework","domain":"Azure management and governance","g":"caf","question":"The Cloud Adoption Framework (CAF) is:","options":["A billing SKU","Microsoft’s proven guidance — documentation, best practices and tools — for planning and executing cloud adoption","A required certification","An Azure service you deploy"],"correct":1,"explanation_correct":"CAF guides the journey: Strategy, Plan, Ready, Adopt, plus Govern and Manage running alongside."},{"id":"az-q072","exam":"Cloud Adoption Framework","domain":"Azure management and governance","g":"caf","question":"In CAF, defining business justification and expected outcomes happens in which stage?","options":["Ready","Strategy","Migrate","Manage"],"correct":1,"explanation_correct":"Strategy captures motivations and outcomes; Plan aligns people/process; Ready prepares the environment (landing zones); Adopt migrates/innovates."},{"id":"az-q073","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Which compute option gives you FULL control of the operating system?","options":["Azure Functions","Azure App Service","Azure Virtual Machines","Logic Apps"],"correct":2,"explanation_correct":"VMs are IaaS — you own the OS. The others abstract the OS away."},{"id":"az-q074","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Virtual Machine Scale Sets are used to:","options":["Run one large VM with GPU","Deploy and autoscale a group of identical, load-balanced VMs","Back up VMs across regions","Convert VMs to containers"],"correct":1,"explanation_correct":"VMSS manage many identical VM instances with automatic scale out/in based on demand or schedule."},{"id":"az-q075","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Which service is the best fit for hosting a web app WITHOUT managing servers or OS?","options":["Azure Virtual Machines","Azure App Service","Azure Bastion","A VM availability set"],"correct":1,"explanation_correct":"App Service is PaaS web hosting: bring code/container, platform handles OS, patching, scaling."},{"id":"az-q076","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Azure Functions on the Consumption plan is characterized by:","options":["Always-on billing per hour","Event-driven execution billed per execution/duration, scaling to zero when idle","Requiring you to patch the OS","A mandatory dedicated VM"],"correct":1,"explanation_correct":"Functions = serverless: triggers run code on demand; no idle cost on consumption plan."},{"id":"az-q077","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Which service runs a container FASTEST with no orchestration and per-second billing?","options":["Azure Kubernetes Service","Azure Container Instances","VM Scale Sets","Azure DevTest Labs"],"correct":1,"explanation_correct":"ACI is the simplest, quickest way to run a container — no cluster to manage."},{"id":"az-q078","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Azure Kubernetes Service (AKS) is used when you need:","options":["A single container for a batch job","Orchestration of many containers — scaling, self-healing, service discovery","A Windows desktop in the cloud","Serverless HTTP functions"],"correct":1,"explanation_correct":"AKS is managed Kubernetes for orchestrating containerized applications at scale; the control plane is managed free by Azure."},{"id":"az-q079","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"Azure Virtual Desktop provides:","options":["A gaming service","Windows desktops and apps delivered from the cloud to any device, including multi-session Windows","Physical thin clients","A Linux-only terminal"],"correct":1,"explanation_correct":"AVD = desktop and app virtualization in Azure, incl. Windows 10/11 multi-session."},{"id":"az-q080","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"An availability SET protects VMs against:","options":["Regional disasters","Hardware failures and planned maintenance within a datacenter via fault and update domains","Subscription overspend","DDoS attacks"],"correct":1,"explanation_correct":"Availability sets spread VMs across fault domains (racks/power) and update domains inside one datacenter; AZs go a step further across datacenters."},{"id":"az-q081","exam":"Compute resources","domain":"Azure architecture and services","g":"cmp","question":"When choosing between containers and VMs, containers primarily offer:","options":["Stronger hardware isolation","Lightweight, fast-starting, portable app packaging sharing the host OS kernel","A full guest OS per app","Better graphics performance"],"correct":1,"explanation_correct":"Containers virtualize at the OS level: smaller, faster to start, ideal for microservices; VMs virtualize hardware with a full OS each."},{"id":"az-q082","exam":"Azure Key Vault","domain":"Azure architecture and services","g":"sec","question":"Azure Key Vault is used to:","options":["Store VM disk backups","Securely store and control access to secrets, encryption keys and certificates","Manage user passwords for Entra sign-in","Scan code for vulnerabilities"],"correct":1,"explanation_correct":"Key Vault centralizes secrets/keys/certs with access policies, logging, and optional HSM backing."},{"id":"az-q083","exam":"Azure Key Vault","domain":"Azure architecture and services","g":"sec","question":"Instead of putting a database connection string in application code, best practice is to:","options":["Encode it in Base64","Store it in Key Vault and let the app retrieve it with a managed identity","Email it to the operations team","Put it in a public repo with obfuscation"],"correct":1,"explanation_correct":"Key Vault + managed identity removes credentials from code entirely."},{"id":"az-q084","exam":"Azure Key Vault","domain":"Azure architecture and services","g":"sec","question":"The Premium tier of Key Vault adds:","options":["Unlimited free transactions","Hardware security module (HSM)-protected keys","Automatic secret generation","Multi-tenant sharing"],"correct":1,"explanation_correct":"Premium supports HSM-backed key protection for compliance-grade key storage."},{"id":"az-q085","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"An Azure Virtual Network (VNet) provides:","options":["Physical network cards","An isolated private network in Azure where resources communicate, divided into subnets","Internet DNS hosting only","A CDN"],"correct":1,"explanation_correct":"VNets are the private network foundation: address space, subnets, and controlled connectivity."},{"id":"az-q086","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"A Network Security Group (NSG) filters traffic based on:","options":["URL categories","5-tuple rules: source/destination IP, port and protocol (allow/deny)","User identity","TLS certificates"],"correct":1,"explanation_correct":"NSGs are stateful L3/L4 filters applied to subnets or NICs using priority-ordered rules."},{"id":"az-q087","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"Azure Firewall differs from an NSG because it:","options":["Is free","Is a managed, stateful firewall service with L3–L7 filtering, FQDN rules and threat intelligence, centrally managed","Only works on one VM","Replaces DNS"],"correct":1,"explanation_correct":"Firewall = full managed firewall for hub deployment; NSG = basic per-subnet/NIC packet filtering. They complement each other."},{"id":"az-q088","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"VNet peering allows:","options":["Two VNets to communicate privately over the Microsoft backbone","Automatic transitive routing between all peered VNets","Free cross-region bandwidth","Public internet exposure of subnets"],"correct":0,"explanation_correct":"Peering connects VNets privately (same or cross region). It is NOT transitive — A↔B and B↔C does not give A↔C."},{"id":"az-q089","exam":"Networking","domain":"Azure architecture and services","g":"con","question":"Which connectivity option provides a PRIVATE dedicated connection to Azure that does NOT traverse the public internet?","options":["Site-to-site VPN","Point-to-site VPN","ExpressRoute","VNet peering to on-premises"],"correct":2,"explanation_correct":"ExpressRoute is a private circuit via a connectivity provider — higher bandwidth, more consistent latency, no public internet."},{"id":"az-q090","exam":"Networking","domain":"Azure architecture and services","g":"con","question":"A site-to-site VPN connects:","options":["A single laptop to Azure","An on-premises network to an Azure VNet through an encrypted tunnel over the internet","Two subscriptions’ billing","A VNet to a paired region automatically"],"correct":1,"explanation_correct":"S2S VPN: gateway-to-gateway IPsec tunnel over the public internet. Point-to-site is for individual devices."},{"id":"az-q091","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"Azure Bastion provides:","options":["A jumpbox VM you must patch","Managed, browser-based RDP/SSH to VMs over TLS without exposing public IPs on the VMs","A WAF for web apps","Faster disk IO"],"correct":1,"explanation_correct":"Bastion removes the need for public IPs/exposed RDP ports — secure access via the portal over 443."},{"id":"az-q092","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"Azure DNS is used to:","options":["Filter malicious traffic","Host DNS domains and resolve names using Azure infrastructure","Assign private IPs","Encrypt VNet traffic"],"correct":1,"explanation_correct":"Azure DNS hosts public (and private) DNS zones with Azure’s global performance and availability."},{"id":"az-q093","exam":"Networking","domain":"Azure architecture and services","g":"net","question":"A private endpoint gives a PaaS service (like a storage account):","options":["A faster CPU","A private IP address inside your VNet so traffic stays off the public internet","A free SSL certificate","Zone redundancy"],"correct":1,"explanation_correct":"Private endpoints map PaaS services into your VNet via Private Link — the classic exam answer for keeping PaaS traffic private."},{"id":"az-q094","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Locally-redundant storage (LRS) keeps:","options":["Three copies across three regions","Three synchronous copies within a single datacenter","Six copies across two regions","One copy with checksums"],"correct":1,"explanation_correct":"LRS = 3 copies in one datacenter. Cheapest, but a datacenter loss loses all copies."},{"id":"az-q095","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Zone-redundant storage (ZRS) protects against:","options":["Regional disasters","Failure of a single datacenter, by replicating synchronously across three Availability Zones","Accidental deletion","Throttling"],"correct":1,"explanation_correct":"ZRS spreads the 3 copies across AZs in the region."},{"id":"az-q096","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Geo-redundant storage (GRS) provides:","options":["3 copies in one zone only","LRS in the primary region PLUS asynchronous replication (3 more copies) to the paired region — six copies total","Synchronous cross-region writes","Free read access in the secondary"],"correct":1,"explanation_correct":"GRS = 3 local + 3 in the paired region (async). RA-GRS additionally allows reads from the secondary."},{"id":"az-q097","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Which blob access tier is intended for rarely accessed data that can tolerate HOURS of retrieval latency and is stored offline?","options":["Hot","Cool","Cold","Archive"],"correct":3,"explanation_correct":"Archive is offline: cheapest storage, rehydration takes hours, 180-day minimum. Hot/cool/cold are online tiers."},{"id":"az-q098","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"The Cool tier is appropriate for data:","options":["Accessed constantly","Infrequently accessed and stored for at least 30 days","Requiring offline storage","Only for VM disks"],"correct":1,"explanation_correct":"Cool: lower storage cost, higher access cost, 30-day minimum. Cold raises that to 90 days; Archive to 180 (offline)."},{"id":"az-q099","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Azure Files provides:","options":["Block storage for VM OS disks","Fully managed SMB/NFS file shares mountable from cloud and on-premises","A NoSQL store","Message queuing"],"correct":1,"explanation_correct":"Azure Files = managed file shares accessible via standard protocols — lift-and-shift friendly."},{"id":"az-q100","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"Azure File Sync is used to:","options":["Replace all on-premises servers","Cache Azure file shares on Windows Servers on-premises, keeping frequently used files local","Convert blobs to disks","Sync two subscriptions"],"correct":1,"explanation_correct":"File Sync centralizes shares in Azure while Windows Server acts as a fast local cache."},{"id":"az-q101","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"To move TERABYTES of data to Azure where network transfer is impractical, use:","options":["AzCopy over 4G","Azure Data Box — a physical appliance shipped to you","Storage Explorer","A REST API loop"],"correct":1,"explanation_correct":"Data Box: Microsoft ships a rugged device; you load data and ship it back for import."},{"id":"az-q102","exam":"Storage accounts","domain":"Azure architecture and services","g":"sto","question":"AzCopy is:","options":["A GUI for browsing storage","A command-line utility for high-performance copy of blobs/files to and from storage accounts","A backup service","A disk defragmenter"],"correct":1,"explanation_correct":"AzCopy = CLI bulk transfer tool; Storage Explorer is the GUI counterpart."},{"id":"az-q103","exam":"Database services","domain":"Azure architecture and services","g":"dbs","question":"Azure Cosmos DB is best described as:","options":["A managed relational SQL engine","A globally distributed, multi-model NoSQL database with millisecond latency","A file share","An in-VM database you patch"],"correct":1,"explanation_correct":"Cosmos DB: NoSQL, turnkey global distribution, multiple APIs, single-digit-ms reads/writes."},{"id":"az-q104","exam":"Database services","domain":"Azure architecture and services","g":"dbs","question":"Azure SQL Managed Instance exists primarily to:","options":["Host MySQL","Provide near-100% SQL Server compatibility as PaaS for migrating instance-scoped features","Run SQLite","Replace Cosmos DB"],"correct":1,"explanation_correct":"SQL MI = PaaS with instance-level SQL Server features (agent, cross-db queries) for smooth lift-and-shift."},{"id":"az-q105","exam":"Database services","domain":"Azure architecture and services","g":"dbs","question":"Which are managed open-source relational offerings on Azure?","options":["Azure Database for MySQL and Azure Database for PostgreSQL","Cosmos DB and Table storage","SQL MI and SQL VM","Blob and Queue"],"correct":0,"explanation_correct":"Azure offers managed MySQL, PostgreSQL (and MariaDB historically) as PaaS."},{"id":"az-q106","exam":"Azure Marketplace","domain":"Azure architecture and services","g":"mkt","question":"The Azure Marketplace is:","options":["A hardware store","A catalog of certified first- and third-party solutions (VM images, apps, services) deployable into your subscription","A support ticket portal","Where you buy Microsoft 365 licenses only"],"correct":1,"explanation_correct":"Marketplace = provisioning catalog of certified solutions, billed through Azure."},{"id":"az-q107","exam":"IoT services","domain":"Azure architecture and services","g":"iot","question":"Azure IoT Hub is:","options":["A SaaS dashboard requiring no code","A PaaS service enabling secure bidirectional communication between IoT devices and the cloud","A physical gateway device","A BI tool"],"correct":1,"explanation_correct":"IoT Hub = PaaS messaging/management backbone for device-to-cloud and cloud-to-device."},{"id":"az-q108","exam":"IoT services","domain":"Azure architecture and services","g":"iot","question":"Azure IoT Central differs from IoT Hub because it is:","options":["Cheaper raw messaging","A SaaS application platform with dashboards/templates built on top, minimizing custom development","On-premises only","A security scanner"],"correct":1,"explanation_correct":"IoT Central = ready-made SaaS solution; IoT Hub = building block you develop against."},{"id":"az-q109","exam":"Big data and analytics services","domain":"Azure architecture and services","g":"dat","question":"Azure Synapse Analytics is used for:","options":["Device provisioning","Enterprise data warehousing and big data analytics with integrated pipelines","Serving web pages","Managing containers"],"correct":1,"explanation_correct":"Synapse unifies SQL data warehousing, Spark big data and data integration."},{"id":"az-q110","exam":"Big data and analytics services","domain":"Azure architecture and services","g":"dat","question":"Azure Databricks provides:","options":["A managed Apache Spark-based analytics platform for data engineering and machine learning","A relational OLTP engine","An email service","A DNS resolver"],"correct":0,"explanation_correct":"Databricks = collaborative Spark platform for large-scale data processing and ML."},{"id":"az-q111","exam":"AI services","domain":"Azure architecture and services","g":"ai","question":"Azure AI services (Cognitive Services) let developers:","options":["Train models only from scratch with GPUs","Add prebuilt AI — vision, speech, language, translation — via simple API calls","Replace all data engineers","Run only open-source models locally"],"correct":1,"explanation_correct":"Cognitive/AI services expose pretrained models through APIs; Azure Machine Learning is for building/training custom models."},{"id":"az-q112","exam":"AI services","domain":"Azure architecture and services","g":"ai","question":"Azure OpenAI Service provides:","options":["Free unlimited GPT usage","Access to large language models (e.g., GPT) with Azure security, compliance and regional hosting","A code editor","An IoT protocol"],"correct":1,"explanation_correct":"Azure OpenAI = OpenAI models delivered with enterprise Azure controls."},{"id":"az-q113","exam":"DevOps services","domain":"Azure architecture and services","g":"dev","question":"Azure DevOps provides:","options":["Only source control","A suite: Repos, Pipelines (CI/CD), Boards, Test Plans and Artifacts for the software lifecycle","A managed database","Virtual desktops"],"correct":1,"explanation_correct":"Azure DevOps = end-to-end development collaboration and CI/CD platform; GitHub/GitHub Actions is the alternative."},{"id":"az-q114","exam":"DevOps services","domain":"Azure architecture and services","g":"dev","question":"Azure DevTest Labs is used to:","options":["Run production workloads cheaply","Quickly provision self-service dev/test environments with policies and auto-shutdown to control cost","Scan for malware","Replace ARM templates"],"correct":1,"explanation_correct":"DevTest Labs: governed sandboxes — quotas, allowed VM sizes, schedules — for dev/test."},{"id":"az-q115","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Which factors affect the cost of an Azure resource?","options":["Only its size","Resource type, size/tier, region, uptime and consumption, plus egress network traffic","Only the subscription type","The number of tags"],"correct":1,"explanation_correct":"Cost drivers: what you run, how big, where, how long, and data leaving Azure (egress); inbound is generally free."},{"id":"az-q116","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Azure Reservations reduce cost by:","options":["Paying after usage","Committing to 1 or 3 years of a resource for discounts up to ~72% versus pay-as-you-go","Turning off VMs at night","Using spot capacity"],"correct":1,"explanation_correct":"Reservations = commitment discount on predictable workloads (VMs, SQL, etc.)."},{"id":"az-q117","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Azure savings plan for compute differs from reservations because it:","options":["Applies only to storage","Commits to an hourly SPEND across compute services with flexibility to change services/regions","Is free","Requires spot VMs"],"correct":1,"explanation_correct":"Savings plan = commit $/hour on compute, flexible across VM series/regions; reservation = commit to a specific resource configuration."},{"id":"az-q118","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Azure Hybrid Benefit lets you:","options":["Run Azure on-premises","Reuse existing Windows Server/SQL Server licenses with Software Assurance to cut Azure costs","Get free egress","Skip MFA"],"correct":1,"explanation_correct":"AHB applies your on-prem licenses to Azure workloads, removing the license portion of the price."},{"id":"az-q119","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Spot Virtual Machines are suitable for:","options":["Mission-critical databases","Interruptible workloads (batch, test) at deep discounts, because Azure can evict them when capacity is needed","Domain controllers","Anything requiring an SLA"],"correct":1,"explanation_correct":"Spot = unused capacity, up to ~90% cheaper, evictable with little notice — no SLA."},{"id":"az-q120","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Microsoft Cost Management + Billing allows you to:","options":["Change VM SKUs automatically","Analyze spend, create budgets and alerts, and view cost by tag/resource/scope","Encrypt invoices","Buy hardware"],"correct":1,"explanation_correct":"Cost Management = visibility (cost analysis), control (budgets/alerts) and export of billing data."},{"id":"az-q121","exam":"Costs and optimization","domain":"Azure management and governance","g":"cst","question":"Stopping (deallocating) a VM stops charges for:","options":["Everything related to it","Compute — but its disks and reserved public IPs continue to bill","Nothing","Storage only"],"correct":1,"explanation_correct":"Deallocated VMs stop compute billing; attached managed disks and some IPs still cost money."},{"id":"az-q122","exam":"Pricing and TCO calculators","domain":"Azure management and governance","g":"cal","question":"The Azure Pricing Calculator is used to:","options":["Compare on-premises datacenter costs with Azure","Estimate the monthly cost of a planned set of Azure services","Audit last month’s bill","Set budgets"],"correct":1,"explanation_correct":"Pricing calculator = forward estimate of Azure service configurations."},{"id":"az-q123","exam":"Pricing and TCO calculators","domain":"Azure management and governance","g":"cal","question":"The Total Cost of Ownership (TCO) Calculator is used to:","options":["Estimate one VM’s price","Compare the cost of running workloads on-premises versus in Azure, including power, space and labor","Generate invoices","Track budget alerts"],"correct":1,"explanation_correct":"TCO: enter current on-prem infrastructure to see projected savings from migrating — includes hidden datacenter costs."},{"id":"az-q124","exam":"Pricing and TCO calculators","domain":"Azure management and governance","g":"cal","question":"A CFO asks \"what would we save by moving our datacenter to Azure over 5 years?\" Which tool?","options":["Pricing calculator","TCO calculator","Azure Advisor","Cost analysis"],"correct":1,"explanation_correct":"On-prem vs Azure comparison = TCO calculator. Pricing calculator only prices Azure services."},{"id":"az-q125","exam":"Azure Advisor","domain":"Azure management and governance","g":"mon","question":"Azure Advisor provides:","options":["Live outage maps","Personalized recommendations across cost, security, reliability, performance and operational excellence","A ticketing system","Log queries"],"correct":1,"explanation_correct":"Advisor analyzes your resource usage/configuration and recommends improvements in five categories."},{"id":"az-q126","exam":"Azure Advisor","domain":"Azure management and governance","g":"mon","question":"Which is a typical Azure Advisor COST recommendation?","options":["Enable MFA","Right-size or shut down underutilized virtual machines","Add an NSG","Create a budget"],"correct":1,"explanation_correct":"Advisor flags idle/underused VMs and suggests resizing, shutdown or reservations."},{"id":"az-q127","exam":"Azure Advisor","domain":"Azure management and governance","g":"mon","question":"Advisor recommendations can be:","options":["Applied only manually one by one with no export","Filtered by subscription, postponed/dismissed, and downloaded/shared","Enforced automatically like policy","Seen only by Owners"],"correct":1,"explanation_correct":"Advisor is advisory: review, postpone, dismiss, export — it does not enforce."},{"id":"az-q128","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"Azure Monitor collects:","options":["Only billing data","Metrics and logs from Azure resources, applications and infrastructure for analysis, visualization and alerting","Only sign-in events","Marketplace reviews"],"correct":1,"explanation_correct":"Monitor = the platform telemetry pipeline: metrics + logs, dashboards, alerts, actions."},{"id":"az-q129","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"Log Analytics is:","options":["A separate billing portal","The Azure Monitor workspace/tool where you write queries (KQL) against collected log data","An antivirus","A VPN monitor"],"correct":1,"explanation_correct":"Log Analytics workspaces store logs; you query them with Kusto Query Language."},{"id":"az-q130","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"Application Insights is used to:","options":["Monitor the health of Azure datacenters","Monitor the performance, availability and usage of YOUR applications (APM)","Scan containers","Track spending"],"correct":1,"explanation_correct":"App Insights = application performance monitoring: requests, dependencies, exceptions, availability tests."},{"id":"az-q131","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"Azure Service Health tells you about:","options":["Your VM CPU usage","Azure platform incidents, planned maintenance and health advisories affecting YOUR services and regions","Application exceptions","User sign-ins"],"correct":1,"explanation_correct":"Service Health = personalized view of Azure platform issues; Resource Health drills into a specific resource’s state."},{"id":"az-q132","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"An alert rule in Azure Monitor consists of:","options":["Only an email address","A signal/condition on a target resource plus an action group defining who/what to notify or run","A policy definition","A support plan"],"correct":1,"explanation_correct":"Alerts: scope + condition (metric/log) + action group (email, SMS, webhook, automation)."},{"id":"az-q133","exam":"Azure Monitor and Service Health","domain":"Azure management and governance","g":"mon","question":"Your VM seems down. Which tool confirms whether the cause is an AZURE PLATFORM problem for that resource?","options":["Azure Advisor","Resource Health (within Service Health)","Cost analysis","Pricing calculator"],"correct":1,"explanation_correct":"Resource Health shows whether the specific resource is unhealthy due to platform events."},{"id":"az-q134","exam":"SLAs, status and compliance","domain":"Azure management and governance","g":"sla","question":"A Service Level Agreement (SLA) is:","options":["A marketing document","Microsoft’s formal commitment to a service’s uptime/connectivity, with service credits if unmet","A security certification","A cost cap"],"correct":1,"explanation_correct":"SLAs define guaranteed performance (e.g., 99.9%) and remedies (credits) when Azure misses them."},{"id":"az-q135","exam":"SLAs, status and compliance","domain":"Azure management and governance","g":"sla","question":"Composing an application from multiple services affects SLA how?","options":["The SLA becomes the highest individual value","The composite SLA is the PRODUCT of the individual SLAs — lower than any single one","SLAs do not combine","It always becomes 99.99%"],"correct":1,"explanation_correct":"Chained dependencies multiply: 99.9% × 99.9% ≈ 99.8%. Redundancy raises effective availability."},{"id":"az-q136","exam":"SLAs, status and compliance","domain":"Azure management and governance","g":"sla","question":"Where do you review Microsoft’s compliance certifications, audit reports and data-protection information?","options":["Azure status page","Microsoft Trust Center / Service Trust Portal","The pricing calculator","GitHub"],"correct":1,"explanation_correct":"Trust Center + Service Trust Portal host compliance offerings, audit documents and privacy commitments."},{"id":"az-q137","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"Microsoft Defender for Cloud provides:","options":["Only antivirus for VMs","Cloud security posture management (secure score, recommendations) AND workload protection across Azure, hybrid and multicloud","A SIEM replacement only","Network cabling checks"],"correct":1,"explanation_correct":"Defender for Cloud = CSPM (posture, secure score) + CWP (threat protection for servers, storage, SQL, containers...)."},{"id":"az-q138","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"Microsoft Sentinel is:","options":["A firewall appliance","A cloud-native SIEM and SOAR — collecting security data at scale, detecting, investigating and automating response","A password manager","A patching service"],"correct":1,"explanation_correct":"Sentinel = SIEM (aggregate/analyze security logs) + SOAR (automated response playbooks)."},{"id":"az-q139","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"Defense in depth means:","options":["One very strong firewall","Layered security controls (physical, identity, perimeter, network, compute, application, data) so a single breach does not compromise everything","Encrypting only the database","Outsourcing security"],"correct":1,"explanation_correct":"Multiple independent layers slow attacks and provide detection opportunities at each level."},{"id":"az-q140","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"The Zero Trust model is summarized as:","options":["Trust everything inside the corporate network","Verify explicitly, use least-privilege access, assume breach","Block all external users","Use passwords only"],"correct":1,"explanation_correct":"Zero Trust: never trust by location; always authenticate/authorize with all signals, minimize privileges, design assuming compromise."},{"id":"az-q141","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"Azure DDoS Protection (network protection tier) provides:","options":["Free WAF rules","Always-on traffic monitoring and automatic mitigation of volumetric attacks on your VNets, with cost protection","Antimalware on VMs","Email filtering"],"correct":1,"explanation_correct":"DDoS Network Protection defends public endpoints in VNets against denial-of-service floods beyond the free basic platform protection."},{"id":"az-q142","exam":"Security: Defender, Sentinel and defense in depth","domain":"Azure architecture and services","g":"sec","question":"Encryption of data \"at rest\" versus \"in transit\" means:","options":["Both refer to backups","At rest = stored data (disks/storage) encrypted; in transit = data moving over networks protected with TLS/IPsec","At rest applies only to Key Vault","In transit is optional in Azure"],"correct":1,"explanation_correct":"Azure encrypts storage at rest by default; TLS protects data moving between clients and services."},{"id":"az-q143","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which cloud model typically has the HIGHEST upfront cost and ongoing maintenance responsibility for the organization?","options":["Public cloud","Private cloud","Consumption model","SaaS"],"correct":1,"explanation_correct":"Private cloud: the organization buys, houses and maintains the hardware — maximum control, maximum CapEx and upkeep."},{"id":"az-q144","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"Increasing the CPU and RAM of an existing VM is called:","options":["Scaling out","Scaling up (vertical scaling)","Elastic bursting","Federating"],"correct":1,"explanation_correct":"Vertical scaling changes the size of one instance; horizontal adds/removes instances."},{"id":"az-q145","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"Deploying your application in multiple regions close to users worldwide demonstrates:","options":["Geo-distribution","Vertical scaling","Tagging","Zero trust"],"correct":0,"explanation_correct":"Geo-distribution places apps/data near customers globally for latency and resilience."},{"id":"az-q146","exam":"CapEx, OpEx and consumption-based","domain":"Cloud concepts","g":"cap","question":"Which spending pattern makes it easiest for a startup to begin WITHOUT large initial investment?","options":["CapEx-heavy private datacenter","OpEx consumption-based public cloud","Buying reserved hardware","Leasing colocation racks for 5 years"],"correct":1,"explanation_correct":"Consumption OpEx removes the entry barrier: start small, pay monthly, scale with revenue."},{"id":"az-q147","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"In SaaS, which of these is still the CUSTOMER’s responsibility?","options":["Application code patching","Managing accounts, identities and the data they store in the app","Runtime updates","Datacenter power"],"correct":1,"explanation_correct":"Even in SaaS you govern your users, access and information; everything else is the provider’s."},{"id":"az-q148","exam":"Shared responsibility and types of service","domain":"Cloud concepts","g":"ips","question":"Which pairing is CORRECT?","options":["IaaS — Microsoft 365","PaaS — Azure App Service","SaaS — Azure Virtual Machines","Serverless — ExpressRoute"],"correct":1,"explanation_correct":"App Service is the canonical PaaS example; VMs = IaaS; Microsoft 365 = SaaS."},{"id":"az-q149","exam":"Cloud benefits (HA, scalability, elasticity, reliability)","domain":"Cloud concepts","g":"ben","question":"An online shop automatically adds VM instances during a sale and removes them afterwards. This demonstrates:","options":["Manual scalability","Elasticity","Disaster recovery","High latency"],"correct":1,"explanation_correct":"Automatic capacity adjustment to demand is elasticity in action."},{"id":"az-q150","exam":"Types of cloud","domain":"Cloud concepts","g":"cld","question":"Which consideration MOST often drives organizations to keep a private/hybrid component?","options":["Cheaper hardware in the cloud","Regulatory, data-residency or legacy-system requirements","Lack of internet access at Microsoft","Cloud VMs cannot run Windows"],"correct":1,"explanation_correct":"Compliance, sovereignty and legacy dependencies are the classic reasons workloads stay on-premises."}];
+
+// ---------- storage ----------
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+const K = { custom:'az9_custom', records:'az9_records', wrong:'az9_wrong', sessions:'az9_sessions', unc:'az9_uncertain', active:'az9_active', schema:'az9_schema', mast:'az9_mastery' };
+const GROUPS = {"ips": ["IaaS / PaaS / SaaS & shared responsibility", "IaaS = you manage OS upward · PaaS = you bring app+data · SaaS = you manage only data/accounts · Customer ALWAYS owns data, devices, identities"], "cap": ["CapEx / OpEx", "CapEx = upfront assets that depreciate · OpEx/consumption = pay-as-you-go, stop paying when you stop using"], "cld": ["Public / Private / Hybrid / Multi-cloud", "Public = provider-owned shared · Private = you own & control · Hybrid = private + public together · Multi-cloud = multiple public providers"], "ben": ["Scalability / Elasticity / Reliability / HA", "Scale UP = bigger instance · Scale OUT = more instances · Elasticity = automatic · Reliability = recover from failure · HA = stay up"], "raz": ["Region / Availability Zone / Region pair", "Region = datacenters in an area · AZ = independent datacenter location IN a region (min 3) · Pair = second region 300+ miles for DR, sequential updates"], "aa": ["AuthN / AuthZ / MFA / CA / SSO", "Authentication = who you are · Authorization = what you may do · MFA = know+have+are · Conditional Access = if-then signals · SSO = sign in once"], "rpl": ["RBAC / Policy / Locks", "RBAC = WHO can do what (inherits) · Policy = WHAT config is allowed (audit/deny/modify, inherits) · Locks = block delete/change for EVERYONE incl. Owners"], "scp": ["Management group / Subscription / Resource group", "MG > Subscription > RG > Resource · MG = govern many subs · Subscription = billing+management boundary · RG = flat container, delete = delete contents"], "arm": ["ARM / templates / CLI / Arc", "ARM = the single management layer · Templates/Bicep = declarative & idempotent · CLI az / PowerShell Az cmdlets · Arc = govern on-prem & other clouds"], "lck": ["Locks / Tags", "ReadOnly = no change or delete · CanNotDelete = change yes, delete no · Locks bind Owners too & inherit · Tags = metadata for cost, NOT inherited by default"], "cmp": ["VM / VMSS / App Service / Functions / ACI / AKS", "VM = full OS control · VMSS = identical autoscaling VMs · App Service = PaaS web · Functions = event-driven serverless · ACI = single fast container · AKS = orchestration"], "net": ["NSG / Firewall / Bastion / DDoS / Private endpoint", "NSG = 5-tuple subnet/NIC filter · Firewall = managed L3–L7 central · Bastion = browser RDP/SSH, no public IP · DDoS = flood mitigation · Private endpoint = private IP for PaaS"], "con": ["VPN / ExpressRoute / Peering", "S2S VPN = encrypted over internet · P2S = single device · ExpressRoute = private circuit, NOT internet · Peering = VNet↔VNet backbone, non-transitive"], "sto": ["Redundancy & tiers", "LRS 3× one DC · ZRS 3× across AZs · GRS 6× two regions (RA- adds secondary reads) · Hot / Cool 30d / Cold 90d / Archive 180d offline-hours"], "dbs": ["SQL DB / SQL MI / Cosmos / OSS", "SQL DB = PaaS database · SQL MI = near-100% instance compat · Cosmos = global NoSQL ms-latency · Managed MySQL/PostgreSQL = OSS PaaS"], "cst": ["Reservations / Savings plan / Spot / AHB", "Reservation = 1/3yr specific resource (~72%) · Savings plan = $/hr compute, flexible · Spot = evictable deep discount · Hybrid Benefit = reuse Win/SQL licenses · Budgets alert, never stop"], "cal": ["Pricing vs TCO calculator", "Pricing calculator = estimate AZURE services · TCO = compare ON-PREM vs Azure incl. power, space, labor"], "mon": ["Advisor / Monitor / Service Health", "Advisor = recommendations (5 categories) · Monitor = metrics+logs+alerts (KQL in Log Analytics, App Insights = APM) · Service Health = AZURE platform issues · Resource Health = this resource"], "sla": ["SLA math & trust", "Composite SLA = product of dependencies (always lower) · Credits when missed · Trust Center / Service Trust Portal = compliance docs"], "sec": ["Defender / Sentinel / Zero trust", "Defender for Cloud = posture (secure score) + workload protection · Sentinel = SIEM+SOAR · Zero trust = verify explicitly, least privilege, assume breach · Defense in depth = layers"], "iot": ["IoT Hub vs IoT Central", "Hub = PaaS building block, bidirectional messaging · Central = SaaS app platform on top, minimal code"], "dat": ["Synapse / Databricks", "Synapse = warehousing + integrated analytics · Databricks = managed Spark for engineering/ML"], "ai": ["AI services vs Azure ML", "AI/Cognitive+OpenAI = prebuilt models via API · Azure ML = build/train/deploy YOUR models"], "dev": ["DevOps / DevTest Labs", "Azure DevOps = Repos+Pipelines+Boards · GitHub Actions = alternative CI/CD · DevTest Labs = governed self-service dev/test with auto-shutdown"], "mkt": ["Marketplace", "Certified 1st/3rd-party solutions deployed into your subscription, billed through Azure"], "caf": ["Cloud Adoption Framework", "Strategy → Plan → Ready → Adopt, with Govern + Manage alongside"]};
+
+function migrate(){
+  const v = LS.get(K.schema, 1);
+  if(v < 2){
+    const recs = LS.get(K.records, []);
+    recs.sort((a,b) => a.ts - b.ts);
+    const seen = new Set();
+    recs.forEach(r => { r.first = !seen.has(r.id); seen.add(r.id); });
+    LS.set(K.records, recs);
+  }
+  if(v < 3){
+    const recs = LS.get(K.records, []);
+    recs.sort((a,b) => a.ts - b.ts);
+    let sid = 0, lastTs = 0;
+    recs.forEach(r => {
+      if(r.sid === undefined){
+        if(r.ts - lastTs > 30*60*1000) sid = r.ts;
+        r.sid = sid;
+      } else sid = r.sid;
+      lastTs = r.ts;
+      if(r.cf === undefined) r.cf = r.unc ? 'u' : 's';
+    });
+    LS.set(K.records, recs);
+    rebuildMastery();
+    LS.set(K.schema, 3);
+  }
+  if(LS.get(K.schema, 1) < 4){
+    dropOrphans();
+    LS.set(K.schema, 4);
+  }
+  if(LS.get(K.schema, 1) < 5){
+    dropOrphans();
+    LS.set(K.schema, 5);
+  }
+  if(LS.get(K.schema, 1) < 7){
+    keyFix('hard4-q29', 1);
+    keyFix('hard3-q23', 1);
+    LS.set(K.schema, 7);
+  }
+  if(LS.get(K.schema, 1) < 8){
+    remapLegacyIds();
+    LS.set(K.schema, 8);
+  }
+  if(LS.get(K.schema, 1) < 6){
+    // answer-key corrections: hard4-q29 and hard3-q23 (correct = option index 1, "2 and 3")
+    const QFIX = { 'hard4-q29':1, 'hard3-q23':1 };
+    let recs = LS.get(K.records, []);
+    const pool = LS.get(K.wrong, {});
+    Object.entries(QFIX).forEach(([id, corr]) => {
+      let wrongs = 0;
+      recs = recs.filter(r => {
+        if(r.id !== id) return true;
+        if(r.sel === undefined) return false;      // outcome unknowable under corrected key — drop
+        r.ok = (r.sel === corr);                    // re-grade
+        if(!r.ok) wrongs++;
+        return true;
+      });
+      if(wrongs > 0) pool[id] = wrongs; else delete pool[id];
+    });
+    LS.set(K.records, recs);
+    LS.set(K.wrong, pool);
+    rebuildMastery();
+    LS.set(K.schema, 6);
+  }
+}
+const ID_REMAP = {};
+function remapLegacyIds(){
+  let changed = false;
+  Object.entries(ID_REMAP).forEach(([oldId, newId]) => {
+    if(qById(oldId) || !qById(newId)) return;
+    const recs = LS.get(K.records, []);
+    let hit = false;
+    recs.forEach(r => { if(r.id === oldId){ r.id = newId; hit = true; } });
+    if(hit){ LS.set(K.records, recs); changed = true; }
+    const pool = LS.get(K.wrong, {});
+    if(pool[oldId] !== undefined){ pool[newId] = Math.max(pool[newId]||0, pool[oldId]); delete pool[oldId]; LS.set(K.wrong, pool); changed = true; }
+    const un = LS.get(K.unc, {});
+    if(un[oldId] !== undefined){ un[newId] = un[oldId]; delete un[oldId]; LS.set(K.unc, un); changed = true; }
+    const sess = LS.get(K.sessions, []);
+    let sHit = false;
+    sess.forEach(s => {
+      if(s.wrongIds && s.wrongIds.includes(oldId)){ s.wrongIds = s.wrongIds.map(x => x === oldId ? newId : x); sHit = true; }
+      if(s.ans && s.ans[oldId] !== undefined){ s.ans[newId] = s.ans[oldId]; delete s.ans[oldId]; sHit = true; }
+    });
+    if(sHit){ LS.set(K.sessions, sess); changed = true; }
+  });
+  if(changed) rebuildMastery();
+}
+function keyFix(id, corr){
+  let recs = LS.get(K.records, []);
+  let wrongs = 0;
+  recs = recs.filter(r => {
+    if(r.id !== id) return true;
+    if(r.sel === undefined) return false;
+    r.ok = (r.sel === corr);
+    r.rk = true;
+    if(!r.ok) wrongs++;
+    return true;
+  });
+  LS.set(K.records, recs);
+  const pool = LS.get(K.wrong, {});
+  if(wrongs > 0) pool[id] = wrongs; else delete pool[id];
+  LS.set(K.wrong, pool);
+  if(wrongs === 0){
+    const sess = LS.get(K.sessions, []);
+    sess.forEach(s => {
+      if(s.wrongIds && s.wrongIds.includes(id)){
+        s.wrongIds = s.wrongIds.filter(x => x !== id);
+        s.wrong = Math.max(0, (s.wrong||0) - 1);
+        s.correct = Math.min(s.total || (s.correct+1), (s.correct||0) + 1);
+        if(s.ans) delete s.ans[id];
+      }
+    });
+    LS.set(K.sessions, sess);
+  }
+  rebuildMastery();
+}
+function dropOrphans(){
+  const valid = new Set(allQuestions().map(q => q.id));
+  LS.set(K.records, LS.get(K.records, []).filter(r => valid.has(r.id)));
+  const pool = LS.get(K.wrong, {});
+  Object.keys(pool).forEach(id => { if(!valid.has(id)) delete pool[id]; });
+  LS.set(K.wrong, pool);
+  const u = LS.get(K.unc, {});
+  Object.keys(u).forEach(id => { if(!valid.has(id)) delete u[id]; });
+  LS.set(K.unc, u);
+  rebuildMastery();
+}
+
+// ---------- exam weighting ----------
+const DW = { 'Cloud concepts':11, 'Azure architecture and services':15, 'Azure management and governance':14 };
+const DSHORT = { 'Cloud concepts':'D1 Cloud concepts', 'Azure architecture and services':'D2 Architecture & services', 'Azure management and governance':'D3 Management & governance' };
+function domainRisk(){
+  const recs = LS.get(K.records, []);
+  const firstR = recs.filter(r => r.first && DW[r.domain]);
+  const d = {};
+  firstR.forEach(r => { d[r.domain] = d[r.domain] || {n:0,w:0}; d[r.domain].n++; if(!r.ok) d[r.domain].w++; });
+  return Object.keys(DW).map(dom => {
+    const s = d[dom];
+    const rate = s && s.n >= 3 ? s.w/s.n : null;
+    return { dom, marks:DW[dom], n:s?s.n:0, w:s?s.w:0, rate, risk: rate === null ? null : DW[dom]*rate };
+  }).sort((a,b) => (b.risk||0) - (a.risk||0));
+}
+function examVerdict(cutoff){
+  const recs = LS.get(K.records, []).filter(r => !cutoff || r.ts <= cutoff);
+  const firstR = recs.filter(r => r.first && DW[r.domain]);
+  const N = firstR.length;
+  if(N < 40) return { locked:true, need:40 - N };
+  const overall = firstR.filter(r => r.ok).length / N;
+  let E = 0, V = 0;
+  const m = 4; // prior weight, shrinks sparse domains toward overall accuracy
+  Object.entries(DW).forEach(([dom, wgt]) => {
+    const dr = firstR.filter(r => r.domain === dom);
+    const n = dr.length, k = dr.filter(r => r.ok).length;
+    const p = (k + m*overall) / (n + m);
+    // conservative: use the lower confidence bound of accuracy, not the point estimate
+    const pLow = Math.max(0, p - 0.8 * Math.sqrt(p * (1-p) / (n + m)));
+    E += wgt * pLow;
+    V += wgt * pLow * (1-pLow);           // question-level variance
+  });
+  E = Math.max(0, E - 1);                 // flat exam-day haircut (nerves, unfamiliar wording)
+  const sd = Math.sqrt(V);
+  const z = (27.5 - E) / sd;  // official pass ~28/40 (700/1000); session target stays 80%  // verdict bar = 27/40 (one mark above the official 26); session target stays 30/40
+  const phi = x => { const t = 1/(1+0.2316419*Math.abs(x));
+    const dens = Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+    let pr = dens*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+    return x >= 0 ? 1-pr : pr; };
+  let P = Math.round(100 * (1 - phi(z)));
+  P = Math.max(1, Math.min(99, P));
+  const risk = domainRisk().filter(r => r.risk !== null);
+  const top = risk[0];
+  return { locked:false, P, E:Math.round(E*10)/10, sd:Math.round(sd*10)/10, N, top };
+}
+function verdictHTML(){
+  const v = examVerdict();
+  if(v.locked) return '<span class="sub">Verdict locks in after 40 first-attempt answers — ' + v.need + ' to go. Fastest route: one Fresh Exam.</span>';
+  const marks = v.E + '/40 expected (official pass ~28/40 = 700/1000; your training target stays 32/40, ±' + v.sd + ')';
+  if(v.P >= 85) return '<b style="color:var(--ok);font-size:17px">' + v.P + '% chance of passing (28+/40) today.</b> ' + marks + '. <b>Book the exam.</b> This is a deliberately conservative estimate — the real result is usually this or better.';
+  if(v.P >= 60) return '<b style="color:var(--warn);font-size:17px">' + v.P + '% chance of passing (28+/40)</b> (conservative estimate). ' + marks + ' — the margin is thin.' + (v.top ? ' Fastest gap to close: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks at risk). Fix that, then book.' : '');
+  return '<b style="color:var(--bad);font-size:17px">' + v.P + '% chance of passing (28+/40).</b> ' + marks + '. Not yet.' + (v.top ? ' Biggest recovery available: ' + DSHORT[v.top.dom] + ' (~' + (Math.round(v.top.risk*10)/10) + ' marks).' : '');
+}
+function genWeighted(preferFresh){
+  const qs = allQuestions().filter(q => DW[q.domain]);
+  const recs = LS.get(K.records, []);
+  const seen = new Set(recs.map(r => r.id));
+  const lastTs = {}; recs.forEach(r => lastTs[r.id] = r.ts);
+  const queue = [], notes = [];
+  Object.entries(DW).forEach(([dom, quota]) => {
+    const ids = qs.filter(q => q.domain === dom).map(q => q.id);
+    const unseen = shuffle(ids.filter(id => !seen.has(id)));
+    const rest = ids.filter(id => seen.has(id)).sort((a,b) => (lastTs[a]||0) - (lastTs[b]||0));
+    let pick = preferFresh ? unseen.slice(0, quota) : shuffle(ids).slice(0, quota);
+    if(preferFresh && pick.length < quota){
+      const need = quota - pick.length;
+      pick = pick.concat(rest.slice(0, need));
+      if(need && rest.length) notes.push(DSHORT[dom] + ': only ' + unseen.length + ' unseen left, reused ' + Math.min(need, rest.length) + ' seen');
+    }
+    if(pick.length < quota) notes.push(DSHORT[dom] + ': bank short by ' + (quota - pick.length));
+    queue.push(...pick);
+  });
+  return { queue: shuffle(queue), notes };
+}
+// ---------- mastery engine ----------
+function masteryApply(M, r){
+  const m = M[r.id] || { st:'learning', seen:0, ok:0, bad:0, cc:0, lastOkSid:null, next:0, rel:0 };
+  m.seen++;
+  if(!r.ok){
+    m.bad++; m.cc = 0;
+    if(m.st === 'mastered'){ m.st = 'relapsed'; m.rel++; m.next = r.ts; }
+    else { m.st = 'weak'; m.next = r.ts + 12*3600*1000; }
+  } else {
+    m.ok++; m.cc++;
+    const fragile = r.cf === 'u' || r.cf === 'g';
+    if(m.st === 'mastered'){ m.next = r.ts + 72*3600*1000; }
+    else if(m.st === 'improving' && m.lastOkSid && m.lastOkSid !== r.sid && !fragile){
+      m.st = 'mastered'; m.next = r.ts + 72*3600*1000;
+    } else {
+      m.st = 'improving'; m.next = r.ts + 24*3600*1000;
+    }
+    m.lastOkSid = r.sid;
+  }
+  M[r.id] = m;
+}
+function rebuildMastery(){
+  const M = {};
+  LS.get(K.records, []).slice().sort((a,b) => a.ts - b.ts).forEach(r => masteryApply(M, r));
+  LS.set(K.mast, M);
+}
+function getConfidentErrorSummary(){
+  const recs = LS.get(K.records, []);
+  const M = LS.get(K.mast, {});
+  const ids = [...new Set(recs.filter(r => !r.ok && r.cf === 's').map(r => r.id))].filter(id => qById(id));
+  const out = { active:[], relapsed:[], repaired:[], lifetimeTotal: ids.length };
+  ids.forEach(id => {
+    const st = (M[id] || {}).st;
+    if(st === 'mastered') out.repaired.push(id);
+    else if(st === 'relapsed') out.relapsed.push(id);
+    else out.active.push(id);
+  });
+  return out;
+}
+function getReviewQueueSummary(now){
+  now = now || Date.now();
+  const M = LS.get(K.mast, {});
+  let due = 0, later = 0, invalid = 0;
+  const tracked = [];
+  Object.entries(M).forEach(([id, m]) => {
+    if(!qById(id) || !['weak','relapsed','improving'].includes(m.st)) return;
+    tracked.push(id);
+    const bad = !(typeof m.next === 'number' && isFinite(m.next));
+    if(bad) invalid++;
+    if(bad || m.next <= now) due++; else later++;
+  });
+  const poolManual = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id)).length;
+  let repeats = 0;
+  const a = LS.get(K.active, null);
+  if(a && a.requeued) repeats = Object.keys(a.requeued).length;
+  return { uniqueWeakQuestions: tracked.length, dueNowUnique: due, scheduledLaterUnique: later,
+           invalidSchedules: invalid, poolManual, immediateRepeatsUnique: repeats };
+}
+function dueIds(){
+  const M = LS.get(K.mast, {});
+  const now = Date.now();
+  const ce = getConfidentErrorSummary();
+  const hot = new Set([...ce.active, ...ce.relapsed]);
+  return Object.entries(M)
+    .filter(([id,m]) => qById(id) && ['weak','relapsed','improving'].includes(m.st) &&
+      (!(typeof m.next === 'number' && isFinite(m.next)) || m.next <= now))
+    .sort((a,b) =>
+      ((b[1].st==='relapsed')-(a[1].st==='relapsed')) ||
+      ((hot.has(b[0])?1:0)-(hot.has(a[0])?1:0)) ||
+      ((a[1].next||0) - (b[1].next||0)))
+    .map(([id]) => id);
+}
+
+function allQuestions(){
+  const custom = LS.get(K.custom, []);
+  const seen = new Set(BANK.map(q => q.id));
+  return BANK.concat(custom.filter(q => !seen.has(q.id)));
+}
+function qById(id){ return allQuestions().find(q => q.id === id); }
+
+// ---------- home ----------
+function buildHome(){
+  const qs = allQuestions();
+  const exams = {};
+  const doms = {};
+  qs.forEach(q => { exams[q.exam] = (exams[q.exam]||0)+1; doms[q.domain] = (doms[q.domain]||0)+1; });
+  document.getElementById('bankline').textContent =
+    qs.length + ' questions · ' + Object.keys(exams).length + ' exams · target 80% (official pass ~70%) · az-v1.0';
+  const seenIds = new Set(LS.get(K.records, []).map(r => r.id));
+  const unseenN = qs.filter(q => !seenIds.has(q.id)).length;
+  const sel = document.getElementById('src');
+  sel.innerHTML = '<option value="__random__">Weighted 40 — official exam mix (5/6/2/1/2/7/17)</option>' +
+    '<option value="__fresh__">Fresh 40 — exam-weighted, unseen first (' + unseenN + ' unseen left)</option>' +
+    Object.keys(exams).sort().map(e => '<option value="' + esc(e) + '">' + esc(e) + ' (' + exams[e] + ')</option>').join('');
+  document.getElementById('banklist').innerHTML =
+    Object.keys(exams).sort().map(e => '<li>' + esc(e) + ' — ' + exams[e] + '</li>').join('') +
+    '<li style="margin-top:8px;color:var(--accent)">By domain:</li>' +
+    Object.entries(doms).sort((a,b)=>b[1]-a[1]).map(([d,n]) => '<li>' + esc(d) + ' — ' + n + '</li>').join('');
+  const recs = LS.get(K.records, []);
+  const sess = LS.get(K.sessions, []);
+  document.getElementById('progline').textContent = recs.length
+    ? recs.length + ' answers and ' + sess.length + ' sessions saved on this device. Export a backup file to keep them safe or move them to another device.'
+    : 'Progress saves automatically on this device as you answer. Export a backup file any time to keep it safe or move it to another device.';
+  let vh = verdictHTML();
+  const vNow = examVerdict(), vWeek = examVerdict(Date.now() - 7*24*3600*1000);
+  if(!vNow.locked && !vWeek.locked && vNow.P !== vWeek.P){
+    const dP = vNow.P - vWeek.P;
+    vh += ' <span class="sub">(' + (dP > 0 ? '\u25B2 +' : '\u25BC ') + dP + ' pts vs last week)</span>';
+  }
+  document.getElementById('verdictbox').innerHTML = vh;
+  // daily consistency (derived, no streak punishment)
+  const dayKey = ts => { const d = new Date(ts); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); };
+  const perDay = {};
+  LS.get(K.records, []).forEach(r => { const k = dayKey(r.ts); perDay[k] = (perDay[k]||0)+1; });
+  const todayN = perDay[dayKey(Date.now())] || 0;
+  document.getElementById('dailyline').innerHTML = todayN >= 10
+    ? 'Today: <b style="color:var(--ok)">\u2713 ' + todayN + ' questions</b> — day counted.'
+    : 'Today: <b>' + todayN + '/10</b> questions for the day to count.';
+  let dotsHtml = '';
+  for(let i = 13; i >= 0; i--){
+    const k = dayKey(Date.now() - i*24*3600*1000);
+    dotsHtml += '<i class="' + (((perDay[k]||0) >= 10) ? 'on' : '') + (i === 0 ? ' today' : '') + '"></i>';
+  }
+  document.getElementById('daydots').innerHTML = dotsHtml + '<span class="sub" style="margin-left:8px">last 14 days</span>';
+  pomoRender();
+  try{ const sl = localStorage.getItem('az9_smartlen'); if(sl) document.getElementById('smartlen').value = sl; }catch(e){}
+  const nba = nextBestAction();
+  document.getElementById('nextupline').textContent = nba.line;
+  document.getElementById('nextupbtn').textContent = 'Start: ' + nba.label;
+  const echo = () => {
+    const sel0 = document.getElementById('src');
+    const txt = sel0.options[sel0.selectedIndex] ? sel0.options[sel0.selectedIndex].text.split(' — ')[0].split(' (')[0] : '';
+    document.querySelectorAll('.srcecho').forEach(e => e.textContent = txt);
+  };
+  document.getElementById('src').onchange = echo;
+  setTimeout(echo, 0);
+  const dueN = dueIds().length;
+  const drillReady = Object.values(allQuestions().reduce((m,q)=>{ if(q.g){m[q.g]=(m[q.g]||0)+1;} return m; },{})).filter(n=>n>=6).length;
+  document.getElementById('smartinfo').textContent =
+    (dueN ? dueN + ' questions due for review. ' : 'Nothing due right now. ') +
+    'Smart Review mixes due, weak, uncertain and fresh questions with confidence checks. The Drill trains ' + drillReady + ' groups of commonly confused concepts, starting with your worst.';
+  const recsH = LS.get(K.records, []);
+  const sessH = LS.get(K.sessions, []);
+  const firstH = recsH.filter(r => r.first);
+  const lastSess = sessH[sessH.length - 1];
+  const seenH = new Set(recsH.map(r => r.id)).size;
+  document.getElementById('homesnap').innerHTML = recsH.length
+    ? 'Last session: <b>' + (lastSess ? Math.round(100*lastSess.correct/lastSess.total) + '%' : '–') + '</b>' +
+      ' · First-attempt accuracy: <b>' + (firstH.length ? Math.round(100*firstH.filter(r=>r.ok).length/firstH.length) + '%' : '–') + '</b>' +
+      ' · Seen: <b>' + seenH + '/' + qs.length + '</b>' +
+      (function(){ const top = domainRisk().find(r => r.risk !== null && r.risk >= 0.5);
+        return top ? '<br>Highest exam return right now: <b>' + esc(DSHORT[top.dom]) + '</b> (~' + (Math.round(top.risk*10)/10) + ' marks at risk)' : ''; })()
+    : '';
+  const a = LS.get(K.active, null);
+  const rc = document.getElementById('resumecard');
+  if(a && a.queue && Object.keys(a.answers).length < a.queue.length){
+    rc.style.display = 'block';
+    const done = Object.keys(a.answers).length;
+    document.getElementById('resumeinfo').textContent =
+      a.mode.charAt(0).toUpperCase()+a.mode.slice(1) + ' · ' + a.label + ' · ' + done + '/' + a.queue.length + ' answered' +
+      (a.mode === 'exam' ? ' · ' + fmt(a.remainMs||0) + ' left on the clock' : '') +
+      ' · saved ' + new Date(a.savedAt).toLocaleString();
+  } else rc.style.display = 'none';
+  const pool = LS.get(K.wrong, {});
+  const n = Object.keys(pool).filter(id => qById(id)).length;
+  document.getElementById('weakdesc').textContent = n
+    ? n + ' questions in your weakness pool. Answer one right and it leaves the pool.'
+    : 'Empty for now. Wrong answers land here automatically; use the thumbs-down button to add any question yourself.';
+}
+
+// ---------- progress backup ----------
+function progressDump(){
+  return { v:3, schema:LS.get(K.schema,3), exported:Date.now(),
+    records:LS.get(K.records,[]), wrong:LS.get(K.wrong,{}),
+    sessions:LS.get(K.sessions,[]), custom:LS.get(K.custom,[]),
+    uncertain:LS.get(K.unc,{}) };
+}
+function mergeProgress(d){
+  if(!d || ![1,2,3].includes(d.v)) throw new Error('Not a valid backup.');
+  // records: union by id+ts
+  const rec = LS.get(K.records, []);
+  const seenR = new Set(rec.map(r => r.id + '|' + r.ts));
+  (d.records||[]).forEach(r => { const k = r.id + '|' + r.ts; if(!seenR.has(k)){ rec.push(r); seenR.add(k); } });
+  rec.sort((a,b) => a.ts - b.ts);
+  LS.set(K.records, rec);
+  // wrong pool: max miss count per id
+  const pool = LS.get(K.wrong, {});
+  Object.entries(d.wrong||{}).forEach(([id,n]) => { pool[id] = Math.max(pool[id]||0, n); });
+  LS.set(K.wrong, pool);
+  // sessions: union by ts
+  const ses = LS.get(K.sessions, []);
+  const seenS = new Set(ses.map(s => s.ts));
+  (d.sessions||[]).forEach(s => { if(!seenS.has(s.ts)){ ses.push(s); seenS.add(s.ts); } });
+  ses.sort((a,b) => a.ts - b.ts);
+  LS.set(K.sessions, ses);
+  // custom questions: dedupe by id
+  const cus = LS.get(K.custom, []);
+  const seenC = new Set(cus.map(q => q.id).concat(BANK.map(q => q.id)));
+  (d.custom||[]).forEach(q => { if(q.id && !seenC.has(q.id)){ cus.push(q); seenC.add(q.id); } });
+  LS.set(K.custom, cus);
+  const un = LS.get(K.unc, {});
+  Object.entries(d.uncertain || {}).forEach(([id, ts]) => { un[id] = Math.max(un[id] || 0, ts); });
+  LS.set(K.unc, un);
+  migrate();
+  dropOrphans();
+  remapLegacyIds();
+  return { records:rec.length, sessions:ses.length, pool:Object.keys(pool).length };
+}
+function stamp(){
+  const t = new Date();
+  return t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
+}
+function exportProgress(){
+  try{
+    const blob = new Blob([JSON.stringify(progressDump())], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'itil4-progress-' + stamp() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }catch(e){
+    // fallback for browsers that block downloads from local files
+    toggleTextBackup(true); fillBackupText();
+    document.getElementById('backupmsg').textContent = 'Download blocked here — copy the text below instead.';
+  }
+}
+function importProgressFile(input){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const s = mergeProgress(JSON.parse(rd.result));
+      buildHome();
+      alert('Backup restored and merged: ' + s.records + ' answers, ' + s.sessions + ' sessions, ' + s.pool + ' questions in weakness pool.');
+    }catch(e){ alert('Restore failed: ' + e.message); }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+function toggleTextBackup(forceOn){
+  const el = document.getElementById('textbackup');
+  el.style.display = (forceOn || el.style.display === 'none') ? 'block' : 'none';
+}
+function fillBackupText(){
+  const box = document.getElementById('backupbox');
+  box.value = JSON.stringify(progressDump());
+  box.focus(); box.select();
+  document.getElementById('backupmsg').textContent = 'Backup text ready — copy it (it is already selected).';
+}
+function restoreFromText(){
+  const msg = document.getElementById('backupmsg');
+  try{
+    const s = mergeProgress(JSON.parse(document.getElementById('backupbox').value));
+    buildHome();
+    msg.textContent = 'Restored: ' + s.records + ' answers, ' + s.sessions + ' sessions, ' + s.pool + ' in pool.';
+  }catch(e){ msg.textContent = 'Restore failed: ' + e.message; }
+}
+// ---------- screens ----------
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('homelink').style.display = id === 's-home' ? 'none' : 'inline';
+  applyDim();
+  window.scrollTo(0,0);
+}
+function goHome(){ stopClock(); S = null; buildHome(); show('s-home'); }
+
+// ---------- session ----------
+let S = null;
+
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+
+function smartScore(id){
+  const q = qById(id); if(!q) return 0;
+  const wShare = (DW[q.domain] || 2) / 40;
+  const recs = LS.get(K.records, []).filter(r => r.id === id);
+  const M = LS.get(K.mast, {})[id];
+  const ceS = getConfidentErrorSummary();
+  let f = 1.0;
+  if(ceS.relapsed.includes(id)) f = 2.2;
+  else if(ceS.active.includes(id)) f = 2.0;
+  else if(M && M.st === 'relapsed') f = 1.7;
+  else if(recs.filter(r => !r.ok).length >= 2) f = 1.7;
+  else if(recs.some(r => !r.ok)) f = 1.4;
+  else if(recs.length && recs[recs.length-1].cf === 'g') f = 1.3;
+  else if(recs.length && recs[recs.length-1].cf === 'u') f = 1.2;
+  else if(M && M.st === 'mastered') f = 0.8;
+  return wShare * f;
+}
+function startFreshExam(){
+  document.getElementById('src').value = '__fresh__';
+  startSession('exam');
+}
+function nextBestAction(){
+  const due = dueIds();
+  if(due.length){
+    const doms = {};
+    due.forEach(id => { const d = (qById(id)||{}).domain; doms[d] = (doms[d]||0)+1; });
+    const top = Object.entries(doms).sort((a,b) => b[1]-a[1])[0];
+    return { label:'Smart Review — ' + due.length + ' due' + (top && DSHORT[top[0]] ? ', mostly ' + DSHORT[top[0]] : ''),
+             line:'You have ' + due.length + ' questions due for review. Clearing these is worth more than new material.',
+             fn:startSmart };
+  }
+  const pool = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id));
+  if(pool.length >= 5)
+    return { label:'Smart Review — ' + pool.length + ' weaknesses', line:'Nothing scheduled, but ' + pool.length + ' weaknesses wait in the pool.', fn:startSmart };
+  const risk = domainRisk().filter(r => r.risk !== null && r.risk >= 1);
+  if(risk.length && qById && allQuestions().some(q => q.g))
+    return { label:'Distinction Drill', line:'Biggest exam return right now: ' + DSHORT[risk[0].dom] + ' (~' + (Math.round(risk[0].risk*10)/10) + ' marks at risk).', fn:startDrill };
+  const seen = new Set(LS.get(K.records, []).map(r => r.id));
+  const unseenN = allQuestions().filter(q => !seen.has(q.id)).length;
+  if(unseenN >= 40)
+    return { label:'Fresh Exam — 60 min', line:'Nothing due and no urgent weaknesses. Take an honest exam-weighted mock (' + unseenN + ' unseen left).', fn:startFreshExam };
+  return { label:'Weighted 40 practice', line:'Fewer than 40 unseen questions left — practice with the official exam mix.', fn:function(){ document.getElementById('src').value='__random__'; startSession('practice'); } };
+}
+function runNextUp(){ nextBestAction().fn(); }
+function startSmart(){
+  const due = dueIds();
+  const pool = Object.keys(LS.get(K.wrong, {})).filter(id => qById(id) && !due.includes(id));
+  const recs = LS.get(K.records, []);
+  const lastById = {};
+  recs.forEach(r => lastById[r.id] = r);
+  const uncOk = Object.keys(LS.get(K.unc, {})).filter(id =>
+    qById(id) && lastById[id] && lastById[id].ok && !due.includes(id) && !pool.includes(id));
+  const seen = new Set(recs.map(r => r.id));
+  const risk = domainRisk().filter(x => x.risk !== null);
+  const topDoms = risk.slice(0, 2).map(x => x.dom);
+  const unseen = shuffle(allQuestions().map(q => q.id).filter(id => !seen.has(id)))
+    .sort((a,b) => (topDoms.includes(qById(b).domain)?1:0) - (topDoms.includes(qById(a).domain)?1:0));
+  const byScore = arr => arr.slice().sort((a,b) => smartScore(b) - smartScore(a));
+  let lenSetting = '10';
+  try{ lenSetting = localStorage.getItem('az9_smartlen') || document.getElementById('smartlen').value || '10'; }catch(e){}
+  if(lenSetting === 'all'){
+    const q = [...new Set([...due, ...pool, ...uncOk])];
+    if(!q.length){ alert('Nothing to review yet — answer some questions first.'); return; }
+    launch('smart', shuffle(q), 'Smart Review (all ' + q.length + ')');
+    return;
+  }
+  const LEN = parseInt(lenSetting, 10) || 10;
+  const q = [];
+  const domCount = {};
+  const CAP = Math.ceil(LEN * 0.6);
+  const add = id => {
+    const dom = (qById(id)||{}).domain;
+    if(q.includes(id)) return false;
+    if((domCount[dom]||0) >= CAP) return false;
+    q.push(id); domCount[dom] = (domCount[dom]||0) + 1; return true;
+  };
+  const take = (arr, n) => { let got = 0; for(const id of byScore(arr)){ if(got >= n) break; if(add(id)) got++; } };
+  take(due, Math.round(LEN*0.4)); take(pool, Math.round(LEN*0.2)); take(uncOk, Math.round(LEN*0.2)); take(unseen, Math.round(LEN*0.2));
+  [due, pool, uncOk, unseen].forEach(arr => byScore(arr).forEach(id => { if(q.length < LEN) add(id); }));
+  if(q.length < LEN) [due, pool, uncOk, unseen].forEach(arr => arr.forEach(id => { if(q.length < LEN && !q.includes(id)) q.push(id); }));
+  if(!q.length){ alert('Nothing to review yet — answer some questions first.'); return; }
+  launch('smart', shuffle(q), 'Smart Review');
+}
+function startDrill(){
+  const qs = allQuestions();
+  const byG = {};
+  qs.forEach(q => { if(q.g){ (byG[q.g] = byG[q.g] || []).push(q.id); } });
+  const recs = LS.get(K.records, []);
+  const stats = {};
+  recs.forEach(r => { const g = (qById(r.id)||{}).g; if(!g) return; stats[g] = stats[g] || {n:0,w:0}; stats[g].n++; if(!r.ok) stats[g].w++; });
+  const cands = Object.entries(byG).filter(([g,ids]) => ids.length >= 6);
+  if(!cands.length){ alert('No contrast groups available.'); return; }
+  cands.sort((a,b) => {
+    const sa = stats[a[0]], sb = stats[b[0]];
+    const ra = sa && sa.n >= 3 ? sa.w/sa.n : -1, rb = sb && sb.n >= 3 ? sb.w/sb.n : -1;
+    if(ra !== rb) return rb - ra;                    // worst error rate first
+    return (sa ? sa.n : 0) - (sb ? sb.n : 0);        // then least practiced
+  });
+  const g = cands[0][0];
+  const lastSeen = {};
+  recs.forEach(r => lastSeen[r.id] = r.ts);
+  const ids = byG[g].slice().sort((a,b) => (lastSeen[a]||0) - (lastSeen[b]||0)).slice(0, 14);
+  launch('drill', shuffle(ids).slice(0, 10), 'Drill: ' + GROUPS[g][0], g);
+}
+function launch(mode, queue, label, group){
+  S = { mode, queue, label, group: group || null, i:0, answers:{}, wrongIds:[], correct:0, perm:null, unc:{},
+        seenBefore: new Set(LS.get(K.records, []).map(r => r.id)),
+        start:Date.now(), deadline:null, lastSave:0 };
+  saveActive();
+  show('s-quiz'); startClock(); renderQ();
+}
+
+function startSession(mode){
+  const qs = allQuestions();
+  let queue, label;
+  if(mode === 'weakness'){
+    const pool = LS.get(K.wrong, {});
+    queue = shuffle(Object.keys(pool).filter(id => qById(id)));
+    label = 'Weakness pool';
+    if(!queue.length){ alert('Your weakness pool is empty. Do a practice or exam session first.'); return; }
+  } else {
+    const src = document.getElementById('src').value;
+    if(src === '__random__'){
+      const g = genWeighted(false);
+      queue = g.queue; label = 'Weighted 40';
+    }
+    else if(src === '__fresh__'){
+      const g = genWeighted(true);
+      if(!g.queue.length){ alert('No questions available.'); return; }
+      if(g.notes.length) alert('Exam-weighted Fresh 40 note:\n' + g.notes.join('\n'));
+      queue = g.queue; label = 'Fresh 40 (weighted)';
+    }
+    else { queue = qs.filter(q => q.exam === src).map(q=>q.id); label = src; }
+  }
+  S = { mode, queue, label, i:0, answers:{}, wrongIds:[], correct:0, perm:null, unc:{},
+        seenBefore: new Set(LS.get(K.records, []).map(r => r.id)),
+        start:Date.now(), deadline: mode==='exam' ? Date.now()+60*60*1000 : null, lastSave:0 };
+  saveActive();
+  show('s-quiz');
+  startClock();
+  renderQ();
+}
+
+function saveActive(){
+  if(!S) return;
+  LS.set(K.active, { mode:S.mode, queue:S.queue, label:S.label, group:S.group||null, requeued:S.requeued||{}, doneIdx:S.doneIdx||{}, perms:S.perms||null, firstWrong:S.firstWrong||{}, retryFixed:S.retryFixed||{}, i:S.i, answers:S.answers,
+    wrongIds:S.wrongIds, correct:S.correct, unc:S.unc, seen:[...S.seenBefore],
+    remainMs: S.mode === 'exam' ? Math.max(0, S.deadline - Date.now()) : null,
+    elapsedMs: Date.now() - S.start, savedAt: Date.now() });
+  S.lastSave = Date.now();
+}
+function clearActive(){ localStorage.removeItem(K.active); }
+function discardActive(){
+  if(confirm('Discard the unfinished session? Answers already given stay in your history.')) { clearActive(); buildHome(); }
+}
+function resumeSession(){
+  const a = LS.get(K.active, null);
+  if(!a){ buildHome(); return; }
+  S = { mode:a.mode, queue:a.queue, label:a.label, group:a.group||null, requeued:a.requeued||{}, doneIdx:a.doneIdx||{}, perms:a.perms||null, firstWrong:a.firstWrong||{}, retryFixed:a.retryFixed||{}, i:a.i, answers:a.answers || {},
+        wrongIds:a.wrongIds || [], correct:a.correct || 0, perm:null, unc:a.unc || {},
+        seenBefore:new Set(a.seen || []),
+        start: Date.now() - (a.elapsedMs || 0),
+        deadline: a.mode === 'exam' ? Date.now() + (a.remainMs || 0) : null, lastSave:0 };
+  while(S.i < S.queue.length && (S.doneIdx[S.i] || (Object.keys(S.doneIdx).length === 0 && S.answers[S.queue[S.i]] !== undefined))) S.i++;
+  if(S.i >= S.queue.length){ show('s-quiz'); finish(false); return; }
+  show('s-quiz'); startClock(); renderQ();
+}
+
+function startClock(){
+  stopClock();
+  tick();
+  S.timer = setInterval(tick, 500);
+}
+function stopClock(){ if(S && S.timer){ clearInterval(S.timer); S.timer = null; } }
+function tick(){
+  const el = document.getElementById('clock');
+  if(!S) return;
+  if(S.mode === 'exam'){
+    const left = Math.max(0, S.deadline - Date.now());
+    el.textContent = fmt(left);
+    el.classList.toggle('low', left < 5*60*1000);
+    el.classList.toggle('mid', left >= 5*60*1000 && left < 10*60*1000);
+    const tf = document.getElementById('timefill');
+    document.getElementById('timerule').style.display = 'block';
+    tf.style.width = (100 * left / (60*60*1000)) + '%';
+    tf.className = left < 5*60*1000 ? 'low' : left < 10*60*1000 ? 'mid' : '';
+    if(S.lastSave && Date.now() - S.lastSave > 5000) saveActive();
+    if(left <= 0){ finish(true); }
+  } else {
+    el.textContent = fmt(Date.now() - S.start);
+    el.classList.remove('low'); el.classList.remove('mid');
+    document.getElementById('timerule').style.display = 'none';
+  }
+}
+function fmt(ms){
+  const s = Math.floor(ms/1000);
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+
+function renderQ(){
+  const q = qById(S.queue[S.i]);
+  if(S.mode === 'exam'){
+    if(!S.perms) S.perms = {};
+    if(!S.perms[q.id]) S.perms[q.id] = shuffle([0,1,2,3]);
+    S.perm = S.perms[q.id];
+  } else {
+    S.perm = shuffle([0,1,2,3]);
+  }
+  document.getElementById('prog').textContent = 'Question ' + (S.i+1) + ' / ' + S.queue.length + ' · ' + S.label;
+  document.getElementById('qbarfill').style.width = Math.round(100*S.i/S.queue.length) + '%';
+  S.pending = undefined;
+  S.kbSel = (S.mode === 'exam' && S.answers[q.id] !== undefined) ? S.perm.indexOf(S.answers[q.id]) : -1;
+  document.getElementById('kbdhint').textContent = S.mode === 'exam'
+    ? 'Keys: \u2191\u2193 select \u00B7 Enter/Space answer \u00B7 \u2190\u2192 previous/next \u00B7 1\u20134 direct'
+    : 'Keys: \u2191\u2193 select \u00B7 Enter answer \u00B7 \u2190\u2192 confidence \u00B7 Enter next';
+  document.getElementById('confbar').style.display = 'none';
+  const chip = document.getElementById('qdomain');
+  chip.style.display = S.mode === 'exam' ? 'none' : 'inline-block';
+  chip.textContent = (S.mode === 'drill' && q.g && GROUPS[q.g]) ? GROUPS[q.g][0] : q.domain + (q.code ? ' · ' + q.code : '');
+  document.getElementById('qtext').textContent = q.question;
+  document.getElementById('explain').innerHTML = '';
+  document.getElementById('nextbtn').style.display = 'none';
+  document.getElementById('poolbtn').style.display = 'none';
+  const pool0 = LS.get(K.wrong, {});
+  setFlagBtn(!!pool0[q.id]);
+  setUncBtn(!!S.unc[q.id]);
+  document.getElementById('opts').innerHTML = S.perm.map((orig, pos) =>
+    '<button class="opt' + (S.mode === 'exam' && S.answers[q.id] === orig ? ' chosen' : '') + '" data-orig="' + orig + '" onclick="answer(' + pos + ')">' +
+    '<span class="n">' + (pos+1) + '</span>' + esc(q.options[orig]) + '</button>').join('');
+  updateExamNav();
+}
+
+function answer(pos){
+  if(S.mode === 'exam'){
+    const q = qById(S.queue[S.i]);
+    const wasNew = S.answers[q.id] === undefined;
+    S.answers[q.id] = S.perm[pos];
+    document.querySelectorAll('.opt').forEach((b, i) => b.classList.toggle('chosen', i === pos));
+    updateExamNav();
+    saveActive();
+    if(wasNew){
+      if(Object.keys(S.answers).length >= S.queue.length){ finish(false); return; }
+      setTimeout(nextQ, 120);
+    }
+    return;
+  }
+  if(S.pending !== undefined) return;
+  S.pending = pos;
+  document.querySelectorAll('.opt').forEach((b, i) => { b.disabled = true; if(i === pos) b.classList.add('chosen'); });
+  document.getElementById('confbar').style.display = 'block';
+  S.confSel = 0;
+  confHighlight();
+}
+function confHighlight(){
+  document.querySelectorAll('#confbar .row button').forEach((b, i) => b.classList.toggle('kb', i === S.confSel));
+}
+function chooseConf(cf){
+  const pos = S.pending;
+  if(pos === undefined) return;
+  S.pending = undefined;
+  S.kbSel = -1;
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('kb'));
+  document.getElementById('confbar').style.display = 'none';
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('chosen'));
+  resolveAnswer(pos, cf);
+}
+function resolveAnswer(pos, cf){
+  if(!S.doneIdx) S.doneIdx = {};
+  S.doneIdx[S.i] = true;
+  const q = qById(S.queue[S.i]);
+  const orig = S.perm[pos];
+  const ok = orig === q.correct;
+  const isRetry = S.answers[q.id] !== undefined;
+  S.answers[q.id] = orig;
+  if(!isRetry){
+    if(ok) S.correct++;
+    else {
+      S.wrongIds.push(q.id);
+      if(!S.firstWrong) S.firstWrong = {};
+      S.firstWrong[q.id] = orig;
+    }
+  } else if(ok && S.wrongIds.includes(q.id)){
+    if(!S.retryFixed) S.retryFixed = {};
+    S.retryFixed[q.id] = true;
+  }
+
+  // persistent records + wrong pool
+  const rec = { id:q.id, domain:q.domain, ok, mode:S.mode, ts:Date.now(), sid:S.start, sel:orig,
+              first: !S.seenBefore.has(q.id), unc: !!S.unc[q.id] || cf === 'u' || cf === 'g',
+              cf: cf || (S.unc[q.id] ? 'u' : 's') };
+  const recs = LS.get(K.records, []);
+  recs.push(rec);
+  LS.set(K.records, recs);
+  const M = LS.get(K.mast, {});
+  masteryApply(M, rec);
+  LS.set(K.mast, M);
+  if(rec.unc){ const u = LS.get(K.unc, {}); u[q.id] = Date.now(); LS.set(K.unc, u); }
+  saveActive();
+  const pool = LS.get(K.wrong, {});
+  if(!ok){ pool[q.id] = (pool[q.id]||0)+1; LS.set(K.wrong, pool); setFlagBtn(true); }
+  else if(S.mode !== 'exam' && pool[q.id]){ document.getElementById('poolbtn').style.display = 'inline-block'; }
+
+  if(S.mode === 'exam'){ nextQ(); return; }
+  if(!ok && !S.requeued) S.requeued = {};
+  if(!ok && S.requeued && !S.requeued[q.id]){
+    S.requeued[q.id] = true;
+    const at = Math.min(S.i + 6, S.queue.length);
+    S.queue.splice(at, 0, q.id);
+    saveActive();
+  }
+
+  // practice / weakness: reveal
+  document.querySelectorAll('.opt').forEach((b, i) => {
+    b.disabled = true;
+    const o = S.perm[i];
+    const badge = b.querySelector('.n');
+    if(o === q.correct){ b.classList.add('right'); badge.textContent = '\u2713'; }
+    else if(i === pos){ b.classList.add('wrong'); badge.textContent = '\u2717'; }
+  });
+  const ex = document.getElementById('explain');
+  let html = '<div class="explain">';
+  if(ok){
+    html += '<div class="verdict ok">Correct' + (cf === 'g' ? ' — but a guess, so it stays on your review list' : cf === 'u' ? ' — fragile, will resurface in Smart Review' : '') + '</div>';
+    html += '<div class="block"><span class="lbl">WHY</span>' + esc(q.explanation_correct || 'No explanation available in the source material for this question.') + '</div>';
+  } else {
+    html += '<div class="verdict bad">Wrong' + (cf === 's' ? ' — and you were sure. This is a confident misconception, top review priority.' : '') + ' You chose: ' + esc(q.options[orig]) + '</div>';
+    html += '<div class="block"><span class="lbl">CORRECT ANSWER</span>' + esc(q.options[q.correct]) + '</div>';
+    html += '<div class="block"><span class="lbl">WHY</span>' + esc(q.explanation_correct || 'No explanation available in the source material for this question.') + '</div>';
+  }
+  html += '</div>';
+  if(q.g && GROUPS[q.g]){
+    html += '<div class="contrast"><span class="lbl">THE DISTINCTION</span>' + esc(GROUPS[q.g][1]) + '</div>';
+  }
+  ex.innerHTML = html;
+  document.getElementById('nextbtn').style.display = 'inline-block';
+  document.getElementById('nextbtn').focus();
+}
+
+function flagQ(){
+  const q = qById(S.queue[S.i]);
+  const pool = LS.get(K.wrong, {});
+  if(!pool[q.id]){ pool[q.id] = 1; LS.set(K.wrong, pool); }
+  setFlagBtn(true);
+}
+function setFlagBtn(inPool){
+  const b = document.getElementById('flagbtn');
+  b.disabled = inPool;
+  b.innerHTML = inPool ? '&#128078; In weakness pool' : '&#128078; To weakness pool';
+}
+function toggleUnc(){
+  const q = qById(S.queue[S.i]);
+  S.unc[q.id] = !S.unc[q.id];
+  setUncBtn(S.unc[q.id]);
+  const u = LS.get(K.unc, {});
+  if(S.unc[q.id]) u[q.id] = Date.now(); else delete u[q.id];
+  LS.set(K.unc, u);
+  if(S.answers[q.id] !== undefined){
+    const recs = LS.get(K.records, []);
+    for(let j = recs.length - 1; j >= 0; j--){ if(recs[j].id === q.id){ recs[j].unc = S.unc[q.id]; break; } }
+    LS.set(K.records, recs);
+  }
+  saveActive();
+}
+function setUncBtn(on){
+  const b = document.getElementById('uncbtn');
+  b.classList.toggle('on', on);
+  b.textContent = on ? '? Marked uncertain' : '? Uncertain';
+}
+function releaseQ(){
+  const q = qById(S.queue[S.i]);
+  const pool = LS.get(K.wrong, {});
+  delete pool[q.id]; LS.set(K.wrong, pool);
+  const b = document.getElementById('poolbtn');
+  b.disabled = true; b.textContent = 'Removed from pool';
+  setFlagBtn(false);
+}
+function updateExamNav(){
+  const nav = document.getElementById('examnav');
+  if(!S || S.mode !== 'exam'){ if(nav) nav.style.display = 'none'; return; }
+  nav.style.display = 'flex';
+  document.getElementById('prevbtn').disabled = S.i === 0;
+  document.getElementById('examnextbtn').disabled = S.i >= S.queue.length - 1;
+  const answered = Object.keys(S.answers).length;
+  document.getElementById('submitbtn').style.display = (answered === S.queue.length || S.i === S.queue.length - 1) ? 'inline-block' : 'none';
+  document.getElementById('prog').textContent = 'Question ' + (S.i+1) + ' / ' + S.queue.length + ' · answered ' + answered + ' · ' + S.label;
+}
+function prevQ(){ if(S.i > 0){ S.i--; renderQ(); saveActive(); } }
+function nextQexam(){ if(S.i < S.queue.length - 1){ S.i++; renderQ(); saveActive(); } }
+function submitExam(){
+  const answered = Object.keys(S.answers).length;
+  if(answered < S.queue.length && !confirm(answered + '/' + S.queue.length + ' answered. Submit anyway? Unanswered questions count as wrong.')) return;
+  finish(false);
+}
+function nextQ(){
+  if(S.i + 1 >= S.queue.length){ finish(false); return; }
+  S.i++;
+  renderQ();
+}
+
+function quitSession(){
+  if(Object.keys(S.answers).length === 0){ goHome(); return; }
+  if(confirm('End now and score the questions answered so far?')) finish(false);
+}
+
+function finish(timedOut){
+  stopClock();
+  if(S.mode === 'exam'){
+    S.correct = 0; S.wrongIds = [];
+    const recsX = LS.get(K.records, []);
+    const MX = LS.get(K.mast, {});
+    const poolX = LS.get(K.wrong, {});
+    const now0 = Date.now();
+    S.queue.forEach((id, idx) => {
+      const sel = S.answers[id];
+      if(sel === undefined) return;
+      const q = qById(id);
+      const ok = sel === q.correct;
+      if(ok) S.correct++; else { S.wrongIds.push(id); poolX[id] = (poolX[id]||0)+1; }
+      const rec = { id, domain:q.domain, ok, mode:'exam', ts: now0 + idx, sel,
+        sid:S.start, first: !S.seenBefore.has(id), unc: !!S.unc[id], cf: S.unc[id] ? 'u' : 's' };
+      recsX.push(rec);
+      masteryApply(MX, rec);
+    });
+    LS.set(K.records, recsX); LS.set(K.mast, MX); LS.set(K.wrong, poolX);
+  }
+  const answered = Object.keys(S.answers).length;
+  const total = S.queue.length;
+  const wrong = (S.mode === 'exam' && timedOut) ? total - S.correct : answered - S.correct;
+  const denom = (S.mode === 'exam') ? total : Math.max(answered, 1);
+  const pct = Math.round(100 * S.correct / denom);
+  const passNeed = Math.ceil(denom * 0.80);
+  const passed = S.correct >= passNeed;
+  const answeredIds = Object.keys(S.answers);
+  const freshN = answeredIds.filter(id => !S.seenBefore.has(id)).length;
+  const freshPct = answeredIds.length ? Math.round(100 * freshN / answeredIds.length) : 0;
+  const ansMap = {};
+  S.wrongIds.forEach(id => {
+    const sel = (S.firstWrong && S.firstWrong[id] !== undefined) ? S.firstWrong[id] : S.answers[id];
+    if(sel !== undefined) ansMap[id] = sel;
+  });
+  const sessions = LS.get(K.sessions, []);
+  sessions.push({ ts:Date.now(), mode:S.mode, label:S.label, total:denom, correct:S.correct, wrong, wrongIds:S.wrongIds, ans:ansMap, fresh:freshPct });
+  LS.set(K.sessions, sessions);
+  clearActive();
+
+  document.getElementById('restitle').textContent =
+    (S.mode==='exam'?'Exam':'Session') + ' finished — ' + S.label + (timedOut ? ' (time expired)' : '');
+  const pctEl = document.getElementById('respct');
+  pctEl.textContent = pct + '%';
+  pctEl.className = 'big ' + (passed ? 'pass' : 'fail');
+  document.getElementById('rescorrect').textContent = S.correct + ' / ' + denom;
+  document.getElementById('reswrong').textContent = wrong;
+  document.getElementById('respass').textContent = passNeed;
+  document.getElementById('resfresh').textContent = freshPct + '%';
+  const rf = S.retryFixed ? Object.keys(S.retryFixed).length : 0;
+  document.getElementById('resretry').style.display = rf ? 'block' : 'none';
+  document.getElementById('resretryn').textContent = rf;
+  const rv = examVerdict();
+  document.getElementById('resverdictline').innerHTML = rv.locked ? '' : verdictHTML();
+  const v = document.getElementById('resverdict');
+  v.textContent = passed ? 'PASS' : 'FAIL';
+  v.className = 'verdicttag ' + (passed ? 'pass' : 'fail');
+  show('s-results');
+}
+
+// ---------- review (this session) ----------
+function reviewSession(){
+  renderReview(S.wrongIds.map(id => ({ id, mine:(S.firstWrong && S.firstWrong[id] !== undefined) ? S.firstWrong[id] : S.answers[id] })),
+    'Wrong answers — this session (' + S.wrongIds.length + ')');
+}
+function renderReview(items, title){
+  document.getElementById('revtitle').textContent = title;
+  document.getElementById('revlist').innerHTML = items.length ? items.map(it => {
+    const q = qById(it.id); if(!q) return '';
+    return '<div class="card rev">' +
+      '<div class="meta">' + esc(q.exam) + ' · ' + esc(q.domain) + '</div>' +
+      '<div class="q">' + esc(q.question) + '</div>' +
+      (it.mine !== undefined ? '<div class="ans bad">Your answer: ' + esc(q.options[it.mine]) + '</div>' : '') +
+      '<div class="ans ok">Correct: ' + esc(q.options[q.correct]) + '</div>' +
+      (q.explanation_correct ? '<div class="ex">' + esc(q.explanation_correct) + '</div>' : '') +
+      '</div>';
+  }).join('') : '<div class="empty">Nothing here. Clean sheet.</div>';
+  show('s-review');
+}
+
+function reviewPast(ts){
+  const s = LS.get(K.sessions, []).find(x => x.ts === ts);
+  if(!s) return;
+  renderReview(s.wrongIds.map(id => ({ id, mine: s.ans ? s.ans[id] : undefined })),
+    'Wrong answers — ' + s.label + ' · ' + new Date(s.ts).toLocaleDateString() + ' (' + s.wrongIds.length + ')');
+}
+// ---------- all wrongs ----------
+function showWrongs(){
+  stopClock();
+  const pool = LS.get(K.wrong, {});
+  const items = Object.entries(pool)
+    .filter(([id]) => qById(id))
+    .sort((a,b) => b[1] - a[1]);
+  document.getElementById('wrongtitle').textContent = 'All wrong answers — every exam (' + items.length + ')';
+  document.getElementById('wronglist').innerHTML = items.length ? items.map(([id, misses]) => {
+    const q = qById(id);
+    return '<div class="card rev">' +
+      '<div class="meta">' + esc(q.exam) + ' · ' + esc(q.domain) + ' · missed ' + misses + '×</div>' +
+      '<div class="q">' + esc(q.question) + '</div>' +
+      '<div class="ans ok">Correct: ' + esc(q.options[q.correct]) + '</div>' +
+      (q.explanation_correct ? '<div class="ex">' + esc(q.explanation_correct) + '</div>' : '') +
+      '<div class="mt"><button onclick="removeFromPool(\'' + q.id + '\')">Remove from pool</button></div>' +
+      '</div>';
+  }).join('') : '<div class="empty">No wrong answers on record yet.</div>';
+  show('s-wrongs');
+}
+
+function removeFromPool(id){
+  const pool = LS.get(K.wrong, {});
+  delete pool[id]; LS.set(K.wrong, pool);
+  showWrongs();
+}
+// ---------- stats ----------
+function showStats(){
+  stopClock();
+  const recs = LS.get(K.records, []);
+  const firstR = recs.filter(r => r.first);
+  const repR = recs.filter(r => r.first === false);
+  const acc = a => a.length ? Math.round(100 * a.filter(r => r.ok).length / a.length) : null;
+  const seenN = new Set(recs.map(r => r.id)).size;
+  const bankN = allQuestions().length;
+  const uncN = Object.keys(LS.get(K.unc, {})).length;
+  const allSess = LS.get(K.sessions, []);
+  const last5 = allSess.slice(-5).map(s =>
+    Math.round(100*s.correct/s.total) + '%' + (s.fresh !== undefined ? ' (fresh ' + s.fresh + '%)' : '')).join(' · ');
+  const okUnsureN = recs.filter(r => r.ok && r.cf === 'u').length;
+  const okGuessN = recs.filter(r => r.ok && r.cf === 'g').length;
+  const RQ = getReviewQueueSummary();
+  const CE = getConfidentErrorSummary();
+  const M = LS.get(K.mast, {});
+  const mastN = Object.values(M).filter(m => m.st === 'mastered').length;
+  document.getElementById('statover').innerHTML =
+    '<div>Tracked weaknesses: <b>' + RQ.uniqueWeakQuestions + '</b> unique questions (due now <b>' + RQ.dueNowUnique + '</b> · scheduled later <b>' + RQ.scheduledLaterUnique + '</b>) · Manual pool: <b>' + RQ.poolManual + '</b> · Mastered: <b>' + mastN + '</b></div>' +
+    '<div>Confident errors — active: <b>' + CE.active.length + '</b> · relapsed: <b>' + CE.relapsed.length + '</b> · repaired: <b>' + CE.repaired.length + '</b> · lifetime: <b>' + CE.lifetimeTotal + '</b></div>' +
+    '<div>Correct but unsure: <b>' + okUnsureN + '</b> · Correct guesses: <b>' + okGuessN + '</b></div>' +
+    '<div>First-attempt accuracy: <b>' + (acc(firstR) === null ? '–' : acc(firstR) + '%') + '</b> (' + firstR.length + ' answers) — your honest readiness signal</div>' +
+    '<div>Repeated-question accuracy: <b>' + (acc(repR) === null ? '–' : acc(repR) + '%') + '</b> (' + repR.length + ' answers)</div>' +
+    '<div>Bank coverage: <b>' + seenN + ' / ' + bankN + '</b> questions seen (' + Math.round(100*seenN/Math.max(bankN,1)) + '%)</div>' +
+    '<div>Marked uncertain: <b>' + uncN + '</b></div>' +
+    '<div>Last 5 sessions: <b>' + (last5 || '–') + '</b></div>';
+  const M3 = LS.get(K.mast, {});
+  const dueByDom = {};
+  dueIds().forEach(id => { const dom = (qById(id)||{}).domain; dueByDom[dom] = (dueByDom[dom]||0)+1; });
+  const rows = domainRisk();
+  const any = rows.some(r => r.n > 0);
+  document.getElementById('statbars').innerHTML = any ? rows.map(r => {
+    const pct = Math.round(100*r.marks/40*10)/10;
+    const acc = r.rate === null ? (r.n ? 'need ≥3 first attempts' : 'no data') : Math.round(100*(1-r.rate)) + '% first-attempt accuracy';
+    const risk = r.risk === null ? '–' : (Math.round(r.risk*10)/10) + ' marks at risk';
+    return '<div class="bar-row"><div class="bar-top"><span class="d">' + esc(DSHORT[r.dom]) + ' · ' + r.marks + '/40 marks (' + pct + '%)</span>' +
+    '<span class="v">' + acc + ' · ' + risk + (dueByDom[r.dom] ? ' · ' + dueByDom[r.dom] + ' due' : '') + '</span></div>' +
+    '<div class="bar"><i class="' + (r.risk !== null && r.risk < 1 ? 'good' : '') + '" style="width:' + Math.max(2, Math.round((r.risk||0)/17*100)) + '%"></i></div></div>';
+  }).join('') : '<div class="empty">Answer some questions first.</div>';
+
+  // troubling questions: full history, worst first
+  const byQ = {};
+  recs.forEach(r => {
+    if(!qById(r.id)) return;
+    byQ[r.id] = byQ[r.id] || { n:0, w:0, hist:[], picks:{} };
+    const b = byQ[r.id];
+    b.n++; if(!r.ok){ b.w++; if(r.sel !== undefined) b.picks[r.sel] = (b.picks[r.sel]||0)+1; }
+    b.hist.push(r.ok);
+  });
+  const poolNow = LS.get(K.wrong, {});
+  const trouble = Object.entries(byQ).filter(([id,b]) => b.w > 0)
+    .sort((a,b) => b[1].w - a[1].w || (b[1].w/b[1].n) - (a[1].w/a[1].n)).slice(0, 15);
+  document.getElementById('troublelist').innerHTML = trouble.length ? trouble.map(([id, b]) => {
+    const q = qById(id);
+    const pat = b.hist.slice(-6).map(ok => ok ? '<span style="color:var(--ok)">\u2713</span>' : '<span style="color:var(--bad)">\u2717</span>').join(' ');
+    const topPick = Object.entries(b.picks).sort((x,y) => y[1]-x[1])[0];
+    return '<div class="card rev">' +
+      '<div class="meta">' + esc(q.exam) + ' \u00B7 ' + esc(q.domain) + ' \u00B7 wrong ' + b.w + ' of ' + b.n + ' attempts \u00B7 last: ' + pat + (poolNow[id] ? ' \u00B7 in weakness pool' : '') + '</div>' +
+      '<div class="q">' + esc(q.question) + '</div>' +
+      '<div class="ans ok">Correct: ' + esc(q.options[q.correct]) + '</div>' +
+      (topPick ? '<div class="ans bad">You keep picking: ' + esc(q.options[topPick[0]]) + ' (' + topPick[1] + '\u00D7)</div>' : '') +
+      (q.explanation_correct ? '<div class="ex">' + esc(q.explanation_correct) + '</div>' : '') +
+      '</div>';
+  }).join('') : '<div class="empty">No misses on record yet.</div>';
+  const sess = LS.get(K.sessions, []).slice().reverse().slice(0, 20);
+  document.getElementById('sesslist').innerHTML = sess.length ? sess.map(s =>
+    '<div style="padding:6px 0;border-bottom:1px solid var(--line)">' +
+    new Date(s.ts).toLocaleString() + ' · ' + esc(s.mode) + ' · ' + esc(s.label) +
+    ' · <b style="color:var(--txt)">' + s.correct + '/' + s.total + '</b> (' + Math.round(100*s.correct/s.total) + '%)' + (s.fresh !== undefined ? ' · fresh ' + s.fresh + '%' : '') +
+    (s.wrongIds && s.wrongIds.length ? ' · <a class="link" onclick="reviewPast(' + s.ts + ')">review ' + s.wrongIds.length + ' wrong</a>' : '') + '</div>'
+  ).join('') : 'No sessions yet.';
+  show('s-stats');
+}
+
+// ---------- AI diagnostic ----------
+function buildDiagnostic(){
+  const recs = LS.get(K.records, []);
+  const sess = LS.get(K.sessions, []);
+  const pool = LS.get(K.wrong, {});
+  const uncSet = LS.get(K.unc, {});
+  const firstR = recs.filter(r => r.first);
+  const repR = recs.filter(r => r.first === false);
+  const acc = a => a.length ? Math.round(100 * a.filter(r => r.ok).length / a.length) + '% (' + a.length + ')' : 'no data';
+  const seen = new Set(recs.map(r => r.id));
+  const bankN = allQuestions().length;
+  const L = [];
+  L.push('# ITIL 4 trainer diagnostic (v1.2)');
+  L.push('Exported: ' + new Date().toLocaleString());
+  L.push('');
+  L.push('## Recent sessions (newest last)');
+  sess.slice(-5).forEach(s => L.push('- ' + new Date(s.ts).toLocaleDateString() + ' · ' + s.mode + ' · ' + s.label + ' · ' + s.correct + '/' + s.total + ' (' + Math.round(100*s.correct/s.total) + '%)' + (s.fresh !== undefined ? ' · fresh ' + s.fresh + '%' : '')));
+  if(!sess.length) L.push('- none yet');
+  L.push('');
+  L.push('## Readiness basis');
+  L.push('- Question bank: ' + bankN + ' syllabus-verified questions (contribution-mapping and other out-of-scope items removed in v2.1)');
+  L.push('- Attempts on record: ' + recs.length + ' (all official-core)');
+  L.push('');
+  L.push('## Accuracy');
+  L.push('- First attempts (honest readiness): ' + acc(firstR));
+  L.push('- Repeated questions: ' + acc(repR));
+  L.push('- Bank coverage: ' + seen.size + '/' + bankN + ' seen (' + Math.round(100*seen.size/Math.max(bankN,1)) + '%)');
+  const RQd = getReviewQueueSummary();
+  const dueNowIds = dueIds();
+  L.push('- Tracked weaknesses: ' + RQd.uniqueWeakQuestions + ' unique questions · due now: ' + RQd.dueNowUnique + ' · scheduled later: ' + RQd.scheduledLaterUnique + (RQd.invalidSchedules ? ' · invalid schedules treated as due: ' + RQd.invalidSchedules : ''));
+  L.push('- Manual weakness pool (kept until you release them): ' + RQd.poolManual + ' · immediate repeats waiting in the open session: ' + RQd.immediateRepeatsUnique);
+  L.push('- Marked uncertain: ' + Object.keys(uncSet).length + ' questions');
+  L.push('');
+  const risk = domainRisk();
+  const withData = risk.filter(r => r.risk !== null);
+  L.push('## Exam-weighted risk (marks × first-attempt error rate)');
+  if(withData.length){
+    L.push('| Domain | Marks | First-attempt errors | Marks at risk |');
+    L.push('|---|---:|---:|---:|');
+    risk.forEach(r => L.push('| ' + DSHORT[r.dom] + ' | ' + r.marks + ' | ' +
+      (r.rate === null ? 'n/a (' + r.n + ' attempts)' : Math.round(r.rate*100) + '% (' + r.w + '/' + r.n + ')') + ' | ' +
+      (r.risk === null ? '–' : Math.round(r.risk*10)/10) + ' |'));
+    const totalRisk = withData.reduce((s,r) => s + r.risk, 0);
+    L.push('Estimated marks at risk overall: ~' + Math.round(totalRisk*10)/10 + ' of 40 (training target 30, official pass 26).');
+    L.push('');
+    L.push('## Recommended next 20 questions (by marks at risk, 60% cap)');
+    const totalR = withData.reduce((s,r) => s + Math.max(r.risk, 0.2), 0);
+    let alloc = withData.map(r => ({ dom:r.dom, n: Math.round(20 * Math.max(r.risk, 0.2) / totalR) }));
+    alloc.forEach(a => { if(a.n > 12) a.n = 12; });
+    alloc.filter(a => a.n > 0).forEach(a => L.push('- ' + DSHORT[a.dom] + ': ' + a.n));
+  } else L.push('- not enough first-attempt data yet');
+  L.push('');
+  const weakest = withData.slice(0,3).map(r => ({ d:r.dom, n:r.n, w:r.w, rate:r.rate }));
+  const lastS = sess[sess.length-1];
+  if(lastS && lastS.wrongIds && lastS.wrongIds.length){
+    L.push('## Last session mistakes (max 15)');
+    lastS.wrongIds.slice(0,15).forEach(id => {
+      const q = qById(id); if(!q) return;
+      const prior = recs.filter(r => r.id === id);
+      const misses = prior.filter(r => !r.ok).length;
+      L.push('- [' + id + '] ' + q.domain + ' — "' + q.question.slice(0,90).replace(/\n/g,' ') + '..." | correct: ' + q.options[q.correct].slice(0,70) + ' | attempts: ' + prior.length + ', total misses: ' + misses + (misses > 1 ? ' (REPEATED ERROR)' : ''));
+    });
+    L.push('');
+  }
+  const uncCorrect = Object.keys(uncSet).filter(id => {
+    const rr = recs.filter(r => r.id === id);
+    const last = rr[rr.length - 1];
+    return last && last.ok && qById(id);
+  }).slice(0,10);
+  if(uncCorrect.length){
+    L.push('## Correct but marked uncertain (lucky guesses to shore up)');
+    uncCorrect.forEach(id => { const q = qById(id); L.push('- [' + id + '] ' + q.domain + ' — "' + q.question.slice(0,90).replace(/\n/g,' ') + '..."'); });
+    L.push('');
+  }
+  const vd = examVerdict();
+  L.push('## Pass probability');
+  if(vd.locked) L.push('- Locked: needs 40 first-attempt answers (' + vd.need + ' more).');
+  else L.push('- If sat today: ~' + vd.P + '% chance of scoring 28+ (official pass ≈ 700/1000). Training target remains 32/40 (80%) per the Command Center gate. Deliberately conservative: lower-bound accuracy per domain plus a 1-mark exam-day haircut. Session training target remains 30/40. Expected ' + vd.E + '/40 (sd ±' + vd.sd + ') from ' + vd.N + ' first attempts, exam-weighted.');
+  L.push('');
+  const byQd = {};
+  recs.forEach(r => {
+    if(!qById(r.id)) return;
+    byQd[r.id] = byQd[r.id] || { n:0, w:0, picks:{} };
+    byQd[r.id].n++; if(!r.ok){ byQd[r.id].w++; if(r.sel !== undefined) byQd[r.id].picks[r.sel] = (byQd[r.id].picks[r.sel]||0)+1; }
+  });
+  const troubleD = Object.entries(byQd).filter(([id,b]) => b.w >= 2)
+    .sort((a,b) => b[1].w - a[1].w).slice(0, 5);
+  if(troubleD.length){
+    L.push('## Most troubling questions (missed 2+ times)');
+    troubleD.forEach(([id, b]) => {
+      const q = qById(id);
+      const tp = Object.entries(b.picks).sort((x,y) => y[1]-x[1])[0];
+      L.push('- [' + id + '] wrong ' + b.w + '/' + b.n + ' \u2014 "' + q.question.slice(0,80).replace(/\n/g,' ') + '..." | correct: ' + q.options[q.correct].slice(0,60) + (tp ? ' | keeps picking: ' + q.options[tp[0]].slice(0,60) + ' (' + tp[1] + 'x)' : ''));
+    });
+    L.push('');
+  }
+  L.push('## Learning diagnosis');
+  const confErrs = recs.filter(r => !r.ok && r.cf === 's');
+  const byGroup = arr => {
+    const g = {};
+    arr.forEach(r => { const q = qById(r.id); const key = q && q.g && GROUPS[q.g] ? GROUPS[q.g][0] : (q ? q.domain : '?'); g[key] = (g[key]||0)+1; });
+    return Object.entries(g).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  };
+  const CEd = getConfidentErrorSummary();
+  L.push('Confident errors — active unresolved: ' + CEd.active.length + ' · relapsed: ' + CEd.relapsed.length + ' · repaired historically: ' + CEd.repaired.length + ' · lifetime total: ' + CEd.lifetimeTotal);
+  L.push('By concept (active + relapsed only):');
+  const hotRecs = recs.filter(r => !r.ok && r.cf === 's' && (CEd.active.includes(r.id) || CEd.relapsed.includes(r.id)));
+  const ce = byGroup(hotRecs);
+  ce.length ? ce.forEach(([k,n]) => L.push('- ' + k + ': ' + n)) : L.push('- none');
+  const okUnsure = recs.filter(r => r.ok && (r.cf === 'u' || r.cf === 'g'));
+  L.push('Correct but unsure/guessed:');
+  const cu = byGroup(okUnsure);
+  cu.length ? cu.forEach(([k,n]) => L.push('- ' + k + ': ' + n)) : L.push('- none');
+  const dueNowD = dueIds();
+  L.push('Due for review now: ' + dueNowD.length + ' questions');
+  const M2 = LS.get(K.mast, {});
+  L.push('Mastered: ' + Object.values(M2).filter(m => m.st === 'mastered').length + ' · Relapsed: ' + Object.values(M2).filter(m => m.st === 'relapsed').length);
+  L.push('');
+  L.push('## Suggested focus (priority order)');
+  let step = 1;
+  const CEf = getConfidentErrorSummary();
+  const hotN = CEf.active.length + CEf.relapsed.length;
+  if(hotN){
+    L.push(step + '. Fix your ' + hotN + ' active or relapsed confident errors first' + (CEf.relapsed.length ? ' (' + CEf.relapsed.length + ' relapsed — top priority)' : '') + '. ' + CEf.repaired.length + ' others are already repaired and need nothing.'); step++;
+  }
+  if(weakest.length){ L.push(step + '. Highest exam return: ' + DSHORT[weakest[0].d] + ' — ' + (Math.round((weakest[0].rate*DW[weakest[0].d])*10)/10) + ' marks at risk (' + (weakest[0].n - weakest[0].w) + '/' + weakest[0].n + ' first attempts correct). Prioritize by marks at risk, not raw error %.'); step++; }
+  if(dueNowIds.length){ L.push(step + '. Smart Review: ' + dueNowIds.length + ' due now. Keep each weakness in review until it is answered correctly after a delay, in a separate session — one confident answer is not mastery.'); step++; }
+  const unseenN = bankN - seen.size;
+  L.push(step + '. Only then: ' + (unseenN >= 40 ? 'a Fresh 40 exam (' + unseenN + ' unseen left) for an honest readiness score. Skip it if steps above are unfinished — a mock taken over known weaknesses wastes fresh questions.' : 'under 40 unseen questions left (' + unseenN + ') — import fresh material before trusting another mock.'));
+  return L.join('\n');
+}
+function copyDiagnostic(){
+  const text = buildDiagnostic();
+  const done = () => alert('Diagnostic copied. Paste it to your AI tutor.');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(() => diagFallback(text));
+  } else diagFallback(text);
+}
+function diagFallback(text){
+  goHome();
+  toggleTextBackup(true);
+  const box = document.getElementById('backupbox');
+  box.value = text; box.focus(); box.select();
+  document.getElementById('backupmsg').textContent = 'Clipboard blocked by the browser — the diagnostic is selected above, copy it manually.';
+}
+// ---------- device sync ----------
+const SYNC_KEY = 'az9_sync';
+function syncCfg(){ try{ return JSON.parse(localStorage.getItem(SYNC_KEY)) || null; }catch(e){ return null; } }
+function b64e(s){ return btoa(unescape(encodeURIComponent(s))); }
+function b64d(s){ return decodeURIComponent(escape(atob(s.replace(/\n/g,'')))); }
+async function syncNow(silent, retry){
+  const msg = t => { const el = document.getElementById('syncmsg'); if(el && !silent) el.textContent = t; };
+  let cfg = syncCfg() || {};
+  const repoEl = document.getElementById('syncrepo'), tokEl = document.getElementById('synctoken');
+  if(repoEl && repoEl.value.trim()) cfg.repo = repoEl.value.trim();
+  if(tokEl && tokEl.value.trim()) cfg.token = tokEl.value.trim();
+  if(!cfg.repo || !cfg.token){ msg('Enter repo and token first.'); return; }
+  try{ localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); }catch(e){}
+  msg('Syncing\u2026');
+  const api = 'https://api.github.com/repos/' + cfg.repo + '/contents/itil-progress.json';
+  const headers = { 'Authorization':'Bearer ' + cfg.token, 'Accept':'application/vnd.github+json' };
+  try{
+    let sha = null;
+    const r = await fetch(api, { headers });
+    if(r.status === 200){
+      const j = await r.json();
+      sha = j.sha;
+      try{ mergeProgress(JSON.parse(b64d(j.content))); }catch(e){ msg('Remote data unreadable \u2014 not merged. Uploading local state.'); }
+    } else if(r.status === 401 || r.status === 403){ msg('Token rejected \u2014 check scope/expiry.'); return; }
+    else if(r.status !== 404){ msg('GitHub error ' + r.status + '.'); return; }
+    const put = await fetch(api, { method:'PUT', headers,
+      body: JSON.stringify(Object.assign({ message:'sync ' + new Date().toISOString(),
+        content: b64e(JSON.stringify(progressDump())) }, sha ? { sha } : {})) });
+    if(put.status === 409 && !retry){ return syncNow(silent, true); }  // raced another device: refetch + remerge once
+    if(!put.ok){ msg('Upload failed (' + put.status + ').'); return; }
+    cfg.lastTs = Date.now();
+    try{ localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); }catch(e){}
+    buildHome();
+    msg('Synced \u2713 ' + new Date().toLocaleTimeString());
+  }catch(e){ msg(silent ? '' : 'Offline or blocked \u2014 try again later.'); }
+}
+// ---------- import / reset ----------
+function doImport(){
+  const msg = document.getElementById('importmsg');
+  try {
+    let data = JSON.parse(document.getElementById('importbox').value);
+    if(!Array.isArray(data)) throw new Error('Expected a JSON array.');
+    const existing = new Set(allQuestions().map(q => q.id));
+    const norm = s => String(s).toLowerCase().replace(/\s+/g,' ').trim();
+    const existingText = new Set(allQuestions().map(q => norm(q.question)));
+    const custom = LS.get(K.custom, []);
+    let added = 0, dup = 0;
+    const errs = [];
+    data.forEach((q, idx) => {
+      const where = q && q.id ? q.id : '#' + (idx+1);
+      if(!q || typeof q !== 'object'){ errs.push(where + ': not an object'); return; }
+      if(!q.id || typeof q.id !== 'string'){ errs.push(where + ': missing id'); return; }
+      if(!q.question || !String(q.question).trim()){ errs.push(where + ': missing question text'); return; }
+      if(!Array.isArray(q.options) || q.options.length !== 4 || q.options.some(o => !String(o).trim())){ errs.push(where + ': needs exactly 4 non-empty options'); return; }
+      if(new Set(q.options.map(norm)).size !== 4){ errs.push(where + ': duplicate answer options'); return; }
+      if(typeof q.correct !== 'number' || q.correct < 0 || q.correct > 3 || !Number.isInteger(q.correct)){ errs.push(where + ': correct must be an integer 0-3'); return; }
+      const ACT = ['plan','improve','engage','design and transition','obtain/build','deliver and support'];
+      const qt = norm(q.question);
+      const actOpts = q.options.filter(o => ACT.includes(norm(o).replace(/\.$/,''))).length;
+      if(/contribut/.test(qt) && (qt.includes('value chain') || qt.includes('value-chain') || actOpts >= 3)){ errs.push(where + ': practice-to-value-chain contribution mapping — excluded by syllabus outcome 7.1'); return; }
+      const LEGACY = [];
+      const corrT = ' ' + norm(q.options[q.correct]) + ' ';
+      const legacyHit = LEGACY.find(t => corrT.includes(t));
+      if(legacyHit){ errs.push(where + ': correct answer uses legacy ITIL v3 terminology ("' + legacyHit.trim() + '") — allowed only as a distractor'); return; }
+      if(existing.has(q.id)){ dup++; return; }
+      if(existingText.has(norm(q.question))){ dup++; errs.push(where + ': same question text already in bank (skipped)'); return; }
+      q.exam = q.exam || 'Imported';
+      q.domain = q.domain || 'General';
+      custom.push(q); existing.add(q.id); existingText.add(norm(q.question)); added++;
+    });
+    LS.set(K.custom, custom);
+    remapLegacyIds();
+    msg.textContent = added + ' imported · ' + dup + ' duplicates skipped · ' + errs.length + ' issues' +
+      (errs.length ? ' — ' + errs.slice(0,3).join(' | ') + (errs.length > 3 ? ' (+' + (errs.length-3) + ' more)' : '') : '.');
+    document.getElementById('importbox').value = '';
+    buildHome();
+  } catch(e){ msg.textContent = 'Import failed: ' + e.message; }
+}
+
+function resetAll(){
+  if(!confirm('Delete ALL history, statistics, the weakness pool and imported questions?')) return;
+  Object.values(K).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem(SYNC_KEY);
+  goHome();
+}
+
+// ---------- util ----------
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function kbHighlight(){
+  document.querySelectorAll('.opt').forEach((b, i) => b.classList.toggle('kb', i === S.kbSel));
+}
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('s-quiz').classList.contains('on')) return;
+  if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if(!S) return;
+  const k = e.key;
+  // phase: confidence bar open (non-exam, answer locked, awaiting S/U/G)
+  if(S.mode !== 'exam' && S.pending !== undefined){
+    const CONF = ['s','u','g'];
+    if(k === 'ArrowRight' || k === 'ArrowDown'){ e.preventDefault(); S.confSel = ((S.confSel||0) + 1) % 3; confHighlight(); return; }
+    if(k === 'ArrowLeft' || k === 'ArrowUp'){ e.preventDefault(); S.confSel = ((S.confSel||0) + 2) % 3; confHighlight(); return; }
+    if(k === 'Enter' || k === ' '){ e.preventDefault(); chooseConf(CONF[S.confSel||0]); return; }
+    const map = { 's':'s','S':'s','1':'s','u':'u','U':'u','2':'u','g':'g','G':'g','3':'g' };
+    if(map[k] !== undefined){ e.preventDefault(); chooseConf(map[k]); }
+    return;
+  }
+  // phase: revealed (non-exam) — advance
+  if(S.mode !== 'exam' && document.getElementById('nextbtn').style.display !== 'none'){
+    if(k === 'Enter' || k === ' ' || k === 'ArrowRight'){ e.preventDefault(); nextQ(); }
+    return;
+  }
+  // phase: choosing (all modes)
+  if(k === 'ArrowDown' || k === 'ArrowUp'){
+    e.preventDefault();
+    const n = document.querySelectorAll('.opt').length;
+    if(S.kbSel === undefined || S.kbSel < 0) S.kbSel = k === 'ArrowDown' ? 0 : n - 1;
+    else S.kbSel = (S.kbSel + (k === 'ArrowDown' ? 1 : n - 1)) % n;
+    kbHighlight();
+    return;
+  }
+  if(S.mode === 'exam' && k === 'ArrowLeft'){ e.preventDefault(); prevQ(); return; }
+  if(S.mode === 'exam' && k === 'ArrowRight'){ e.preventDefault(); nextQexam(); return; }
+  if((k === 'Enter' || k === ' ') && S.kbSel !== undefined && S.kbSel >= 0){
+    e.preventDefault(); answer(S.kbSel); return;
+  }
+  if(['1','2','3','4'].includes(k)){
+    const btns = document.querySelectorAll('.opt');
+    const b = btns[Number(k)-1];
+    if(b && !b.disabled) b.click();
+  }
+});
+
+migrate();
+buildHome();
+applyDim();
+(function(){
+  const c = syncCfg();
+  if(c){
+    const r = document.getElementById('syncrepo'), t = document.getElementById('synctoken');
+    if(r) r.value = c.repo || '';
+    if(t) t.value = c.token || '';
+    if(c.repo && c.token) syncNow(true);
+  }
+})();
+(function(){ let t='slate'; try{ t = localStorage.getItem(THEME_KEY) || 'slate'; }catch(e){}
+  document.querySelectorAll('.theme').forEach(b => b.classList.toggle('sel', b.dataset.t === t)); })();
+</script>
+</body>
+</html>
